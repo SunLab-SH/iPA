@@ -38,7 +38,7 @@ iPA is an open-source Python platform for comprehensive analysis of cellular and
 ## Installation
 
 ### Requirements
-- Python 3.8+
+- Python 3.7
 - OpenCL-compatible GPU recommended
 <!-- - 8GB+ RAM (16GB recommended for large datasets) -->
 
