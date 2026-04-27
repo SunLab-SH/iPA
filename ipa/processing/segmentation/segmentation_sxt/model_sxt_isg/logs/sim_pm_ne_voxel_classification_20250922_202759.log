@@ -1,0 +1,565 @@
+2025-09-22 20:27:59,215 - INFO - Starting SIM PM+NE voxel classification training...
+2025-09-22 20:27:59,216 - INFO - Processing _0-2-1-SIM...
+2025-09-22 20:27:59,216 - INFO -   PM image: 20220909_0-2-1-SIM_Actin.tif
+2025-09-22 20:27:59,217 - INFO -   NE image: 20220909_0-2-1-SIM_N.tif
+2025-09-22 20:27:59,217 - INFO -   PM mask: 20220909_0-2-1-SIM_PM.mrc
+2025-09-22 20:27:59,217 - INFO -   NE mask: 20220909_0-2-1-SIM_N.mrc
+2025-09-22 20:28:14,935 - INFO -   PM image shape: (44, 2560, 2560), NE image shape: (44, 2560, 2560)
+2025-09-22 20:28:14,935 - INFO -   PM mask shape: (44, 2560, 2560), NE mask shape: (44, 2560, 2560)
+2025-09-22 20:28:26,125 - INFO -   PM mask unique values: [0 1]
+2025-09-22 20:28:26,125 - INFO -   NE mask unique values: [0 1]
+2025-09-22 20:28:36,769 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 20:28:36,998 - INFO -   Valid slices with annotations: 35/44
+2025-09-22 20:28:38,094 - INFO -   Total voxels in valid slices: 229,376,000
+2025-09-22 20:28:38,097 - INFO -   Background (0): 225,025,581 (98.1%)
+2025-09-22 20:28:38,097 - INFO -   PM (1): 3,465,858 (1.5%)
+2025-09-22 20:28:38,097 - INFO -   NE (2): 884,561 (0.4%)
+2025-09-22 20:28:38,098 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 20:28:38,099 - INFO -   Class ratios - Background: 0.981, PM: 0.015, NE: 0.004
+2025-09-22 20:28:38,099 - INFO -   Natural sampling - Background: 19,620, PM: 302, NE: 77
+2025-09-22 20:28:38,099 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 20:28:38,100 - INFO -   Extracting features...
+2025-09-22 20:29:58,172 - INFO -   Collected 225025581 background, 3465858 PM, 884561 NE coordinates
+2025-09-22 20:30:41,331 - INFO -   ✓ Completed _0-2-1-SIM, collected 19999 samples
+2025-09-22 20:30:41,332 - INFO - Processing _0-2-2-SIM...
+2025-09-22 20:30:41,332 - INFO -   PM image: 20220909_0-2-2-SIM_Actin.tif
+2025-09-22 20:30:41,333 - INFO -   NE image: 20220909_0-2-2-SIM_N.tif
+2025-09-22 20:30:41,333 - INFO -   PM mask: 20220909_0-2-2-SIM_PM.mrc
+2025-09-22 20:30:41,333 - INFO -   NE mask: 20220909_0-2-2-SIM_N.mrc
+2025-09-22 20:31:02,491 - INFO -   PM image shape: (59, 2560, 2560), NE image shape: (59, 2560, 2560)
+2025-09-22 20:31:02,492 - INFO -   PM mask shape: (59, 2560, 2560), NE mask shape: (59, 2560, 2560)
+2025-09-22 20:31:19,386 - INFO -   PM mask unique values: [0 1]
+2025-09-22 20:31:19,387 - INFO -   NE mask unique values: [0 1]
+2025-09-22 20:31:39,634 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 20:31:40,003 - INFO -   Valid slices with annotations: 51/59
+2025-09-22 20:31:41,671 - INFO -   Total voxels in valid slices: 334,233,600
+2025-09-22 20:31:41,672 - INFO -   Background (0): 325,087,575 (97.3%)
+2025-09-22 20:31:41,673 - INFO -   PM (1): 7,685,047 (2.3%)
+2025-09-22 20:31:41,673 - INFO -   NE (2): 1,460,978 (0.4%)
+2025-09-22 20:31:41,673 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 20:31:41,674 - INFO -   Class ratios - Background: 0.973, PM: 0.023, NE: 0.004
+2025-09-22 20:31:41,674 - INFO -   Natural sampling - Background: 19,452, PM: 459, NE: 87
+2025-09-22 20:31:41,674 - INFO -   Total samples: 19,998 (0.01% of valid slice voxels)
+2025-09-22 20:31:41,674 - INFO -   Extracting features...
+2025-09-22 20:34:27,042 - INFO -   Collected 325087575 background, 7685047 PM, 1460978 NE coordinates
+2025-09-22 20:35:36,428 - INFO -   ✓ Completed _0-2-2-SIM, collected 19998 samples
+2025-09-22 20:35:36,473 - INFO - Processing _0-3-1-SIM...
+2025-09-22 20:35:36,476 - INFO -   PM image: 20220909_0-3-1-SIM_Actin.tif
+2025-09-22 20:35:36,476 - INFO -   NE image: 20220909_0-3-1-SIM_N.tif
+2025-09-22 20:35:36,477 - INFO -   PM mask: 20220909_0-3-1-SIM_PM.mrc
+2025-09-22 20:35:36,477 - INFO -   NE mask: 20220909_0-3-1-SIM_N.mrc
+2025-09-22 20:35:56,979 - INFO -   PM image shape: (52, 2560, 2560), NE image shape: (52, 2560, 2560)
+2025-09-22 20:35:56,982 - INFO -   PM mask shape: (52, 2560, 2560), NE mask shape: (52, 2560, 2560)
+2025-09-22 20:36:11,482 - INFO -   PM mask unique values: [0 1]
+2025-09-22 20:36:11,484 - INFO -   NE mask unique values: [0 1]
+2025-09-22 20:36:26,821 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 20:36:27,205 - INFO -   Valid slices with annotations: 46/52
+2025-09-22 20:36:28,747 - INFO -   Total voxels in valid slices: 301,465,600
+2025-09-22 20:36:28,750 - INFO -   Background (0): 295,035,882 (97.9%)
+2025-09-22 20:36:28,750 - INFO -   PM (1): 5,501,713 (1.8%)
+2025-09-22 20:36:28,750 - INFO -   NE (2): 928,005 (0.3%)
+2025-09-22 20:36:28,750 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 20:36:28,753 - INFO -   Class ratios - Background: 0.979, PM: 0.018, NE: 0.003
+2025-09-22 20:36:28,754 - INFO -   Natural sampling - Background: 19,573, PM: 364, NE: 61
+2025-09-22 20:36:28,754 - INFO -   Total samples: 19,998 (0.01% of valid slice voxels)
+2025-09-22 20:36:28,755 - INFO -   Extracting features...
+2025-09-22 20:39:10,368 - INFO -   Collected 295035882 background, 5501713 PM, 928005 NE coordinates
+2025-09-22 20:40:22,217 - INFO -   ✓ Completed _0-3-1-SIM, collected 19998 samples
+2025-09-22 20:40:22,251 - INFO - Skipping _0-3-1-1-SIM: missing files ['pm_img', 'ne_img']
+2025-09-22 20:40:22,289 - INFO - Processing _0-3-3-SIM...
+2025-09-22 20:40:22,290 - INFO -   PM image: 20220909_0-3-3-SIM_Actin.tif
+2025-09-22 20:40:22,290 - INFO -   NE image: 20220909_0-3-3-SIM_N.tif
+2025-09-22 20:40:22,290 - INFO -   PM mask: 20220909_0-3-3-SIM_PM.mrc
+2025-09-22 20:40:22,290 - INFO -   NE mask: 20220909_0-3-3-SIM_N.mrc
+2025-09-22 20:40:39,924 - INFO -   PM image shape: (48, 2560, 2560), NE image shape: (48, 2560, 2560)
+2025-09-22 20:40:39,924 - INFO -   PM mask shape: (48, 2560, 2560), NE mask shape: (48, 2560, 2560)
+2025-09-22 20:40:53,214 - INFO -   PM mask unique values: [0 1]
+2025-09-22 20:40:53,215 - INFO -   NE mask unique values: [0 1]
+2025-09-22 20:41:21,336 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 20:41:21,612 - INFO -   Valid slices with annotations: 41/48
+2025-09-22 20:41:23,027 - INFO -   Total voxels in valid slices: 268,697,600
+2025-09-22 20:41:23,032 - INFO -   Background (0): 261,515,301 (97.3%)
+2025-09-22 20:41:23,033 - INFO -   PM (1): 5,575,005 (2.1%)
+2025-09-22 20:41:23,033 - INFO -   NE (2): 1,607,294 (0.6%)
+2025-09-22 20:41:23,033 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 20:41:23,037 - INFO -   Class ratios - Background: 0.973, PM: 0.021, NE: 0.006
+2025-09-22 20:41:23,037 - INFO -   Natural sampling - Background: 19,465, PM: 414, NE: 119
+2025-09-22 20:41:23,038 - INFO -   Total samples: 19,998 (0.01% of valid slice voxels)
+2025-09-22 20:41:23,038 - INFO -   Extracting features...
+2025-09-22 20:43:49,444 - INFO -   Collected 261515301 background, 5575005 PM, 1607294 NE coordinates
+2025-09-22 20:44:48,349 - INFO -   ✓ Completed _0-3-3-SIM, collected 19998 samples
+2025-09-22 20:44:48,379 - INFO - Processing _0-3-5-SIM...
+2025-09-22 20:44:48,380 - INFO -   PM image: 20220909_0-3-5-SIM_Actin.tif
+2025-09-22 20:44:48,380 - INFO -   NE image: 20220909_0-3-5-SIM_N.tif
+2025-09-22 20:44:48,380 - INFO -   PM mask: 20220909_0-3-5-SIM_PM.mrc
+2025-09-22 20:44:48,381 - INFO -   NE mask: 20220909_0-3-5-SIM_N.mrc
+2025-09-22 20:45:08,192 - INFO -   PM image shape: (52, 2560, 2560), NE image shape: (52, 2560, 2560)
+2025-09-22 20:45:08,194 - INFO -   PM mask shape: (52, 2560, 2560), NE mask shape: (52, 2560, 2560)
+2025-09-22 20:45:23,040 - INFO -   PM mask unique values: [0 1]
+2025-09-22 20:45:23,041 - INFO -   NE mask unique values: [0 1]
+2025-09-22 20:45:52,208 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 20:45:52,595 - INFO -   Valid slices with annotations: 38/52
+2025-09-22 20:45:53,855 - INFO -   Total voxels in valid slices: 249,036,800
+2025-09-22 20:45:53,860 - INFO -   Background (0): 242,467,846 (97.4%)
+2025-09-22 20:45:53,860 - INFO -   PM (1): 5,148,103 (2.1%)
+2025-09-22 20:45:53,861 - INFO -   NE (2): 1,420,851 (0.6%)
+2025-09-22 20:45:53,862 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 20:45:53,866 - INFO -   Class ratios - Background: 0.974, PM: 0.021, NE: 0.006
+2025-09-22 20:45:53,867 - INFO -   Natural sampling - Background: 19,472, PM: 413, NE: 114
+2025-09-22 20:45:53,868 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 20:45:53,869 - INFO -   Extracting features...
+2025-09-22 20:47:59,155 - INFO -   Collected 242467846 background, 5148103 PM, 1420851 NE coordinates
+2025-09-22 20:48:46,801 - INFO -   ✓ Completed _0-3-5-SIM, collected 19999 samples
+2025-09-22 20:48:46,806 - INFO - Skipping _0-4-1-1-SIM: missing files ['pm_img', 'ne_img']
+2025-09-22 20:48:46,809 - INFO - Processing _0-4-1-SIM...
+2025-09-22 20:48:46,809 - INFO -   PM image: 20220909_0-4-1-SIM_Actin.tif
+2025-09-22 20:48:46,810 - INFO -   NE image: 20220909_0-4-1-SIM_N.tif
+2025-09-22 20:48:46,810 - INFO -   PM mask: 20220909_0-4-1-SIM_PM.mrc
+2025-09-22 20:48:46,810 - INFO -   NE mask: 20220909_0-4-1-SIM_N.mrc
+2025-09-22 20:49:02,734 - INFO -   PM image shape: (43, 2560, 2560), NE image shape: (43, 2560, 2560)
+2025-09-22 20:49:02,734 - INFO -   PM mask shape: (43, 2560, 2560), NE mask shape: (43, 2560, 2560)
+2025-09-22 20:49:13,932 - INFO -   PM mask unique values: [0 1]
+2025-09-22 20:49:13,932 - INFO -   NE mask unique values: [0 1]
+2025-09-22 20:49:30,769 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 20:49:30,991 - INFO -   Valid slices with annotations: 31/43
+2025-09-22 20:49:31,931 - INFO -   Total voxels in valid slices: 203,161,600
+2025-09-22 20:49:31,932 - INFO -   Background (0): 198,313,772 (97.6%)
+2025-09-22 20:49:31,932 - INFO -   PM (1): 3,866,664 (1.9%)
+2025-09-22 20:49:31,933 - INFO -   NE (2): 981,164 (0.5%)
+2025-09-22 20:49:31,933 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 20:49:31,933 - INFO -   Class ratios - Background: 0.976, PM: 0.019, NE: 0.005
+2025-09-22 20:49:31,933 - INFO -   Natural sampling - Background: 19,522, PM: 380, NE: 96
+2025-09-22 20:49:31,933 - INFO -   Total samples: 19,998 (0.01% of valid slice voxels)
+2025-09-22 20:49:31,934 - INFO -   Extracting features...
+2025-09-22 20:51:12,568 - INFO -   Collected 198313772 background, 3866664 PM, 981164 NE coordinates
+2025-09-22 20:51:51,972 - INFO -   ✓ Completed _0-4-1-SIM, collected 19998 samples
+2025-09-22 20:51:51,979 - INFO - Processing _0-4-2-SIM...
+2025-09-22 20:51:51,979 - INFO -   PM image: 20220909_0-4-2-SIM_Actin.tif
+2025-09-22 20:51:51,979 - INFO -   NE image: 20220909_0-4-2-SIM_N.tif
+2025-09-22 20:51:51,979 - INFO -   PM mask: 20220909_0-4-2-SIM_PM.mrc
+2025-09-22 20:51:51,980 - INFO -   NE mask: 20220909_0-4-2-SIM_N.mrc
+2025-09-22 20:52:11,785 - INFO -   PM image shape: (58, 2560, 2560), NE image shape: (58, 2560, 2560)
+2025-09-22 20:52:11,786 - INFO -   PM mask shape: (58, 2560, 2560), NE mask shape: (58, 2560, 2560)
+2025-09-22 20:52:28,049 - INFO -   PM mask unique values: [0 1]
+2025-09-22 20:52:28,050 - INFO -   NE mask unique values: [0 1]
+2025-09-22 20:52:44,444 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 20:52:44,751 - INFO -   Valid slices with annotations: 46/58
+2025-09-22 20:52:46,237 - INFO -   Total voxels in valid slices: 301,465,600
+2025-09-22 20:52:46,237 - INFO -   Background (0): 295,935,828 (98.2%)
+2025-09-22 20:52:46,237 - INFO -   PM (1): 4,733,688 (1.6%)
+2025-09-22 20:52:46,238 - INFO -   NE (2): 796,084 (0.3%)
+2025-09-22 20:52:46,238 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 20:52:46,238 - INFO -   Class ratios - Background: 0.982, PM: 0.016, NE: 0.003
+2025-09-22 20:52:46,239 - INFO -   Natural sampling - Background: 19,633, PM: 314, NE: 52
+2025-09-22 20:52:46,240 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 20:52:46,240 - INFO -   Extracting features...
+2025-09-22 20:55:34,381 - INFO -   Collected 295935828 background, 4733688 PM, 796084 NE coordinates
+2025-09-22 20:58:02,309 - INFO -   ✓ Completed _0-4-2-SIM, collected 19999 samples
+2025-09-22 20:58:02,334 - INFO - Processing _5-2-1-SIM...
+2025-09-22 20:58:02,337 - INFO -   PM image: 20220909_5-2-1-SIM_Actin.tif
+2025-09-22 20:58:02,339 - INFO -   NE image: 20220909_5-2-1-SIM_N.tif
+2025-09-22 20:58:02,339 - INFO -   PM mask: 20220909_5-2-1-SIM_PM.mrc
+2025-09-22 20:58:02,340 - INFO -   NE mask: 20220909_5-2-1-SIM_N.mrc
+2025-09-22 20:58:15,681 - INFO -   PM image shape: (37, 2560, 2560), NE image shape: (37, 2560, 2560)
+2025-09-22 20:58:15,683 - INFO -   PM mask shape: (37, 2560, 2560), NE mask shape: (37, 2560, 2560)
+2025-09-22 20:58:25,787 - INFO -   PM mask unique values: [0 1]
+2025-09-22 20:58:25,788 - INFO -   NE mask unique values: [0 1]
+2025-09-22 20:58:35,546 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 20:58:35,757 - INFO -   Valid slices with annotations: 28/37
+2025-09-22 20:58:36,642 - INFO -   Total voxels in valid slices: 183,500,800
+2025-09-22 20:58:36,644 - INFO -   Background (0): 179,725,525 (97.9%)
+2025-09-22 20:58:36,644 - INFO -   PM (1): 3,363,387 (1.8%)
+2025-09-22 20:58:36,644 - INFO -   NE (2): 411,888 (0.2%)
+2025-09-22 20:58:36,645 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 20:58:36,645 - INFO -   Class ratios - Background: 0.979, PM: 0.018, NE: 0.002
+2025-09-22 20:58:36,645 - INFO -   Natural sampling - Background: 19,588, PM: 366, NE: 44
+2025-09-22 20:58:36,646 - INFO -   Total samples: 19,998 (0.01% of valid slice voxels)
+2025-09-22 20:58:36,646 - INFO -   Extracting features...
+2025-09-22 21:00:19,209 - INFO -   Collected 179725525 background, 3363387 PM, 411888 NE coordinates
+2025-09-22 21:00:52,037 - INFO -   ✓ Completed _5-2-1-SIM, collected 19998 samples
+2025-09-22 21:00:52,056 - INFO - Processing _5-2-2-SIM...
+2025-09-22 21:00:52,057 - INFO -   PM image: 20220909_5-2-2-SIM_Actin.tif
+2025-09-22 21:00:52,057 - INFO -   NE image: 20220909_5-2-2-SIM_N.tif
+2025-09-22 21:00:52,057 - INFO -   PM mask: 20220909_5-2-2-SIM_PM.mrc
+2025-09-22 21:00:52,057 - INFO -   NE mask: 20220909_5-2-2-SIM_N.mrc
+2025-09-22 21:01:14,935 - INFO -   PM image shape: (50, 2560, 2560), NE image shape: (50, 2560, 2560)
+2025-09-22 21:01:14,936 - INFO -   PM mask shape: (50, 2560, 2560), NE mask shape: (50, 2560, 2560)
+2025-09-22 21:01:30,424 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:01:30,425 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:01:49,579 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:01:50,006 - INFO -   Valid slices with annotations: 45/50
+2025-09-22 21:01:51,997 - INFO -   Total voxels in valid slices: 294,912,000
+2025-09-22 21:01:51,998 - INFO -   Background (0): 291,294,777 (98.8%)
+2025-09-22 21:01:51,998 - INFO -   PM (1): 3,058,797 (1.0%)
+2025-09-22 21:01:51,998 - INFO -   NE (2): 558,426 (0.2%)
+2025-09-22 21:01:51,999 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:01:51,999 - INFO -   Class ratios - Background: 0.988, PM: 0.010, NE: 0.002
+2025-09-22 21:01:51,999 - INFO -   Natural sampling - Background: 19,754, PM: 207, NE: 37
+2025-09-22 21:01:51,999 - INFO -   Total samples: 19,998 (0.01% of valid slice voxels)
+2025-09-22 21:01:52,000 - INFO -   Extracting features...
+2025-09-22 21:04:30,184 - INFO -   Collected 291294777 background, 3058797 PM, 558426 NE coordinates
+2025-09-22 21:05:43,583 - INFO -   ✓ Completed _5-2-2-SIM, collected 19998 samples
+2025-09-22 21:05:43,620 - INFO - Skipping _5-2-3-1-SIM: missing files ['pm_img', 'ne_img']
+2025-09-22 21:05:43,648 - INFO - Processing _5-2-3-SIM...
+2025-09-22 21:05:43,648 - INFO -   PM image: 20220909_5-2-3-SIM_Actin.tif
+2025-09-22 21:05:43,648 - INFO -   NE image: 20220909_5-2-3-SIM_N.tif
+2025-09-22 21:05:43,649 - INFO -   PM mask: 20220909_5-2-3-SIM_PM.mrc
+2025-09-22 21:05:43,649 - INFO -   NE mask: 20220909_5-2-3-SIM_N.mrc
+2025-09-22 21:05:56,845 - INFO -   PM image shape: (37, 2560, 2560), NE image shape: (37, 2560, 2560)
+2025-09-22 21:05:56,846 - INFO -   PM mask shape: (37, 2560, 2560), NE mask shape: (37, 2560, 2560)
+2025-09-22 21:06:07,224 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:06:07,224 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:06:17,607 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:06:17,806 - INFO -   Valid slices with annotations: 31/37
+2025-09-22 21:06:18,794 - INFO -   Total voxels in valid slices: 203,161,600
+2025-09-22 21:06:18,795 - INFO -   Background (0): 199,589,673 (98.2%)
+2025-09-22 21:06:18,796 - INFO -   PM (1): 2,859,820 (1.4%)
+2025-09-22 21:06:18,796 - INFO -   NE (2): 712,107 (0.4%)
+2025-09-22 21:06:18,796 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:06:18,797 - INFO -   Class ratios - Background: 0.982, PM: 0.014, NE: 0.004
+2025-09-22 21:06:18,797 - INFO -   Natural sampling - Background: 19,648, PM: 281, NE: 70
+2025-09-22 21:06:18,798 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 21:06:18,798 - INFO -   Extracting features...
+2025-09-22 21:08:07,796 - INFO -   Collected 199589673 background, 2859820 PM, 712107 NE coordinates
+2025-09-22 21:08:47,916 - INFO -   ✓ Completed _5-2-3-SIM, collected 19999 samples
+2025-09-22 21:08:47,919 - INFO - Processing _5-3-2-SIM...
+2025-09-22 21:08:47,919 - INFO -   PM image: 20220909_5-3-2-SIM_Actin.tif
+2025-09-22 21:08:47,920 - INFO -   NE image: 20220909_5-3-2-SIM_N.tif
+2025-09-22 21:08:47,920 - INFO -   PM mask: 20220909_5-3-2-SIM_PM.mrc
+2025-09-22 21:08:47,920 - INFO -   NE mask: 20220909_5-3-2-SIM_N.mrc
+2025-09-22 21:09:06,770 - INFO -   PM image shape: (48, 2560, 2560), NE image shape: (48, 2560, 2560)
+2025-09-22 21:09:06,770 - INFO -   PM mask shape: (48, 2560, 2560), NE mask shape: (48, 2560, 2560)
+2025-09-22 21:09:19,865 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:09:19,866 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:09:32,480 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:09:32,709 - INFO -   Valid slices with annotations: 36/48
+2025-09-22 21:09:33,794 - INFO -   Total voxels in valid slices: 235,929,600
+2025-09-22 21:09:33,794 - INFO -   Background (0): 228,716,264 (96.9%)
+2025-09-22 21:09:33,794 - INFO -   PM (1): 5,440,829 (2.3%)
+2025-09-22 21:09:33,795 - INFO -   NE (2): 1,772,507 (0.8%)
+2025-09-22 21:09:33,795 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:09:33,795 - INFO -   Class ratios - Background: 0.969, PM: 0.023, NE: 0.008
+2025-09-22 21:09:33,795 - INFO -   Natural sampling - Background: 19,388, PM: 461, NE: 150
+2025-09-22 21:09:33,795 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 21:09:33,795 - INFO -   Extracting features...
+2025-09-22 21:11:24,169 - INFO -   Collected 228716264 background, 5440829 PM, 1772507 NE coordinates
+2025-09-22 21:12:10,008 - INFO -   ✓ Completed _5-3-2-SIM, collected 19999 samples
+2025-09-22 21:12:10,011 - INFO - Processing _5-3-3-SIM...
+2025-09-22 21:12:10,011 - INFO -   PM image: 20220909_5-3-3-SIM_Actin.tif
+2025-09-22 21:12:10,012 - INFO -   NE image: 20220909_5-3-3-SIM_N.tif
+2025-09-22 21:12:10,012 - INFO -   PM mask: 20220909_5-3-3-SIM_PM.mrc
+2025-09-22 21:12:10,012 - INFO -   NE mask: 20220909_5-3-3-SIM_N.mrc
+2025-09-22 21:12:30,245 - INFO -   PM image shape: (54, 2560, 2560), NE image shape: (54, 2560, 2560)
+2025-09-22 21:12:30,245 - INFO -   PM mask shape: (54, 2560, 2560), NE mask shape: (54, 2560, 2560)
+2025-09-22 21:12:45,411 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:12:45,412 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:13:02,038 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:13:02,307 - INFO -   Valid slices with annotations: 36/54
+2025-09-22 21:13:03,449 - INFO -   Total voxels in valid slices: 235,929,600
+2025-09-22 21:13:03,450 - INFO -   Background (0): 229,679,838 (97.4%)
+2025-09-22 21:13:03,450 - INFO -   PM (1): 4,692,886 (2.0%)
+2025-09-22 21:13:03,451 - INFO -   NE (2): 1,556,876 (0.7%)
+2025-09-22 21:13:03,451 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:13:03,451 - INFO -   Class ratios - Background: 0.974, PM: 0.020, NE: 0.007
+2025-09-22 21:13:03,452 - INFO -   Natural sampling - Background: 19,470, PM: 397, NE: 131
+2025-09-22 21:13:03,453 - INFO -   Total samples: 19,998 (0.01% of valid slice voxels)
+2025-09-22 21:13:03,453 - INFO -   Extracting features...
+2025-09-22 21:14:54,032 - INFO -   Collected 229679838 background, 4692886 PM, 1556876 NE coordinates
+2025-09-22 21:15:36,487 - INFO -   ✓ Completed _5-3-3-SIM, collected 19998 samples
+2025-09-22 21:15:36,504 - INFO - Skipping _5-3-4-1-SIM: missing files ['pm_img', 'ne_img']
+2025-09-22 21:15:36,507 - INFO - Processing _5-3-4-SIM...
+2025-09-22 21:15:36,507 - INFO -   PM image: 20220909_5-3-4-SIM_Actin.tif
+2025-09-22 21:15:36,508 - INFO -   NE image: 20220909_5-3-4-SIM_N.tif
+2025-09-22 21:15:36,508 - INFO -   PM mask: 20220909_5-3-4-SIM_PM.mrc
+2025-09-22 21:15:36,508 - INFO -   NE mask: 20220909_5-3-4-SIM_N.mrc
+2025-09-22 21:15:58,159 - INFO -   PM image shape: (58, 2560, 2560), NE image shape: (58, 2560, 2560)
+2025-09-22 21:15:58,159 - INFO -   PM mask shape: (58, 2560, 2560), NE mask shape: (58, 2560, 2560)
+2025-09-22 21:16:14,131 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:16:14,132 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:16:38,602 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:16:38,870 - INFO -   Valid slices with annotations: 50/58
+2025-09-22 21:16:40,466 - INFO -   Total voxels in valid slices: 327,680,000
+2025-09-22 21:16:40,467 - INFO -   Background (0): 319,353,875 (97.5%)
+2025-09-22 21:16:40,467 - INFO -   PM (1): 6,678,030 (2.0%)
+2025-09-22 21:16:40,467 - INFO -   NE (2): 1,648,095 (0.5%)
+2025-09-22 21:16:40,467 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:16:40,468 - INFO -   Class ratios - Background: 0.975, PM: 0.020, NE: 0.005
+2025-09-22 21:16:40,469 - INFO -   Natural sampling - Background: 19,491, PM: 407, NE: 100
+2025-09-22 21:16:40,470 - INFO -   Total samples: 19,998 (0.01% of valid slice voxels)
+2025-09-22 21:16:40,470 - INFO -   Extracting features...
+2025-09-22 21:19:43,380 - INFO -   Collected 319353875 background, 6678030 PM, 1648095 NE coordinates
+2025-09-22 21:23:03,094 - INFO -   ✓ Completed _5-3-4-SIM, collected 19998 samples
+2025-09-22 21:23:03,315 - INFO - Processing _30-2-1-SIM...
+2025-09-22 21:23:03,316 - INFO -   PM image: 20220909_30-2-1-SIM_Actin.tif
+2025-09-22 21:23:03,316 - INFO -   NE image: 20220909_30-2-1-SIM_N.tif
+2025-09-22 21:23:03,316 - INFO -   PM mask: 20220909_30-2-1-SIM_PM.mrc
+2025-09-22 21:23:03,317 - INFO -   NE mask: 20220909_30-2-1-SIM_N.mrc
+2025-09-22 21:23:34,575 - INFO -   PM image shape: (52, 2560, 2560), NE image shape: (52, 2560, 2560)
+2025-09-22 21:23:34,576 - INFO -   PM mask shape: (52, 2560, 2560), NE mask shape: (52, 2560, 2560)
+2025-09-22 21:23:50,047 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:23:50,047 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:24:05,784 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:24:06,232 - INFO -   Valid slices with annotations: 39/52
+2025-09-22 21:24:07,546 - INFO -   Total voxels in valid slices: 255,590,400
+2025-09-22 21:24:07,546 - INFO -   Background (0): 251,347,362 (98.3%)
+2025-09-22 21:24:07,546 - INFO -   PM (1): 3,290,692 (1.3%)
+2025-09-22 21:24:07,547 - INFO -   NE (2): 952,346 (0.4%)
+2025-09-22 21:24:07,547 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:24:07,549 - INFO -   Class ratios - Background: 0.983, PM: 0.013, NE: 0.004
+2025-09-22 21:24:07,550 - INFO -   Natural sampling - Background: 19,667, PM: 257, NE: 74
+2025-09-22 21:24:07,551 - INFO -   Total samples: 19,998 (0.01% of valid slice voxels)
+2025-09-22 21:24:07,551 - INFO -   Extracting features...
+2025-09-22 21:26:49,617 - INFO -   Collected 251347362 background, 3290692 PM, 952346 NE coordinates
+2025-09-22 21:27:45,881 - INFO -   ✓ Completed _30-2-1-SIM, collected 19998 samples
+2025-09-22 21:27:46,335 - INFO - Processing _30-2-2-SIM...
+2025-09-22 21:27:46,336 - INFO -   PM image: 20220909_30-2-2-SIM_Actin.tif
+2025-09-22 21:27:46,336 - INFO -   NE image: 20220909_30-2-2-SIM_N.tif
+2025-09-22 21:27:46,337 - INFO -   PM mask: 20220909_30-2-2-SIM_PM.mrc
+2025-09-22 21:27:46,337 - INFO -   NE mask: 20220909_30-2-2-SIM_N.mrc
+2025-09-22 21:28:08,646 - INFO -   PM image shape: (48, 2560, 2560), NE image shape: (48, 2560, 2560)
+2025-09-22 21:28:08,666 - INFO -   PM mask shape: (48, 2560, 2560), NE mask shape: (48, 2560, 2560)
+2025-09-22 21:28:22,686 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:28:22,686 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:28:37,612 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:28:37,883 - INFO -   Valid slices with annotations: 39/48
+2025-09-22 21:28:39,207 - INFO -   Total voxels in valid slices: 255,590,400
+2025-09-22 21:28:39,208 - INFO -   Background (0): 250,407,919 (98.0%)
+2025-09-22 21:28:39,208 - INFO -   PM (1): 3,898,879 (1.5%)
+2025-09-22 21:28:39,208 - INFO -   NE (2): 1,283,602 (0.5%)
+2025-09-22 21:28:39,208 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:28:39,211 - INFO -   Class ratios - Background: 0.980, PM: 0.015, NE: 0.005
+2025-09-22 21:28:39,211 - INFO -   Natural sampling - Background: 19,594, PM: 305, NE: 100
+2025-09-22 21:28:39,211 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 21:28:39,212 - INFO -   Extracting features...
+2025-09-22 21:31:12,520 - INFO -   Collected 250407919 background, 3898879 PM, 1283602 NE coordinates
+2025-09-22 21:32:15,808 - INFO -   ✓ Completed _30-2-2-SIM, collected 19999 samples
+2025-09-22 21:32:15,843 - INFO - Processing _30-2-3-SIM...
+2025-09-22 21:32:15,845 - INFO -   PM image: 20220909_30-2-3-SIM_Actin.tif
+2025-09-22 21:32:15,847 - INFO -   NE image: 20220909_30-2-3-SIM_N.tif
+2025-09-22 21:32:15,847 - INFO -   PM mask: 20220909_30-2-3-SIM_PM.mrc
+2025-09-22 21:32:15,848 - INFO -   NE mask: 20220909_30-2-3-SIM_N.mrc
+2025-09-22 21:32:37,586 - INFO -   PM image shape: (55, 2560, 2560), NE image shape: (55, 2560, 2560)
+2025-09-22 21:32:37,589 - INFO -   PM mask shape: (55, 2560, 2560), NE mask shape: (55, 2560, 2560)
+2025-09-22 21:32:52,280 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:32:52,281 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:33:11,701 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:33:12,074 - INFO -   Valid slices with annotations: 41/55
+2025-09-22 21:33:13,721 - INFO -   Total voxels in valid slices: 268,697,600
+2025-09-22 21:33:13,721 - INFO -   Background (0): 261,207,117 (97.2%)
+2025-09-22 21:33:13,722 - INFO -   PM (1): 5,398,972 (2.0%)
+2025-09-22 21:33:13,722 - INFO -   NE (2): 2,091,511 (0.8%)
+2025-09-22 21:33:13,722 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:33:13,723 - INFO -   Class ratios - Background: 0.972, PM: 0.020, NE: 0.008
+2025-09-22 21:33:13,723 - INFO -   Natural sampling - Background: 19,442, PM: 401, NE: 155
+2025-09-22 21:33:13,724 - INFO -   Total samples: 19,998 (0.01% of valid slice voxels)
+2025-09-22 21:33:13,724 - INFO -   Extracting features...
+2025-09-22 21:35:31,453 - INFO -   Collected 261207117 background, 5398972 PM, 2091511 NE coordinates
+2025-09-22 21:36:35,765 - INFO -   ✓ Completed _30-2-3-SIM, collected 19998 samples
+2025-09-22 21:36:39,966 - INFO - Processing _30-2-4-SIM...
+2025-09-22 21:36:39,969 - INFO -   PM image: 20220909_30-2-4-SIM_Actin.tif
+2025-09-22 21:36:39,977 - INFO -   NE image: 20220909_30-2-4-SIM_N.tif
+2025-09-22 21:36:39,977 - INFO -   PM mask: 20220909_30-2-4-SIM_PM.mrc
+2025-09-22 21:36:39,978 - INFO -   NE mask: 20220909_30-2-4-SIM_N.mrc
+2025-09-22 21:37:03,569 - INFO -   PM image shape: (52, 2560, 2560), NE image shape: (52, 2560, 2560)
+2025-09-22 21:37:03,570 - INFO -   PM mask shape: (52, 2560, 2560), NE mask shape: (52, 2560, 2560)
+2025-09-22 21:37:17,944 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:37:17,945 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:37:32,550 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:37:32,722 - INFO -   Valid slices with annotations: 41/52
+2025-09-22 21:37:33,858 - INFO -   Total voxels in valid slices: 268,697,600
+2025-09-22 21:37:33,858 - INFO -   Background (0): 258,158,347 (96.1%)
+2025-09-22 21:37:33,858 - INFO -   PM (1): 7,755,971 (2.9%)
+2025-09-22 21:37:33,858 - INFO -   NE (2): 2,783,282 (1.0%)
+2025-09-22 21:37:33,859 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:37:34,002 - INFO -   Class ratios - Background: 0.961, PM: 0.029, NE: 0.010
+2025-09-22 21:37:34,003 - INFO -   Natural sampling - Background: 19,215, PM: 577, NE: 207
+2025-09-22 21:37:34,003 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 21:37:34,003 - INFO -   Extracting features...
+2025-09-22 21:39:50,476 - INFO -   Collected 258158347 background, 7755971 PM, 2783282 NE coordinates
+2025-09-22 21:40:39,759 - INFO -   ✓ Completed _30-2-4-SIM, collected 19999 samples
+2025-09-22 21:40:39,796 - INFO - Processing _30-3-2-SIM...
+2025-09-22 21:40:39,810 - INFO -   PM image: 20220909_30-3-2-SIM_Actin.tif
+2025-09-22 21:40:39,911 - INFO -   NE image: 20220909_30-3-2-SIM_N.tif
+2025-09-22 21:40:39,987 - INFO -   PM mask: 20220909_30-3-2-SIM_PM.mrc
+2025-09-22 21:40:39,993 - INFO -   NE mask: 20220909_30-3-2-SIM_N.mrc
+2025-09-22 21:41:00,292 - INFO -   PM image shape: (58, 2560, 2560), NE image shape: (58, 2560, 2560)
+2025-09-22 21:41:00,292 - INFO -   PM mask shape: (58, 2560, 2560), NE mask shape: (58, 2560, 2560)
+2025-09-22 21:41:16,105 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:41:16,106 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:41:32,407 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:41:32,672 - INFO -   Valid slices with annotations: 46/58
+2025-09-22 21:41:34,103 - INFO -   Total voxels in valid slices: 301,465,600
+2025-09-22 21:41:34,104 - INFO -   Background (0): 292,589,098 (97.1%)
+2025-09-22 21:41:34,105 - INFO -   PM (1): 6,995,172 (2.3%)
+2025-09-22 21:41:34,105 - INFO -   NE (2): 1,881,330 (0.6%)
+2025-09-22 21:41:34,105 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:41:34,105 - INFO -   Class ratios - Background: 0.971, PM: 0.023, NE: 0.006
+2025-09-22 21:41:34,105 - INFO -   Natural sampling - Background: 19,411, PM: 464, NE: 124
+2025-09-22 21:41:34,105 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 21:41:34,106 - INFO -   Extracting features...
+2025-09-22 21:43:52,081 - INFO -   Collected 292589098 background, 6995172 PM, 1881330 NE coordinates
+2025-09-22 21:44:58,757 - INFO -   ✓ Completed _30-3-2-SIM, collected 19999 samples
+2025-09-22 21:44:58,806 - INFO - Processing _30-3-3-SIM...
+2025-09-22 21:44:58,807 - INFO -   PM image: 20220909_30-3-3-SIM_Actin.tif
+2025-09-22 21:44:58,807 - INFO -   NE image: 20220909_30-3-3-SIM_N.tif
+2025-09-22 21:44:58,807 - INFO -   PM mask: 20220909_30-3-3-SIM_PM.mrc
+2025-09-22 21:44:58,807 - INFO -   NE mask: 20220909_30-3-3-SIM_N.mrc
+2025-09-22 21:45:14,962 - INFO -   PM image shape: (45, 2560, 2560), NE image shape: (45, 2560, 2560)
+2025-09-22 21:45:14,962 - INFO -   PM mask shape: (45, 2560, 2560), NE mask shape: (45, 2560, 2560)
+2025-09-22 21:45:27,808 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:45:27,808 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:45:55,374 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:45:55,698 - INFO -   Valid slices with annotations: 31/45
+2025-09-22 21:45:56,699 - INFO -   Total voxels in valid slices: 203,161,600
+2025-09-22 21:45:56,701 - INFO -   Background (0): 198,085,731 (97.5%)
+2025-09-22 21:45:56,701 - INFO -   PM (1): 4,311,370 (2.1%)
+2025-09-22 21:45:56,701 - INFO -   NE (2): 764,499 (0.4%)
+2025-09-22 21:45:56,701 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:45:56,702 - INFO -   Class ratios - Background: 0.975, PM: 0.021, NE: 0.004
+2025-09-22 21:45:56,702 - INFO -   Natural sampling - Background: 19,500, PM: 424, NE: 75
+2025-09-22 21:45:56,702 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 21:45:56,702 - INFO -   Extracting features...
+2025-09-22 21:47:53,030 - INFO -   Collected 198085731 background, 4311370 PM, 764499 NE coordinates
+2025-09-22 21:48:38,423 - INFO -   ✓ Completed _30-3-3-SIM, collected 19999 samples
+2025-09-22 21:48:38,452 - INFO - Processing _30-4-1-SIM...
+2025-09-22 21:48:38,453 - INFO -   PM image: 20220909_30-4-1-SIM_Actin.tif
+2025-09-22 21:48:38,455 - INFO -   NE image: 20220909_30-4-1-SIM_N.tif
+2025-09-22 21:48:38,456 - INFO -   PM mask: 20220909_30-4-1-SIM_PM.mrc
+2025-09-22 21:48:38,461 - INFO -   NE mask: 20220909_30-4-1-SIM_N.mrc
+2025-09-22 21:48:56,654 - INFO -   PM image shape: (49, 2560, 2560), NE image shape: (49, 2560, 2560)
+2025-09-22 21:48:56,655 - INFO -   PM mask shape: (49, 2560, 2560), NE mask shape: (49, 2560, 2560)
+2025-09-22 21:49:12,338 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:49:12,339 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:49:28,080 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:49:28,365 - INFO -   Valid slices with annotations: 41/49
+2025-09-22 21:49:29,898 - INFO -   Total voxels in valid slices: 268,697,600
+2025-09-22 21:49:29,899 - INFO -   Background (0): 262,736,700 (97.8%)
+2025-09-22 21:49:29,899 - INFO -   PM (1): 4,583,413 (1.7%)
+2025-09-22 21:49:29,899 - INFO -   NE (2): 1,377,487 (0.5%)
+2025-09-22 21:49:29,899 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:49:29,900 - INFO -   Class ratios - Background: 0.978, PM: 0.017, NE: 0.005
+2025-09-22 21:49:29,900 - INFO -   Natural sampling - Background: 19,556, PM: 341, NE: 102
+2025-09-22 21:49:29,900 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 21:49:29,900 - INFO -   Extracting features...
+2025-09-22 21:52:04,302 - INFO -   Collected 262736700 background, 4583413 PM, 1377487 NE coordinates
+2025-09-22 21:53:26,408 - INFO -   ✓ Completed _30-4-1-SIM, collected 19999 samples
+2025-09-22 21:53:29,811 - INFO - Processing _30-4-3-SIM...
+2025-09-22 21:53:29,812 - INFO -   PM image: 20220909_30-4-3-SIM_Actin.tif
+2025-09-22 21:53:29,815 - INFO -   NE image: 20220909_30-4-3-SIM_N.tif
+2025-09-22 21:53:29,815 - INFO -   PM mask: 20220909_30-4-3-SIM_PM.mrc
+2025-09-22 21:53:29,816 - INFO -   NE mask: 20220909_30-4-3-SIM_N.mrc
+2025-09-22 21:53:48,488 - INFO -   PM image shape: (49, 2560, 2560), NE image shape: (49, 2560, 2560)
+2025-09-22 21:53:48,500 - INFO -   PM mask shape: (49, 2560, 2560), NE mask shape: (49, 2560, 2560)
+2025-09-22 21:54:04,182 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:54:04,183 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:54:17,797 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:54:18,075 - INFO -   Valid slices with annotations: 41/49
+2025-09-22 21:54:19,465 - INFO -   Total voxels in valid slices: 268,697,600
+2025-09-22 21:54:19,465 - INFO -   Background (0): 262,639,536 (97.7%)
+2025-09-22 21:54:19,465 - INFO -   PM (1): 4,596,108 (1.7%)
+2025-09-22 21:54:19,465 - INFO -   NE (2): 1,461,956 (0.5%)
+2025-09-22 21:54:19,466 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:54:19,467 - INFO -   Class ratios - Background: 0.977, PM: 0.017, NE: 0.005
+2025-09-22 21:54:19,468 - INFO -   Natural sampling - Background: 19,549, PM: 342, NE: 108
+2025-09-22 21:54:19,468 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 21:54:19,468 - INFO -   Extracting features...
+2025-09-22 21:56:43,262 - INFO -   Collected 262639536 background, 4596108 PM, 1461956 NE coordinates
+2025-09-22 21:58:10,262 - INFO -   ✓ Completed _30-4-3-SIM, collected 19999 samples
+2025-09-22 21:58:10,860 - INFO - Processing _30-4-4-SIM...
+2025-09-22 21:58:10,861 - INFO -   PM image: 20220909_30-4-4-SIM_Actin.tif
+2025-09-22 21:58:10,861 - INFO -   NE image: 20220909_30-4-4-SIM_N.tif
+2025-09-22 21:58:10,861 - INFO -   PM mask: 20220909_30-4-4-SIM_PM.mrc
+2025-09-22 21:58:10,862 - INFO -   NE mask: 20220909_30-4-4-SIM_N.mrc
+2025-09-22 21:58:42,204 - INFO -   PM image shape: (50, 2560, 2560), NE image shape: (50, 2560, 2560)
+2025-09-22 21:58:42,207 - INFO -   PM mask shape: (50, 2560, 2560), NE mask shape: (50, 2560, 2560)
+2025-09-22 21:58:58,154 - INFO -   PM mask unique values: [0 1]
+2025-09-22 21:58:58,154 - INFO -   NE mask unique values: [0 1]
+2025-09-22 21:59:11,732 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 21:59:12,026 - INFO -   Valid slices with annotations: 41/50
+2025-09-22 21:59:13,581 - INFO -   Total voxels in valid slices: 268,697,600
+2025-09-22 21:59:13,581 - INFO -   Background (0): 262,143,979 (97.6%)
+2025-09-22 21:59:13,581 - INFO -   PM (1): 5,029,671 (1.9%)
+2025-09-22 21:59:13,582 - INFO -   NE (2): 1,523,950 (0.6%)
+2025-09-22 21:59:13,582 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 21:59:13,582 - INFO -   Class ratios - Background: 0.976, PM: 0.019, NE: 0.006
+2025-09-22 21:59:13,583 - INFO -   Natural sampling - Background: 19,512, PM: 374, NE: 113
+2025-09-22 21:59:13,583 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 21:59:13,583 - INFO -   Extracting features...
+2025-09-22 22:01:48,419 - INFO -   Collected 262143979 background, 5029671 PM, 1523950 NE coordinates
+2025-09-22 22:03:07,292 - INFO -   ✓ Completed _30-4-4-SIM, collected 19999 samples
+2025-09-22 22:03:13,150 - INFO - Processing _30-4-5-SIM...
+2025-09-22 22:03:13,151 - INFO -   PM image: 20220909_30-4-5-SIM_Actin.tif
+2025-09-22 22:03:13,151 - INFO -   NE image: 20220909_30-4-5-SIM_N.tif
+2025-09-22 22:03:13,151 - INFO -   PM mask: 20220909_30-4-5-SIM_PM.mrc
+2025-09-22 22:03:13,152 - INFO -   NE mask: 20220909_30-4-5-SIM_N.mrc
+2025-09-22 22:03:35,253 - INFO -   PM image shape: (47, 2560, 2560), NE image shape: (47, 2560, 2560)
+2025-09-22 22:03:35,254 - INFO -   PM mask shape: (47, 2560, 2560), NE mask shape: (47, 2560, 2560)
+2025-09-22 22:03:48,517 - INFO -   PM mask unique values: [0 1]
+2025-09-22 22:03:48,518 - INFO -   NE mask unique values: [0 1]
+2025-09-22 22:04:00,604 - INFO -   Combined mask unique values: [0 1 2]
+2025-09-22 22:04:00,867 - INFO -   Valid slices with annotations: 41/47
+2025-09-22 22:04:02,219 - INFO -   Total voxels in valid slices: 268,697,600
+2025-09-22 22:04:02,223 - INFO -   Background (0): 264,377,746 (98.4%)
+2025-09-22 22:04:02,223 - INFO -   PM (1): 3,430,369 (1.3%)
+2025-09-22 22:04:02,224 - INFO -   NE (2): 889,485 (0.3%)
+2025-09-22 22:04:02,224 - INFO -   Using NATURAL sampling - preserving 3-class distribution
+2025-09-22 22:04:02,227 - INFO -   Class ratios - Background: 0.984, PM: 0.013, NE: 0.003
+2025-09-22 22:04:02,228 - INFO -   Natural sampling - Background: 19,678, PM: 255, NE: 66
+2025-09-22 22:04:02,228 - INFO -   Total samples: 19,999 (0.01% of valid slice voxels)
+2025-09-22 22:04:02,228 - INFO -   Extracting features...
+2025-09-22 22:06:09,257 - INFO -   Collected 264377746 background, 3430369 PM, 889485 NE coordinates
+2025-09-22 22:07:05,112 - INFO -   ✓ Completed _30-4-5-SIM, collected 19999 samples
+2025-09-22 22:07:10,897 - INFO - Checking for invalid values in features...
+2025-09-22 22:07:11,010 - INFO - Final dataset info:
+2025-09-22 22:07:11,012 - INFO -   Valid IDs: 23
+2025-09-22 22:07:11,012 - INFO -   Total samples: 459967
+2025-09-22 22:07:11,013 - INFO -   Feature dimensions: 22
+2025-09-22 22:07:11,053 - INFO -   Label distribution: [449200   8505   2262]
+2025-09-22 22:07:11,076 - INFO - Unique labels before split: [0 1 2]
+2025-09-22 22:07:11,655 - INFO - 
+Data split:
+2025-09-22 22:07:11,660 - INFO -   Training samples: 367,973
+2025-09-22 22:07:11,661 - INFO -   Test samples: 91,994
+2025-09-22 22:07:11,664 - INFO -   Training label distribution: [359359   6804   1810]
+2025-09-22 22:07:11,665 - INFO -   Test label distribution: [89841  1701   452]
+2025-09-22 22:07:11,666 - INFO - Training Random Forest...
+2025-09-22 22:07:47,642 - INFO - Training completed in 35.98s
+2025-09-22 22:07:47,642 - INFO - 
+Evaluating model...
+2025-09-22 22:07:49,522 - INFO - Training Accuracy: 0.9880
+2025-09-22 22:07:49,523 - INFO - Test Accuracy: 0.9823
+2025-09-22 22:07:52,141 - INFO - AUC Scores (One-vs-Rest):
+2025-09-22 22:07:52,142 - INFO -   Background: Train=0.9904, Test=0.9775
+2025-09-22 22:07:52,142 - INFO -   PM: Train=0.9901, Test=0.9758
+2025-09-22 22:07:52,142 - INFO -   NE: Train=0.9943, Test=0.9771
+2025-09-22 22:07:52,142 - INFO - Macro-average AUC: Train=0.9916, Test=0.9768
+2025-09-22 22:07:52,143 - INFO - 
+Classification Report (Test Set):
+2025-09-22 22:07:52,269 - INFO -               precision    recall  f1-score   support
+
+  Background       0.99      1.00      0.99     89841
+          PM       0.67      0.45      0.54      1701
+          NE       0.71      0.10      0.18       452
+
+    accuracy                           0.98     91994
+   macro avg       0.79      0.52      0.57     91994
+weighted avg       0.98      0.98      0.98     91994
+
+2025-09-22 22:07:52,273 - INFO - 
+Confusion Matrix (Test Set):
+2025-09-22 22:07:52,286 - INFO - Confusion Matrix:
+[[89556   280     5]
+ [  920   767    14]
+ [  311    95    46]]
+2025-09-22 22:07:52,345 - INFO - 
+Feature Importance:
+2025-09-22 22:07:52,346 - INFO -   pm_patch_max: 0.1565
+2025-09-22 22:07:52,347 - INFO -   pm_patch_mean: 0.1068
+2025-09-22 22:07:52,348 - INFO -   pm_intensity: 0.0995
+2025-09-22 22:07:52,348 - INFO -   pm_patch_std: 0.0937
+2025-09-22 22:07:52,349 - INFO -   norm_x: 0.0809
+2025-09-22 22:07:52,349 - INFO -   pm_patch_min: 0.0800
+2025-09-22 22:07:52,349 - INFO -   norm_y: 0.0603
+2025-09-22 22:07:52,350 - INFO -   norm_z: 0.0466
+2025-09-22 22:07:52,350 - INFO -   intensity_diff: 0.0417
+2025-09-22 22:07:52,350 - INFO -   pm_grad_z: 0.0314

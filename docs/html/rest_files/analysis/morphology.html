@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morphology Analysis &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Distribution Analysis" href="distribution.html" />
+    <link rel="prev" title="Analysis Module" href="analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/data_loader.html">Data loader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="analysis.html">Analysis Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="analysis.html#sub-modules">Sub-modules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Morphology Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#usage-examples">Usage Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="distribution.html">Distribution Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interaction.html">Interaction Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamics.html">Dynamics Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="analysis.html">Analysis Module</a></li>
+      <li class="breadcrumb-item active">Morphology Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/rest_files/analysis/morphology.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="morphology-analysis">
+<h1>Morphology Analysis<a class="headerlink" href="#morphology-analysis" title="Permalink to this heading"></a></h1>
+<p>The morphology module provides tools for analyzing cellular and subcellular structure morphological features.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>This module contains specialized morphological analysis functions for different imaging modalities:</p>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
+<section id="actin-analysis">
+<h3>Actin Analysis<a class="headerlink" href="#actin-analysis" title="Permalink to this heading"></a></h3>
+</section>
+<section id="isg-feature-extraction">
+<h3>ISG Feature Extraction<a class="headerlink" href="#isg-feature-extraction" title="Permalink to this heading"></a></h3>
+</section>
+</section>
+<section id="usage-examples">
+<h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Permalink to this heading"></a></h2>
+<section id="actin-network-analysis">
+<h3>Actin Network Analysis<a class="headerlink" href="#actin-network-analysis" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ipa.analysis</span> <span class="kn">import</span> <span class="n">actin_to_actin_analysis</span>
+
+<span class="c1"># Configuration for Cryo-ET analysis</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;voxel_size_xyz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">13.412</span><span class="p">,</span> <span class="mf">13.412</span><span class="p">,</span> <span class="mf">13.412</span><span class="p">],</span>
+    <span class="s1">&#39;shift_bias&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">3046.30</span><span class="p">,</span> <span class="mf">3214.95</span><span class="p">,</span> <span class="o">-</span><span class="mf">6171.17</span><span class="p">],</span>
+    <span class="s1">&#39;visualization&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;save_intermediate&#39;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">}</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">actin_to_actin_analysis</span><span class="p">(</span>
+    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;20220326_2.8_2&quot;</span><span class="p">,</span>
+    <span class="n">mask_file</span><span class="o">=</span><span class="s2">&quot;vesicle_mask.mrc&quot;</span><span class="p">,</span>
+    <span class="n">actin_file</span><span class="o">=</span><span class="s2">&quot;actin_points.json&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="isg-morphological-analysis">
+<h3>ISG Morphological Analysis<a class="headerlink" href="#isg-morphological-analysis" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ipa.analysis</span> <span class="kn">import</span> <span class="n">extract_isg_features</span>
+<span class="kn">from</span> <span class="nn">ipa.data_loader</span> <span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load ISG image data</span>
+<span class="n">img_isg</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;isg_data.tif&quot;</span><span class="p">)</span>
+
+<span class="c1"># Extract features</span>
+<span class="n">df_results</span><span class="p">,</span> <span class="n">segmented_labels</span> <span class="o">=</span> <span class="n">extract_isg_features</span><span class="p">(</span>
+    <span class="n">img_isg</span><span class="p">,</span>
+    <span class="n">min_distance</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">min_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">save_csv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">output_path</span><span class="o">=</span><span class="s2">&quot;isg_features.csv&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="analysis.html" class="btn btn-neutral float-left" title="Analysis Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="distribution.html" class="btn btn-neutral float-right" title="Distribution Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

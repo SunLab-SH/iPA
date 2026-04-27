@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cryo-ET Segmentation &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="SIM/WFM Segmentation" href="sim_wfm_segmentation.html" />
+    <link rel="prev" title="SXT Segmentation" href="sxt_segmentation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/data_loader.html">Data loader Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../processing.html">Processing Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../denoising.html">Denoising Module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="segmentation.html">Segmentation Module</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#overview">Overview</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="segmentation.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sxt_segmentation.html">SXT Segmentation</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Cryo-ET Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sim_wfm_segmentation.html">SIM/WFM Segmentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../partitioning.html">Partitioning Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis/analysis.html">Analysis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../processing.html">Processing Module</a></li>
+          <li class="breadcrumb-item"><a href="segmentation.html">Segmentation Module</a></li>
+      <li class="breadcrumb-item active">Cryo-ET Segmentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/rest_files/processing/segmentation/et_segmentation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cryo-et-segmentation">
+<h1>Cryo-ET Segmentation<a class="headerlink" href="#cryo-et-segmentation" title="Permalink to this heading"></a></h1>
+<p>Cryo-Electron Tomography (cryo-ET) segmentation module provides specialized tools for identifying and segmenting cellular structures in cryo-electron tomography data, optimized for filamentous structures like actin networks.</p>
+<section id="core-functions">
+<h2>Core Functions<a class="headerlink" href="#core-functions" title="Permalink to this heading"></a></h2>
+<p><strong>skeletonization_et_segmentation</strong></p>
+<p>Performs comprehensive 3D skeletonization of cryo-ET images to extract filamentous structures with noise handling optimized for cryo-ET data characteristics.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.skeletonization_et_segmentation">
+<span class="sig-prename descclassname"><span class="pre">ipa.processing.segmentation.</span></span><span class="sig-name descname"><span class="pre">skeletonization_et_segmentation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaussian_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_multiplier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">erosion_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_object_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilation_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_skeleton_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_connect_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/segmentation_et/segment_et.html#skeletonization_et_segmentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.skeletonization_et_segmentation" title="Permalink to this definition"></a></dt>
+<dd><p>Extract 3D skeleton using global thresholding and 3D skeletonization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_matrix</strong> – 3D numpy array, input SIM image data</p></li>
+<li><p><strong>gaussian_sigma</strong> – float, sigma for Gaussian smoothing (default: 1.0)</p></li>
+<li><p><strong>threshold_multiplier</strong> – float, multiplier for threshold calculation (default: 1.2)</p></li>
+<li><p><strong>erosion_radius</strong> – int, radius for morphological erosion (default: 1)</p></li>
+<li><p><strong>min_object_size</strong> – int, minimum size for object removal (default: 200)</p></li>
+<li><p><strong>dilation_radius</strong> – int, radius for morphological dilation (default: 1)</p></li>
+<li><p><strong>min_skeleton_size</strong> – int, minimum size for skeleton cleaning (default: 30)</p></li>
+<li><p><strong>max_connect_distance</strong> – int, maximum distance for skeleton connection (default: 5)</p></li>
+<li><p><strong>final_min_size</strong> – int, final minimum size for skeleton fragments (default: 20)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>3D numpy array, final skeletonized result</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>skeleton_final</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">image_data</span></code> (numpy.ndarray): Input cryo-ET image volume (3D)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gaussian_sigma</span></code> (float, optional): Gaussian smoothing for noise reduction (default: 1.5)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">threshold_multiplier</span></code> (float, optional): Threshold adjustment for binarization (default: 1.0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">erosion_radius</span></code> (int, optional): Morphological erosion radius (default: 1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min_object_size</span></code> (int, optional): Minimum object size to retain (default: 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dilation_radius</span></code> (int, optional): Morphological dilation radius (default: 1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min_skeleton_size</span></code> (int, optional): Minimum skeleton fragment size (default: 20)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_connect_distance</span></code> (int, optional): Maximum distance for connecting fragments (default: 8)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">final_min_size</span></code> (int, optional): Final minimum structure size (default: 10)</p></li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>: 3D skeleton image showing extracted filamentous structures</p></li>
+</ul>
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this heading"></a></h2>
+<p><strong>Basic CryoET Actin Skeletonization</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ipa.processing.segmentation</span> <span class="kn">import</span> <span class="n">skeletonization_et_segmentation</span>
+<span class="kn">from</span> <span class="nn">ipa.data_loader</span> <span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load denoised cryoET data</span>
+<span class="n">image_data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;denoised_tomogram.mrc&quot;</span><span class="p">)</span>
+
+<span class="c1"># Perform ET-optimized actin skeletonization</span>
+<span class="n">skeleton_result</span> <span class="o">=</span> <span class="n">skeletonization_et_segmentation</span><span class="p">(</span>
+    <span class="n">image_data</span><span class="p">,</span>
+    <span class="n">gaussian_sigma</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>          <span class="c1"># Noise reduction for cryoET</span>
+    <span class="n">threshold_multiplier</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>    <span class="c1"># Conservative threshold</span>
+    <span class="n">min_object_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>         <span class="c1"># Filter small noise objects</span>
+    <span class="n">max_connect_distance</span><span class="o">=</span><span class="mi">8</span>       <span class="c1"># Connect filament segments</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skeleton points detected: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">skeleton_result</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Processing with Custom Parameters</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fine-tuned for high-resolution actin networks</span>
+<span class="n">skeleton_advanced</span> <span class="o">=</span> <span class="n">skeletonization_et_segmentation</span><span class="p">(</span>
+    <span class="n">image_data</span><span class="p">,</span>
+    <span class="n">gaussian_sigma</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>          <span class="c1"># More smoothing for noisy data</span>
+    <span class="n">threshold_multiplier</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>    <span class="c1"># Lower threshold for faint structures</span>
+    <span class="n">erosion_radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>            <span class="c1"># Stronger noise removal</span>
+    <span class="n">min_object_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>          <span class="c1"># Detect smaller structures</span>
+    <span class="n">min_skeleton_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>        <span class="c1"># Keep shorter segments</span>
+    <span class="n">max_connect_distance</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>     <span class="c1"># Longer connection range</span>
+    <span class="n">final_min_size</span><span class="o">=</span><span class="mi">8</span>             <span class="c1"># Retain fine details</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Complete Processing Pipeline</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tifffile</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="c1"># Load and process cryoET data</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="s2">&quot;cryoET_data/sample_denoised.mrc&quot;</span>
+<span class="n">image_data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+
+<span class="c1"># ET segmentation</span>
+<span class="n">skeleton</span> <span class="o">=</span> <span class="n">skeletonization_et_segmentation</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
+
+<span class="c1"># Save results</span>
+<span class="n">output_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;results/&quot;</span><span class="p">)</span>
+<span class="n">output_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">&quot;actin_skeleton.tif&quot;</span><span class="p">,</span>
+                 <span class="n">skeleton</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span><span class="p">)</span>
+
+<span class="c1"># Extract coordinates for analysis</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">skeleton</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">&quot;skeleton_coords.txt&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Z</span><span class="se">\t</span><span class="s2">Y</span><span class="se">\t</span><span class="s2">X</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">coords</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sxt_segmentation.html" class="btn btn-neutral float-left" title="SXT Segmentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sim_wfm_segmentation.html" class="btn btn-neutral float-right" title="SIM/WFM Segmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

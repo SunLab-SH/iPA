@@ -1,0 +1,74 @@
+---
+output_path: "./output/upsnet/coco"
+model_prefix: "staged_All_" # "upsnet_resnet_50_coco_"
+symbol: resnet_50_upsnet
+gpus: '0' #,1,2,3'
+save_rois: false
+dataset:
+  num_classes: 2 #81
+  num_seg_classes: 2 #133
+  dataset: coco
+  dataset_path: "./data/ihuman_sst/" # "./data/coco/"
+  image_set: train-ihuman-sst # train2017
+  root_path: "./data/"
+  test_image_set: test-ihuman-sst # val2017
+
+network:
+  has_fpn: true
+  has_rpn: true
+  has_rcnn: true # true
+  has_mask_head: true # true
+  has_fcn_head: False # true
+  fcn_head: "FCNHead"
+  has_panoptic_head: False # true
+  use_pretrained:   true
+  # pretrained: "./model/pretrained_model/resnet-50-caffe.pth"
+  pretrained: "./output/upsnet/coco/upsnet_resnet50_ihuman_4gpu/train-ihuman-sst/staged_MASK/staged_MASK_90000.pth"
+  fpn_with_gap: true
+
+  backbone_freeze: false
+  rpn_freeze: false
+  fpn_freeze: false
+  rcnn_freeze: false
+  mask_freeze: false
+
+train:
+  use_horovod: false
+  scales:
+  - 800
+  max_size: 1333
+  # solver
+  display_iter: 20
+  snapshot_step: 10000
+  resume: false
+  begin_iteration: 0
+  max_iteration: 250000
+  decay_iteration:
+  - 240000
+  - 320000
+  warmup_iteration: 1500
+  lr: 0.00025
+  wd: 0.0001
+  momentum: 0.9
+  batch_size: 1
+
+  rpn_nms_thresh: 0.5
+  rpn_positive_overlap: 0.5
+  rpn_negative_overlap: 0.3
+  fcn_loss_weight: 0.2
+  fcn_with_roi_loss: true
+  panoptic_loss_weight: 0.1
+  panoptic_box_keep_fraction: 0.7
+
+
+test:
+  scales:
+  - 800
+  max_size: 1333
+  batch_size: 1
+  test_iteration: 360000
+  panoptic_stuff_area_limit: 4096
+  vis_mask: false
+  score_thresh: 0.75
+  nms_thresh: 0.5
+

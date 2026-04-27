@@ -1,0 +1,39 @@
+# iPA - Multi-Modal Image Processing Toolkit
+# Core dependencies for running iPA
+# Updated for Python 3.8-3.11 compatibility
+
+# Core scientific computing
+numpy>=1.21.0,<2.0.0
+scipy>=1.9.0
+pandas>=1.5.0
+matplotlib>=3.6.0
+
+# Image processing
+scikit-image>=0.20.0
+tifffile>=2022.4.8
+Pillow>=9.0.0
+opencv-python>=4.6.0
+mrcfile>=1.3.0
+imageio>=2.25.0
+
+# Deep learning
+torch>=1.13.0
+torchvision>=0.14.0
+
+# Visualization
+plotly>=5.0.0
+seaborn>=0.12.0
+
+# File I/O
+readlif>=0.6.0
+czifile>=2019.7.2
+nd2reader>=3.2.0
+aicsimageio>=4.10.0
+
+# Utilities
+tqdm>=4.60.0
+h5py>=3.7.0
+scikit-learn>=1.2.0
+wandb>=0.15.0
+easydict>=1.10
+pycocotools>=2.0.6

@@ -1,0 +1,35 @@
+data/*
+!data/.gitkeep
+results/*
+logs/*
+outputs/*
+documentations/*
+
+# Model weights and checkpoints
+*.pth
+*.pt
+*.ckpt
+ipa/processing/*/models/
+ipa/processing/denoising/models/
+ipa/processing/segmentation/ipa/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+.ipynb_checkpoints/

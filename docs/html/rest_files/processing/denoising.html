@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Denoising Module &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Segmentation Module" href="segmentation/segmentation.html" />
+    <link rel="prev" title="Processing Module" href="processing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/data_loader.html">Data loader Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="processing.html">Processing Module</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Denoising Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#n2v-denoising-functions">N2V Denoising Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-tips">Performance Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation/segmentation.html">Segmentation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partitioning.html">Partitioning Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/analysis.html">Analysis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="processing.html">Processing Module</a></li>
+      <li class="breadcrumb-item active">Denoising Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/rest_files/processing/denoising.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="denoising-module">
+<h1>Denoising Module<a class="headerlink" href="#denoising-module" title="Permalink to this heading"></a></h1>
+<p>The denoising module provides Noise2Void (N2V) based denoising capabilities for microscopy images, offering state-of-the-art self-supervised denoising without requiring clean reference images.</p>
+<section id="n2v-denoising-functions">
+<h2>N2V Denoising Functions<a class="headerlink" href="#n2v-denoising-functions" title="Permalink to this heading"></a></h2>
+<p><strong>Main Denoising Function</strong></p>
+<p><strong>Model Loading Function</strong></p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../_images/denoise01.png"><img alt="denoising example showing original and denoised images" src="../../_images/denoise01.png" style="width: 80%;" /></a>
+</figure>
+</section>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Self-supervised Learning</strong>: N2V trains on noisy data without requiring clean reference images</p></li>
+<li><p><strong>3D Processing</strong>: Optimized for volumetric microscopy data</p></li>
+<li><p><strong>Tiled Processing</strong>: Handle large images through intelligent tiling</p></li>
+<li><p><strong>Pre-trained Models</strong>: Ready-to-use models for common microscopy applications</p></li>
+</ul>
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this heading"></a></h2>
+<p>Basic Denoising:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">mrcfile</span>
+<span class="kn">from</span> <span class="nn">ipa.processing.denoising</span> <span class="kn">import</span> <span class="n">N2V_denoise</span>
+
+<span class="c1"># Load your noisy image</span>
+<span class="k">with</span> <span class="n">mrcfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;noisy_volume.mrc&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mrc</span><span class="p">:</span>
+    <span class="n">noisy_image</span> <span class="o">=</span> <span class="n">mrc</span><span class="o">.</span><span class="n">data</span>
+
+<span class="c1"># Simple denoising with auto-loaded model</span>
+<span class="n">denoised_image</span> <span class="o">=</span> <span class="n">N2V_denoise</span><span class="p">(</span><span class="n">noisy_image</span><span class="p">)</span>
+
+<span class="c1"># Save result</span>
+<span class="k">with</span> <span class="n">mrcfile</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;denoised_volume.mrc&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">mrc</span><span class="p">:</span>
+    <span class="n">mrc</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">denoised_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Visualization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Visualize results (middle slice)</span>
+<span class="n">slice_idx</span> <span class="o">=</span> <span class="n">noisy_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">noisy_image</span><span class="p">[</span><span class="n">slice_idx</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;magma&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Original (Noisy)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">denoised_image</span><span class="p">[</span><span class="n">slice_idx</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;magma&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Denoised&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Usage with Custom Model:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ipa.processing.denoising</span> <span class="kn">import</span> <span class="n">load_n2v_model</span>
+
+<span class="c1"># Load specific pre-trained model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">load_n2v_model</span><span class="p">(</span>
+    <span class="n">model_name</span><span class="o">=</span><span class="s1">&#39;n2v_3D&#39;</span><span class="p">,</span>
+    <span class="n">basedir</span><span class="o">=</span><span class="s1">&#39;/path/to/models/&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Denoise with custom tiling for large volumes</span>
+<span class="n">denoised_image</span> <span class="o">=</span> <span class="n">N2V_denoise</span><span class="p">(</span>
+    <span class="n">image</span><span class="o">=</span><span class="n">noisy_image</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">n_tiles</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># Adjust based on GPU memory</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="performance-tips">
+<h2>Performance Tips<a class="headerlink" href="#performance-tips" title="Permalink to this heading"></a></h2>
+<p><strong>Memory Optimization:</strong></p>
+<ul class="simple">
+<li><p>Use appropriate <code class="docutils literal notranslate"><span class="pre">n_tiles</span></code> parameter for large images</p></li>
+<li><p>Typical values: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">2,</span> <span class="pre">2)</span></code> for small volumes, <code class="docutils literal notranslate"><span class="pre">(2,</span> <span class="pre">4,</span> <span class="pre">4)</span></code> for large volumes</p></li>
+<li><p>Higher tiling reduces memory usage but may increase processing time</p></li>
+</ul>
+<p><strong>Model Selection:</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">n2v_3D</span></code>: General purpose 3D denoising model</p></li>
+<li><dl>
+<dt>Custom models can be loaded by specifying <code class="docutils literal notranslate"><span class="pre">basedir</span></code> parameter</dt><dd><p>logger.file_in(input_file)</p>
+<p>logger.step(“Performing denoising…”)
+denoised_img = N2V_denoise(img)</p>
+<p># Save results
+output_file = ‘data/denoised_volume.mrc’
+os.makedirs(os.path.dirname(output_file), exist_ok=True)</p>
+<dl class="simple">
+<dt>with mrcfile.new(output_file, overwrite=True) as mrc:</dt><dd><p>mrc.set_data(denoised_img.astype(np.float32))</p>
+</dd>
+</dl>
+<p>logger.file_out(output_file)
+logger.step(“Denoising completed successfully!”)</p>
+<p># Visualize results
+visualize_results(img, denoised_img)</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Advanced Usage with Custom Model:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load specific pre-trained model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">load_n2v_model</span><span class="p">(</span>
+    <span class="n">model_name</span><span class="o">=</span><span class="s1">&#39;n2v_3D&#39;</span><span class="p">,</span>
+    <span class="n">basedir</span><span class="o">=</span><span class="s1">&#39;/path/to/models/&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Denoise with custom tiling for large volumes</span>
+<span class="n">denoised_image</span> <span class="o">=</span> <span class="n">N2V_denoise</span><span class="p">(</span>
+    <span class="n">image</span><span class="o">=</span><span class="n">noisy_image</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">n_tiles</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># Adjust based on GPU memory</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="processing.html" class="btn btn-neutral float-left" title="Processing Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="segmentation/segmentation.html" class="btn btn-neutral float-right" title="Segmentation Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

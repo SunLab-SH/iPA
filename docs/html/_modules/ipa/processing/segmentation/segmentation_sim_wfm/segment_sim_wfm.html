@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ipa.processing.segmentation.segmentation_sim_wfm.segment_sim_wfm &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../rest_files/data_loader/data_loader.html">Data loader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../rest_files/processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../rest_files/analysis/analysis.html">Analysis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">ipa.processing.segmentation.segmentation_sim_wfm.segment_sim_wfm</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ipa.processing.segmentation.segmentation_sim_wfm.segment_sim_wfm</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">filters</span><span class="p">,</span> <span class="n">morphology</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">ndimage</span>
+<span class="kn">from</span> <span class="nn">skimage.morphology</span> <span class="kn">import</span> <span class="n">skeletonize_3d</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">ndimage</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tifffile</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+
+
+
+<span class="k">def</span> <span class="nf">remove_edges</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">edge</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove edge voxels from 3D image to avoid edge artifacts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">img</span><span class="p">[:</span><span class="n">edge</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">img</span><span class="p">[</span><span class="o">-</span><span class="n">edge</span><span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">img</span><span class="p">[:,</span> <span class="p">:</span><span class="n">edge</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">img</span><span class="p">[:,</span> <span class="o">-</span><span class="n">edge</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">edge</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="o">-</span><span class="n">edge</span><span class="p">:]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">img</span>
+
+
+<span class="k">def</span> <span class="nf">connect_skeleton_segments</span><span class="p">(</span><span class="n">skeleton</span><span class="p">,</span> <span class="n">max_distance</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Connect nearby skeleton segments by finding close endpoints and bridging them</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        skeleton: 3D binary array of skeleton</span>
+<span class="sd">        max_distance: maximum distance to connect segments</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        connected_skeleton: skeleton with connected segments</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cdist</span>
+    
+    <span class="c1"># Find skeleton endpoints (pixels with only one neighbor)</span>
+    <span class="n">skeleton_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">skeleton</span><span class="p">)</span>
+    <span class="n">skeleton_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">skeleton_coords</span><span class="p">)))</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">skeleton_points</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">skeleton</span>
+    
+    <span class="n">endpoints</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">skeleton_points</span><span class="p">:</span>
+        <span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">point</span>
+        <span class="c1"># Check 26-neighborhood</span>
+        <span class="n">neighbors</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">dz</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">dy</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">dx</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">dz</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">dy</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">dx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">nz</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">z</span> <span class="o">+</span> <span class="n">dz</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">dy</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">dx</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">nz</span> <span class="o">&lt;</span> <span class="n">skeleton</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> 
+                        <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">ny</span> <span class="o">&lt;</span> <span class="n">skeleton</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> 
+                        <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">nx</span> <span class="o">&lt;</span> <span class="n">skeleton</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">and</span>
+                        <span class="n">skeleton</span><span class="p">[</span><span class="n">nz</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">]):</span>
+                        <span class="n">neighbors</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="k">if</span> <span class="n">neighbors</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># This is an endpoint</span>
+            <span class="n">endpoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">endpoints</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">skeleton</span>
+    
+    <span class="c1"># Calculate distances between all endpoints</span>
+    <span class="n">endpoints</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">endpoints</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">cdist</span><span class="p">(</span><span class="n">endpoints</span><span class="p">,</span> <span class="n">endpoints</span><span class="p">)</span>
+    
+    <span class="c1"># Connect nearby endpoints</span>
+    <span class="n">connected_skeleton</span> <span class="o">=</span> <span class="n">skeleton</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">endpoints</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">endpoints</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">distances</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_distance</span><span class="p">:</span>
+                <span class="c1"># Draw line between endpoints</span>
+                <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">endpoints</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">endpoints</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                
+                <span class="c1"># Simple line drawing in 3D</span>
+                <span class="n">steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">t</span> <span class="o">=</span> <span class="n">step</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">point</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">p2</span> <span class="o">-</span> <span class="n">p1</span><span class="p">)</span>
+                    <span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">point</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="n">skeleton</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> 
+                        <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">skeleton</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> 
+                        <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">skeleton</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                        <span class="n">connected_skeleton</span><span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    
+    <span class="k">return</span> <span class="n">connected_skeleton</span>
+
+<div class="viewcode-block" id="skeletonize_organelle"><a class="viewcode-back" href="../../../../../rest_files/processing/segmentation/sim_wfm_segmentation.html#ipa.processing.segmentation.skeletonize_organelle">[docs]</a><span class="k">def</span> <span class="nf">skeletonize_organelle</span><span class="p">(</span><span class="n">image_matrix</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract 3D skeleton using global thresholding and 3D skeletonization</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        image_matrix: 3D numpy array, input SIM image data</span>
+<span class="sd">        max_distance: float, maximum distance for connecting skeleton segments</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        skeleton_final: 3D numpy array, final skeletonized result</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input image stats: min=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">image_matrix</span><span class="p">)</span><span class="si">}</span><span class="s2">, max=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">image_matrix</span><span class="p">)</span><span class="si">}</span><span class="s2">, mean=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">image_matrix</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Gaussian smoothing for noise reduction</span>
+    <span class="n">smoothed</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">image_matrix</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    
+    <span class="c1"># Use higher threshold to keep only bright internal regions, avoiding edges</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">smoothed</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">smoothed</span><span class="p">)</span>
+    <span class="n">binary_image</span> <span class="o">=</span> <span class="n">smoothed</span> <span class="o">&gt;</span> <span class="n">threshold</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Global threshold: </span><span class="si">{</span><span class="n">threshold</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Foreground pixel ratio after thresholding: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">binary_image</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">binary_image</span><span class="o">.</span><span class="n">size</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Morphological erosion to further remove shape edges, keep only central regions</span>
+    <span class="n">binary_image</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">binary_erosion</span><span class="p">(</span><span class="n">binary_image</span><span class="p">,</span> <span class="n">morphology</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    
+    <span class="c1"># Remove small objects</span>
+    <span class="n">binary_image</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">remove_small_objects</span><span class="p">(</span><span class="n">binary_image</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    
+    <span class="c1"># Slight dilation to recover some structures</span>
+    <span class="n">binary_image</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">binary_dilation</span><span class="p">(</span><span class="n">binary_image</span><span class="p">,</span> <span class="n">morphology</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="c1"># Extract 3D skeleton</span>
+    <span class="n">skeleton</span> <span class="o">=</span> <span class="n">skeletonize_3d</span><span class="p">(</span><span class="n">binary_image</span><span class="p">)</span>
+
+    <span class="c1"># Minimal cleaning, only remove tiny skeleton fragments</span>
+    <span class="n">skeleton_cleaned</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">remove_small_objects</span><span class="p">(</span><span class="n">skeleton</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    
+    <span class="c1"># Connect segmented skeleton parts</span>
+    <span class="n">skeleton_connected</span> <span class="o">=</span> <span class="n">connect_skeleton_segments</span><span class="p">(</span><span class="n">skeleton_cleaned</span><span class="p">,</span> <span class="n">max_distance</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    
+    <span class="c1"># Clean again after connection to remove possible small fragments</span>
+    <span class="n">skeleton_final</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">remove_small_objects</span><span class="p">(</span><span class="n">skeleton_connected</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skeleton voxel count after cleaning and connecting: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">skeleton_final</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">skeleton_final</span></div>
+
+
+
+<div class="viewcode-block" id="segment_sphere_like_organelle"><a class="viewcode-back" href="../../../../../rest_files/processing/segmentation/sim_wfm_segmentation.html#ipa.processing.segmentation.segment_sphere_like_organelle">[docs]</a><span class="k">def</span> <span class="nf">segment_sphere_like_organelle</span><span class="p">(</span><span class="n">image_3d</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple segmentation of spherical structures in 3D images</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        image_3d: 3D numpy array, input image</span>
+<span class="sd">        threshold: float or None, threshold value (if None, use Otsu automatic threshold)</span>
+<span class="sd">        min_size: int, filter out connected components smaller than this voxel count</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        labeled_spheres: 3D numpy integer array, connected component labeling result</span>
+<span class="sd">        num_spheres: number of segmented spheres</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Gaussian filtering for noise reduction</span>
+    <span class="n">smoothed</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">image_3d</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># Threshold segmentation</span>
+    <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">threshold_otsu</span><span class="p">(</span><span class="n">smoothed</span><span class="p">)</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">smoothed</span> <span class="o">&gt;</span> <span class="n">threshold</span>
+    
+    <span class="c1"># Morphological opening for noise removal, closing to connect small objects</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">binary_opening</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">morphology</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">binary_closing</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">morphology</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    
+    <span class="c1"># Connected component labeling</span>
+    <span class="n">labeled_spheres</span><span class="p">,</span> <span class="n">num_spheres</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+    
+    <span class="c1"># Filter small fragments</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">labeled_spheres</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_spheres</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">mask_sizes</span> <span class="o">=</span> <span class="n">sizes</span> <span class="o">&gt;=</span> <span class="n">min_size</span>
+    <span class="n">mask_sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Do not keep background</span>
+    <span class="n">cleaned</span> <span class="o">=</span> <span class="n">mask_sizes</span><span class="p">[</span><span class="n">labeled_spheres</span><span class="p">]</span>
+    
+    <span class="c1"># Re-label filtered connected components</span>
+    <span class="n">labeled_spheres</span><span class="p">,</span> <span class="n">num_spheres</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">labeled_spheres</span><span class="p">,</span> <span class="n">num_spheres</span></div>
+
+
+
+<div class="viewcode-block" id="segment_cell_shape"><a class="viewcode-back" href="../../../../../rest_files/processing/segmentation/sim_wfm_segmentation.html#ipa.processing.segmentation.segment_cell_shape">[docs]</a><span class="k">def</span> <span class="nf">segment_cell_shape</span><span class="p">(</span><span class="n">cell_channel_3d</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Basic cell shape segmentation</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        cell_channel_3d: 3D numpy array, input cell channel image</span>
+<span class="sd">        threshold: float or None, threshold value</span>
+<span class="sd">        min_size: int, minimum size for filtering</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        labeled_cell: labeled cell mask</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">smoothed</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">cell_channel_3d</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">threshold_otsu</span><span class="p">(</span><span class="n">smoothed</span><span class="p">)</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">smoothed</span> <span class="o">&gt;</span> <span class="n">threshold</span>
+
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">binary_opening</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">morphology</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">binary_closing</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">morphology</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">binary_fill_holes</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+    <span class="n">labeled_cell</span><span class="p">,</span> <span class="n">num_cells</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">labeled_cell</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_cells</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">max_label</span> <span class="o">=</span> <span class="n">sizes</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+    <span class="n">cleaned</span> <span class="o">=</span> <span class="n">labeled_cell</span> <span class="o">==</span> <span class="n">max_label</span>
+    <span class="n">labeled_cell</span><span class="p">,</span> <span class="n">num_cells</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">labeled_cell</span></div>
+
+
+<div class="viewcode-block" id="segment_nucleus"><a class="viewcode-back" href="../../../../../rest_files/processing/segmentation/sim_wfm_segmentation.html#ipa.processing.segmentation.segment_nucleus">[docs]</a><span class="k">def</span> <span class="nf">segment_nucleus</span><span class="p">(</span><span class="n">nucleus_channel_3d</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Basic nucleus segmentation</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        nucleus_channel_3d: 3D numpy array, input nucleus channel image</span>
+<span class="sd">        threshold: float or None, threshold value (if None, use Otsu automatic threshold)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        labeled_nuclei: 3D numpy integer array, connected component labeling result</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input nucleus image stats: min=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">nucleus_channel_3d</span><span class="p">)</span><span class="si">}</span><span class="s2">, max=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">nucleus_channel_3d</span><span class="p">)</span><span class="si">}</span><span class="s2">, mean=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">nucleus_channel_3d</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">smoothed</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">nucleus_channel_3d</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">threshold_otsu</span><span class="p">(</span><span class="n">smoothed</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nucleus threshold: </span><span class="si">{</span><span class="n">threshold</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">smoothed</span> <span class="o">&gt;</span> <span class="n">threshold</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Foreground ratio after thresholding: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">binary</span><span class="o">.</span><span class="n">size</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 使用形态学开闭操作保持连贯性</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">binary_opening</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">morphology</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">morphology</span><span class="o">.</span><span class="n">binary_closing</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">morphology</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">binary_fill_holes</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+    <span class="c1"># 不做分水岭分割，直接把所有连通区域合并成一个====&gt;只用一个label</span>
+    <span class="n">labeled_nuclei</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+    <span class="n">labeled_nuclei</span><span class="p">[</span><span class="n">binary</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">num_nuclei</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of nuclei found (merged as one): </span><span class="si">{</span><span class="n">num_nuclei</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">labeled_nuclei</span></div>
+
+
+
+
+<span class="c1"># def main():</span>
+    <span class="c1"># Data file path, change to actual file path</span>
+    <span class="c1"># data_path = Path(&quot;d:/Gitspace/ipa_full/iPA/data/sim_images/20220909_30-2-1-SIM_raw_Actin.tif&quot;)</span>
+
+    <span class="c1"># if not data_path.exists():</span>
+    <span class="c1">#     print(f&quot;Error: File not found {data_path}&quot;)</span>
+    <span class="c1">#     return</span>
+
+    <span class="c1"># print(&quot;Loading image data...&quot;)</span>
+    <span class="c1"># image_data = tifffile.imread(str(data_path))</span>
+    <span class="c1"># print(f&quot;Image shape: {image_data.shape}&quot;)</span>
+    <span class="c1"># print(f&quot;Data type: {image_data.dtype}&quot;)</span>
+
+    <span class="c1"># print(&quot;Performing 3D skeletonization...&quot;)</span>
+    <span class="c1"># skeleton_result = skeletonize_image(image_data)</span>
+
+    <span class="c1"># print(&quot;Generating visualization...&quot;)</span>
+    <span class="c1"># fig, axes = plt.subplots(2, 3, figsize=(15, 10))</span>
+
+    <span class="c1"># mid_slice = image_data.shape[0] // 2</span>
+    <span class="c1"># mid_slice = 7 </span>
+
+    <span class="c1"># # Original image three views</span>
+    <span class="c1"># axes[0, 0].imshow(image_data[mid_slice], cmap=&#39;gray&#39;)</span>
+    <span class="c1"># axes[0, 0].set_title(f&#39;Original Image - Z slice {mid_slice}&#39;)</span>
+    <span class="c1"># axes[0, 0].axis(&#39;off&#39;)</span>
+
+    <span class="c1"># axes[0, 1].imshow(image_data[:, image_data.shape[1]//2], cmap=&#39;gray&#39;)</span>
+    <span class="c1"># axes[0, 1].set_title(&#39;Original Image - Y slice&#39;)</span>
+    <span class="c1"># axes[0, 1].axis(&#39;off&#39;)</span>
+
+    <span class="c1"># axes[0, 2].imshow(image_data[:, :, image_data.shape[2]//2], cmap=&#39;gray&#39;)</span>
+    <span class="c1"># axes[0, 2].set_title(&#39;Original Image - X slice&#39;)</span>
+    <span class="c1"># axes[0, 2].axis(&#39;off&#39;)</span>
+
+    <span class="c1"># # Skeleton result three views</span>
+    <span class="c1"># axes[1, 0].imshow(skeleton_result[mid_slice], cmap=&#39;gray&#39;)</span>
+    <span class="c1"># axes[1, 0].set_title(f&#39;Skeleton Result - Z slice {mid_slice}&#39;)</span>
+    <span class="c1"># axes[1, 0].axis(&#39;off&#39;)</span>
+
+    <span class="c1"># axes[1, 1].imshow(skeleton_result[:, skeleton_result.shape[1]//2], cmap=&#39;gray&#39;)</span>
+    <span class="c1"># axes[1, 1].set_title(&#39;Skeleton Result - Y slice&#39;)</span>
+    <span class="c1"># axes[1, 1].axis(&#39;off&#39;)</span>
+
+    <span class="c1"># axes[1, 2].imshow(skeleton_result[:, :, skeleton_result.shape[2]//2], cmap=&#39;gray&#39;)</span>
+    <span class="c1"># axes[1, 2].set_title(&#39;Skeleton Result - X slice&#39;)</span>
+    <span class="c1"># axes[1, 2].axis(&#39;off&#39;)</span>
+
+    <span class="c1"># plt.tight_layout()</span>
+    <span class="c1"># plt.show()</span>
+
+    <span class="c1"># # Ask whether to save results</span>
+    <span class="c1"># save_option = input(&quot;Save skeleton results? (y/n): &quot;).lower().strip()</span>
+    <span class="c1"># if save_option in [&#39;y&#39;, &#39;yes&#39;]:</span>
+    <span class="c1">#     output_dir = Path(&quot;d:/Gitspace/ipa_full/iPA/data/processed&quot;)</span>
+    <span class="c1">#     output_dir.mkdir(exist_ok=True)</span>
+    <span class="c1">#     output_path = output_dir / &quot;skeleton_result.tif&quot;</span>
+    <span class="c1">#     tifffile.imwrite(str(output_path), skeleton_result.astype(np.uint8) * 255)</span>
+    <span class="c1">#     print(f&quot;Skeleton result saved to: {output_path}&quot;)</span>
+
+    <span class="c1">#     vis_path = output_dir / &quot;skeleton_visualization.png&quot;</span>
+    <span class="c1">#     fig.savefig(str(vis_path), dpi=300, bbox_inches=&#39;tight&#39;)</span>
+    <span class="c1">#     print(f&quot;Visualization saved to: {vis_path}&quot;)</span>
+
+
+<span class="c1"># if __name__ == &quot;__main__&quot;:</span>
+<span class="c1">#     main()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

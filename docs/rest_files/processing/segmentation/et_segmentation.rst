@@ -1,0 +1,100 @@
+Cryo-ET Segmentation
+===============
+
+Cryo-Electron Tomography (cryo-ET) segmentation module provides specialized tools for identifying and segmenting cellular structures in cryo-electron tomography data, optimized for filamentous structures like actin networks.
+
+Core Functions
+--------------
+
+**skeletonization_et_segmentation**
+
+Performs comprehensive 3D skeletonization of cryo-ET images to extract filamentous structures with noise handling optimized for cryo-ET data characteristics.
+
+.. autofunction:: ipa.processing.segmentation.skeletonization_et_segmentation
+
+**Parameters:**
+
+* ``image_data`` (numpy.ndarray): Input cryo-ET image volume (3D)
+* ``gaussian_sigma`` (float, optional): Gaussian smoothing for noise reduction (default: 1.5)
+* ``threshold_multiplier`` (float, optional): Threshold adjustment for binarization (default: 1.0)
+* ``erosion_radius`` (int, optional): Morphological erosion radius (default: 1)
+* ``min_object_size`` (int, optional): Minimum object size to retain (default: 100)
+* ``dilation_radius`` (int, optional): Morphological dilation radius (default: 1)
+* ``min_skeleton_size`` (int, optional): Minimum skeleton fragment size (default: 20)
+* ``max_connect_distance`` (int, optional): Maximum distance for connecting fragments (default: 8)
+* ``final_min_size`` (int, optional): Final minimum structure size (default: 10)
+
+**Returns:**
+
+* ``numpy.ndarray``: 3D skeleton image showing extracted filamentous structures
+
+
+
+Example Usage
+-------------
+
+**Basic CryoET Actin Skeletonization**
+
+.. code-block:: python
+
+    from ipa.processing.segmentation import skeletonization_et_segmentation
+    from ipa.data_loader import UniversalDataLoader
+    
+    # Load denoised cryoET data
+    image_data = UniversalDataLoader.load_data("denoised_tomogram.mrc")
+    
+    # Perform ET-optimized actin skeletonization
+    skeleton_result = skeletonization_et_segmentation(
+        image_data,
+        gaussian_sigma=1.5,          # Noise reduction for cryoET
+        threshold_multiplier=1.0,    # Conservative threshold
+        min_object_size=100,         # Filter small noise objects
+        max_connect_distance=8       # Connect filament segments
+    )
+    
+    print(f"Skeleton points detected: {np.sum(skeleton_result > 0)}")
+
+**Processing with Custom Parameters**
+
+.. code-block:: python
+
+    # Fine-tuned for high-resolution actin networks
+    skeleton_advanced = skeletonization_et_segmentation(
+        image_data,
+        gaussian_sigma=2.0,          # More smoothing for noisy data
+        threshold_multiplier=0.8,    # Lower threshold for faint structures
+        erosion_radius=2,            # Stronger noise removal
+        min_object_size=50,          # Detect smaller structures
+        min_skeleton_size=15,        # Keep shorter segments
+        max_connect_distance=12,     # Longer connection range
+        final_min_size=8             # Retain fine details
+    )
+
+**Complete Processing Pipeline**
+
+.. code-block:: python
+
+    import numpy as np
+    import tifffile
+    from pathlib import Path
+    
+    # Load and process cryoET data
+    data_path = "cryoET_data/sample_denoised.mrc"
+    image_data = UniversalDataLoader.load_data(data_path)
+    
+    # ET segmentation
+    skeleton = skeletonization_et_segmentation(image_data)
+    
+    # Save results
+    output_dir = Path("results/")
+    output_dir.mkdir(exist_ok=True)
+    tifffile.imwrite(output_dir / "actin_skeleton.tif", 
+                     skeleton.astype(np.uint8) * 255)
+    
+    # Extract coordinates for analysis
+    coords = np.where(skeleton > 0)
+    with open(output_dir / "skeleton_coords.txt", 'w') as f:
+        f.write("Z\tY\tX\n")
+        for i in range(len(coords[0])):
+            f.write(f"{coords[0][i]}\t{coords[1][i]}\t{coords[2][i]}\n")
+

@@ -1,0 +1,374 @@
+SXT Segmentation
+================
+
+Soft X-ray Tomography (SXT) segmentation provides specialized tools for cellular structure identification in SXT imaging data. SXT offers advantages including natural contrast, high spatial resolution, and the ability to image thick biological specimens in near-native states.
+
+Core Segmentation Functions
+----------------------------
+
+**Cell Segmentation Function**
+
+.. autofunction:: ipa.processing.segmentation.run_cell_segmentation
+
+**Mitochondria Segmentation Function**
+
+.. autofunction:: ipa.processing.segmentation.run_mito_segmentation
+
+**ISG (Insulin Secretory Granules) Segmentation Function**
+
+.. autofunction:: ipa.processing.segmentation.run_sphere_like_organelle_segmentation
+
+Cell Segmentation for SXT
+--------------------------
+
+The ``run_cell_segmentation`` function delivers comprehensive analysis capabilities for cellular nuclei, membranes, and combined structural elements in SXT tomographic data through an advanced multi-view deep learning approach.
+
+Example Usage:
+
+.. code-block:: python
+
+    from ipa.processing.segmentation import run_cell_segmentation
+    from ipa.data_loader import UniversalDataLoader
+    
+    # Load SXT tomogram data
+    dataid_list = ['784_5']
+    image_data = {}
+    
+    for dataid in dataid_list:
+        image_path = f'data/sxt_images/Stevens_pancreatic_INS_1E_784_5_pre_rec.mrc'
+        data = UniversalDataLoader.load_data(image_path)
+        image_data[dataid] = data
+    
+    # High-precision nuclear and membrane segmentation on SXT tomograms
+    run_cell_segmentation(
+        save_dir="results/mem_nu_seg_with_val/",
+        dataid=dataid_list,
+        image_data=image_data,  # Use pre-loaded image data
+        pool_processes=6,
+    )
+
+Mitochondria Segmentation for SXT
+----------------------------------
+
+The ``run_mito_segmentation`` function provides specialized capabilities for identifying and segmenting mitochondrial structures in SXT tomographic data.
+
+Example Usage:
+
+.. code-block:: python
+
+    from ipa.processing.segmentation import run_mito_segmentation
+    from ipa.data_loader import UniversalDataLoader
+    
+    # Load SXT tomogram data
+    dataid_list = ['784_5']
+    image_data = {}
+    
+    for dataid in dataid_list:
+        image_path = f'data/sxt_images/Stevens_pancreatic_INS_1E_784_5_pre_rec.mrc'
+        data = UniversalDataLoader.load_data(image_path)
+        image_data[dataid] = data
+    
+    # Specialized mitochondrial segmentation for SXT data
+    run_mito_segmentation(
+        save_dir="results/mito_segmentation/",
+        dataid=dataid_list,
+        image_data=image_data,  # Use pre-loaded image data
+        pool_processes=6
+    )
+
+ISG Segmentation for SXT
+-------------------------
+
+The ``run_sphere_like_organelle_segmentation`` function provides specialized capabilities for identifying and segmenting insulin secretory granules (ISG) and other sphere-like organelles in SXT tomographic data of pancreatic β-cells.
+
+Example Usage:
+
+.. code-block:: python
+
+    from ipa.processing.segmentation import run_sphere_like_organelle_segmentation
+    from ipa.data_loader import UniversalDataLoader
+    
+    # Load SXT tomogram data
+    dataid_list = ['784_5']
+    image_data = {}
+    
+    for dataid in dataid_list:
+        image_path = f'data/sxt_images/Stevens_pancreatic_INS_1E_784_5_pre_rec.mrc'
+        data = UniversalDataLoader.load_data(image_path)
+        image_data[dataid] = data
+    
+    # ISG and sphere-like organelle segmentation for SXT data
+    run_sphere_like_organelle_segmentation(
+        save_dir="results/isg_semantic_mask/",
+        dataid=dataid_list,
+        image_data=image_data,  # Use pre-loaded image data
+        pool_processes=1,
+    )
+
+Complete Workflow Example
+-------------------------
+
+.. code-block:: python
+
+    from ipa.processing.segmentation import (
+        run_cell_segmentation, 
+        run_mito_segmentation,
+        run_sphere_like_organelle_segmentation
+    )
+    from ipa.data_loader import UniversalDataLoader, QuickLogger
+    
+    # Initialize logging
+    logger = QuickLogger("sxt_segmentation_workflow", log_dir="logs/")
+    
+    # Data preparation
+    dataid_list = ['784_5']
+    image_data = {}
+    
+    for dataid in dataid_list:
+        image_path = f'data/sxt_images/Stevens_pancreatic_INS_1E_{dataid}_pre_rec.mrc'
+        logger.file_in(image_path)
+        data = UniversalDataLoader.load_data(image_path)
+        image_data[dataid] = data
+        logger.step(f"Loaded {dataid}: {data.shape}, dtype: {data.dtype}")
+    
+    # Run all segmentation tasks
+    logger.step("Running cell segmentation...")
+    run_cell_segmentation(
+        save_dir="results/cell_segmentation/",
+        dataid=dataid_list,
+        image_data=image_data,
+        pool_processes=6
+    )
+    
+    logger.step("Running mitochondria segmentation...")
+    run_mito_segmentation(
+        save_dir="results/mito_segmentation/",
+        dataid=dataid_list,
+        image_data=image_data,
+        pool_processes=6
+    )
+    
+    logger.step("Running ISG segmentation...")
+    run_sphere_like_organelle_segmentation(
+        save_dir="results/isg_segmentation/",
+        dataid=dataid_list,
+        image_data=image_data,
+        pool_processes=1
+    )
+    
+    logger.step("All segmentation tasks completed successfully")
+
+Cell Segmentation Models
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Combined (Mem-Nu) Model for SXT**
+
+* **Architecture**: Multi-task U-Net with shared encoder, designed for SXT multi-structure segmentation
+* **Input Resolution**: 288×480 pixels per slice
+* **Training Strategy**: Joint optimization with balanced loss weighting for SXT data characteristics
+* **SXT Adaptations**: Unified processing pipeline for multiple SXT-visible cellular structures
+* **Optimization**: AdamW with learning rate scheduling
+
+
+Mitochondria Segmentation Model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Mitochondria Model for SXT**
+
+* **Architecture**: Enhanced U-Net with morphology-aware modules for SXT mitochondrial features
+* **Input Resolution**: 288×480 pixels per slice
+* **Training Strategy**: Multi-view fusion with consensus learning on SXT tomographic datasets
+* **SXT Adaptations**: Custom processing pipeline for SXT mitochondrial contrast and morphology
+* **Optimization**: Adam with adaptive learning rate
+
+
+ISG Segmentation Model
+^^^^^^^^^^^^^^^^^^^^^^
+
+**ISG (Insulin Secretory Granules) Model for SXT**
+
+* **Architecture**: U-Net with 3-channel input and 2-class output for binary sphere-like organelle segmentation
+* **Input Resolution**: Variable resolution with 0.5 scale factor for efficient processing
+* **Input Channels**: 3 (RGB conversion from grayscale SXT data)
+* **Output Classes**: 2 (background and ISG/sphere-like organelles)
+* **Training Strategy**: Binary classification with sigmoid activation and threshold-based prediction
+* **SXT Adaptations**: 
+  - LAC (Linear Absorption Coefficient) normalization factor of 33.33
+  - Custom preprocessing pipeline for SXT intensity conversion
+  - Sphere-like organelle morphology optimization
+* **Preprocessing**: 
+  - LAC factor normalization: ``img = img * lac_factor``
+  - Intensity clamping: ``img[img > 1] = 1``
+  - 8-bit conversion: ``(img - min_val) / max_val * 255``
+* **Output Threshold**: 0.5 (configurable for sensitivity adjustment)
+* **Model File**: ``vesicle_mask0.63_processed.pth``
+
+Dataset Information for SXT
+----------------------------
+
+**SXT Cell Segmentation Dataset**
+
+* **Source**: Soft X-ray Tomography imaging datasets from PBC Consortium (Pancreatic Beta Cell Consortium)
+* **Data Access**: Available through `PBC Dataset Portal <https://pbcconsortium.isrd.isi.edu/>`_
+* **Sample Size**: 24 SXT tomograms total
+* **Image Modality**: Soft X-ray Tomography (SXT)
+* **Imaging Parameters**: Optimized for cellular structure visualization with natural contrast
+* **Resolution**: High spatial resolution enabling subcellular structure identification
+* **Sample Types**: Pancreatic β-cells during insulin secretion process
+* **Annotation Method**: Expert manual annotation on SXT tomographic slices for membrane, nucleus, and mitochondria
+* **Data Partition**: 18 training / 3 validation / 3 testing samples
+
+**Dataset Partition Details**
+
+*Training Set (18 samples):*
+766_10, 766_11, 766_2, 766_7, 769_5, 769_7, 783_12, 783_6, 784_4, 784_6, 784_7, 785_7, 822_4, 822_6, 822_7, 842_13, 931_14, 931_9
+
+*Validation Set (3 samples):*
+766_5, 783_5, 842_12
+
+*Testing Set (3 samples):*
+766_8, 784_5, 842_17
+
+**SXT Mitochondria Dataset**
+
+* **Source**: High-resolution SXT tomographic datasets with focus on mitochondrial structures in pancreatic β-cells
+* **Sample Size**: Same 24 SXT samples with specialized mitochondrial annotations
+* **Image Modality**: Soft X-ray Tomography optimized for organelle visualization
+* **Imaging Parameters**: SXT-specific settings for optimal mitochondrial contrast in β-cells
+* **Resolution**: High-resolution specifications for mitochondrial detail analysis
+* **Sample Preparation**: Near-native state pancreatic β-cell samples during insulin secretion
+* **Annotation Method**: Expert manual annotation of mitochondrial boundaries in SXT tomograms
+* **Validation Split**: Same partition as cell segmentation dataset
+
+.. SXT Data Preprocessing
+.. ----------------------
+
+.. **SXT-Specific Standardization Pipeline:**
+
+.. * **Normalization**: Custom normalization adapted for SXT intensity distributions and contrast characteristics
+.. * **Augmentation**: SXT-appropriate data augmentation strategies preserving tomographic consistency
+.. * **Quality Control**: SXT-specific quality assessment including alignment and reconstruction artifacts
+.. * **Format Conversion**: Support for standard SXT file formats (.mrc, .tif) and tomographic data structures
+.. * **Artifact Removal**: Processing to handle SXT-specific imaging artifacts and noise patterns
+
+.. **Data Organization:**
+
+.. .. code-block:: text
+
+..     data/
+..     ├── image_xyz/          # SXT tomogram images
+..     │   ├── 766_8/
+..     │   ├── 784_5/
+..     │   └── 842_17/
+..     └── mask_xyz/           # Manual annotations
+..         ├── 766_8/
+..         ├── 784_5/
+..         └── 842_17/
+
+.. Performance Metrics for SXT
+.. ----------------------------
+
+.. **Nucleus Segmentation Performance**
+
+.. .. list-table:: Nucleus Segmentation Metrics (IoU Scores)
+..    :widths: 25 25 25 25
+..    :header-rows: 1
+
+..    * - Sample ID
+..      - Before 3D Fusion
+..      - After 3D Fusion
+..      - Improvement
+..    * - 766_8
+..      - 93.21%
+..      - 93.92%
+..      - +0.71%
+..    * - 784_5
+..      - 89.95%
+..      - 91.82%
+..      - +1.87%
+..    * - 842_17
+..      - 83.50%
+..      - 89.49%
+..      - +5.99%
+..    * - **Mean**
+..      - **88.89%**
+..      - **91.74%**
+..      - **+2.85%**
+
+.. **Membrane Segmentation Performance**
+
+.. .. list-table:: Membrane Segmentation Metrics (IoU Scores)
+..    :widths: 25 25 25 25
+..    :header-rows: 1
+
+..    * - Sample ID
+..      - Before 3D Fusion
+..      - After 3D Fusion
+..      - Improvement
+..    * - 766_8
+..      - 90.74%
+..      - 93.54%
+..      - +2.80%
+..    * - 784_5
+..      - 87.43%
+..      - 89.41%
+..      - +1.98%
+..    * - 842_17
+..      - 85.34%
+..      - 91.85%
+..      - +6.51%
+..    * - **Mean**
+..      - **87.84%**
+..      - **91.60%**
+..      - **+3.76%**
+
+.. **Mitochondria Segmentation Performance**
+
+.. .. list-table:: Mitochondria Segmentation Metrics (IoU Scores)
+..    :widths: 25 25 25 25
+..    :header-rows: 1
+
+..    * - Sample ID
+..      - Before 3D Fusion
+..      - After 3D Fusion
+..      - Improvement
+..    * - 766_8
+..      - 68.58%
+..      - 70.34%
+..      - +1.76%
+..    * - 784_5
+..      - 63.17%
+..      - 67.29%
+..      - +4.12%
+..    * - 842_17
+..      - 65.03%
+..      - 67.40%
+..      - +2.37%
+..    * - **Mean**
+..      - **65.59%**
+..      - **68.34%**
+..      - **+2.75%**
+
+.. Model Files and Resources
+.. -------------------------
+
+.. * **Pre-trained Models**: Available for download
+  
+..   - `FS_mito model <https://drive.google.com/file/d/1RCwETRuUYfAURD8XXJ1RQVGOTIQavQuE/view?usp=sharing>`_: Mitochondria segmentation
+..   - `FS_mem_nu model <https://drive.google.com/file/d/1TRk_AWms32EFG-sqhfd4q4Td3ptmlxEp/view?usp=sharing>`_: Combined membrane and nucleus segmentation
+
+.. * **RDF Results**: Detailed analysis results available for `download <https://drive.google.com/file/d/13kPjGTrzVUX43bJwBVLtZRaWDYUok9rZ/view?usp=sharing>`_
+
+.. References and Citations
+.. -------------------------
+
+.. **Publications:**
+.. * Li, A., Zhang, X., Singla, J., White, K., Loconte, V., Hu, C., ... & Stevens, R. C. (2022). Auto-segmentation and time-dependent systematic analysis of mesoscale cellular structure in β-cells during insulin secretion. *PLOS ONE*, 17(3), e0265567. https://doi.org/10.1371/journal.pone.0265567
+
+.. **Dataset Credits:**
+.. * **PBC Consortium (Pancreatic Beta Cell Consortium)**: SXT imaging datasets for pancreatic β-cell analysis
+.. * **PBC Dataset Portal**: https://www.pbcconsortium.org/
+
+.. **Code and Model Availability:**
+.. * **GitHub Repository**: https://github.com/Xiangyi1996/Cell-Segmentation
+
