@@ -72,7 +72,7 @@ Inside the container, you can run any example script:
 python examples/examples_et/demo_cryoET_filament_predict.py
 ```
 
-#### Option B: Local Installation (Recommended for Developers)
+#### Option B: Local Installation
 
 ```bash
 # Clone the repository
