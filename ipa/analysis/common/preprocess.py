@@ -1,4 +1,3 @@
-from matplotlib.cbook import maxdict
 import numpy as np
 import scipy
 import scipy.ndimage

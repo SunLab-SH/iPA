@@ -6,24 +6,22 @@ from ipa.processing.partitioning import Partitioning
 from ipa.processing.partitioning import visualize_partitions, plot_partition_features
 from ipa.data_loader import QuickLogger
 import matplotlib
-matplotlib.use('TkAgg')  # Use TkAgg backend to support graphical display
+matplotlib.use('Agg')  # Use Agg backend for non-interactive mode
 import matplotlib.pyplot as plt
 import mrcfile
 import pickle
 import json
 import os
-import pandas as pd
-
 import sys
-from parsers import get_args
+from pathlib import Path
 
-mainpath = get_args().main_path
-
-
-
+# --- Path Configuration ---
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, '..', '..'))
+sys.path.insert(0, PROJECT_ROOT)
 
 def main():
-    mainpath = get_args().main_path
+    mainpath = PROJECT_ROOT
     
     # Initialize logger
     log_dir = f'{mainpath}/logs'
@@ -31,7 +29,7 @@ def main():
     logger.step("Starting WFM Partitioning Analysis Demo")
     
     print(mainpath)
-    root_dir = f'{mainpath}/data/wfm_images/'  # Output directory, recommended to create new
+    root_dir = f'{mainpath}/data/wfm/'  # Output directory, recommended to create new
     dataid = '2.8-30_P3S3-1'
     
     logger.step(f"Working with dataset: {dataid}")
@@ -40,8 +38,8 @@ def main():
     results_dir = f'{root_dir}results/'
     os.makedirs(results_dir, exist_ok=True)
 
-    mask_pm_path = f'{mainpath}/data/wfm_images/{dataid}_Memb.mrc'
-    mask_ne_path = f'{mainpath}/data/wfm_images/{dataid}_Nuc.mrc'
+    mask_pm_path = f'{mainpath}/data/wfm/{dataid}_Memb.mrc'
+    mask_ne_path = f'{mainpath}/data/wfm/{dataid}_Nuc.mrc'
 
     logger.step("Loading mask data")
     logger.file_in(mask_pm_path)
@@ -67,7 +65,10 @@ def main():
     plt.imshow(mask_data_pm[15] + mask_data_ne[15], cmap='gray')
     plt.title(f"Mask Data - Data ID: {dataid}, Time Point: {tp}")
     plt.axis('off')
-    plt.show()
+    mask_viz_path = f'{results_dir}mask_visualization.png'
+    plt.savefig(mask_viz_path, dpi=150, bbox_inches='tight')
+    logger.step(f"Mask visualization saved to: {mask_viz_path}")
+    plt.close()
 
     # 2. Initialize partitioning processor
     logger.step("Initializing partitioning processor")
@@ -139,8 +140,10 @@ def main():
     axes[2].axis('off')
     
     plt.tight_layout()
-    plt.savefig(f"{results_dir}{dataid}_partition_comparison.png", dpi=300, bbox_inches='tight')
-    plt.show()
+    comparison_path = f"{results_dir}{dataid}_partition_comparison.png"
+    plt.savefig(comparison_path, dpi=300, bbox_inches='tight')
+    logger.step(f"Partition comparison saved to: {comparison_path}")
+    plt.close()
     
     # Get the number of unique partitions for proper vmax
     unique_partitions = np.unique(partition_masks)
@@ -163,7 +166,8 @@ def main():
     plt.tight_layout()
     plt.savefig(comparison_plot_path, dpi=300, bbox_inches='tight')
     logger.file_out(comparison_plot_path)
-    plt.show()
+    logger.step(f"Final comparison plot saved to: {comparison_plot_path}")
+    plt.close()
     
     # 2D visualization at middle slice
     middle_slice = mask_data_pm.shape[0] // 2

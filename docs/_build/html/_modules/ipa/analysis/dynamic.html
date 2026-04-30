@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ipa.analysis.dynamic &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../rest_files/data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rest_files/processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rest_files/analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rest_files/data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rest_files/examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">ipa.analysis.dynamic</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ipa.analysis.dynamic</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<div class="viewcode-block" id="calculate_3d_velocity">
+<a class="viewcode-back" href="../../../rest_files/analysis/dynamics.html#ipa.analysis.calculate_3d_velocity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_3d_velocity</span><span class="p">(</span><span class="n">positions_t1</span><span class="p">,</span> <span class="n">positions_t2</span><span class="p">,</span> <span class="n">time_interval_s</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate 3D velocity from consecutive frame positions.</span>
+<span class="sd">    </span>
+<span class="sd">    The 3D velocity is calculated as the Euclidean distance of positions at two </span>
+<span class="sd">    consecutive time steps, divided by the time interval between the steps.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    positions_t1 : np.ndarray</span>
+<span class="sd">        Organelle positions at time t1 [N, 3] (in micrometers)</span>
+<span class="sd">    positions_t2 : np.ndarray</span>
+<span class="sd">        Organelle positions at time t2 [N, 3] (in micrometers)</span>
+<span class="sd">    time_interval_s : float</span>
+<span class="sd">        Time interval between frames (seconds)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of 3D velocities [N] in μm/s</span>
+<span class="sd">        </span>
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from ipa.analysis import calculate_3d_velocity</span>
+<span class="sd">    &gt;&gt;&gt; pos1 = np.array([[10, 20, 30], [15, 25, 35]])  # μm</span>
+<span class="sd">    &gt;&gt;&gt; pos2 = np.array([[10.5, 20.3, 30.2], [15.4, 25.2, 35.1]])  # μm</span>
+<span class="sd">    &gt;&gt;&gt; dt = 8.0  # seconds</span>
+<span class="sd">    &gt;&gt;&gt; velocities = calculate_3d_velocity(pos1, pos2, dt)</span>
+<span class="sd">    &gt;&gt;&gt; print(velocities)  # [0.064, 0.051] μm/s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions_t1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions_t2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Position arrays must have same length&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">time_interval_s</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time interval must be positive&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Calculate Euclidean distances</span>
+    <span class="n">displacements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">positions_t2</span> <span class="o">-</span> <span class="n">positions_t1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># Convert to velocity (assuming positions are in μm)</span>
+    <span class="n">velocities</span> <span class="o">=</span> <span class="n">displacements</span> <span class="o">/</span> <span class="n">time_interval_s</span>
+    
+    <span class="k">return</span> <span class="n">velocities</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_radial_velocity">
+<a class="viewcode-back" href="../../../rest_files/analysis/dynamics.html#ipa.analysis.calculate_radial_velocity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_radial_velocity</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span><span class="p">,</span> <span class="n">pm_mask</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate radial velocity of organelles projected along the direction to the nearest PM voxel.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    positions : np.ndarray</span>
+<span class="sd">        Array of organelle positions [N, 3].</span>
+<span class="sd">    velocities : np.ndarray</span>
+<span class="sd">        Array of 3D velocity vectors [N, 3].</span>
+<span class="sd">    pm_mask : np.ndarray</span>
+<span class="sd">        3D binary mask of the plasma membrane.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of radial velocity values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">cKDTree</span>
+    
+    <span class="c1"># Get coordinates of PM voxels</span>
+    <span class="n">pm_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pm_mask</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pm_coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;PM mask is empty. Cannot calculate radial velocity.&quot;</span><span class="p">)</span>
+        
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">pm_coords</span><span class="p">)</span>
+    <span class="n">radial_velocities</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">vel</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span><span class="p">):</span>
+        <span class="c1"># Find nearest PM point</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+        <span class="n">nearest_pm</span> <span class="o">=</span> <span class="n">pm_coords</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        
+        <span class="c1"># Vector from organelle to PM</span>
+        <span class="n">vec_to_pm</span> <span class="o">=</span> <span class="n">nearest_pm</span> <span class="o">-</span> <span class="n">pos</span>
+        <span class="n">norm_vec</span> <span class="o">=</span> <span class="n">vec_to_pm</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec_to_pm</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+        
+        <span class="c1"># Project velocity onto this radial vector</span>
+        <span class="n">v_radial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vel</span><span class="p">,</span> <span class="n">norm_vec</span><span class="p">)</span>
+        <span class="n">radial_velocities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_radial</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">radial_velocities</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="create_velocity_violin_plot">
+<a class="viewcode-back" href="../../../rest_files/analysis/dynamics.html#ipa.analysis.create_velocity_violin_plot">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_velocity_violin_plot</span><span class="p">(</span><span class="n">speed_data</span><span class="p">,</span> <span class="n">max_speed</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">y_limit</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span>
+                            <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a violin plot for velocity data comparison between categories</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    speed_data : list</span>
+<span class="sd">        List of tuples (speed, category)</span>
+<span class="sd">    max_speed : float, optional</span>
+<span class="sd">        Maximum speed threshold for filtering outliers</span>
+<span class="sd">    y_limit : float, optional</span>
+<span class="sd">        Y-axis upper limit for the plot</span>
+<span class="sd">    figure_size : tuple, optional</span>
+<span class="sd">        Figure size as (width, height) in inches</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    matplotlib.figure.Figure : The created figure object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Create DataFrame from speed data</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">speed_data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span> <span class="s1">&#39;Category&#39;</span><span class="p">])</span>
+    
+    <span class="c1"># Filter out extreme outliers</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Speed&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_speed</span><span class="p">]</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data summary after filtering (speed &lt;= </span><span class="si">{</span><span class="n">max_speed</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total data points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LG category: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;LG&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HG category: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;HG&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Create figure</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figure_size</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    
+    <span class="c1"># Create violin plot</span>
+    <span class="n">violin</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+        <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;LG&#39;</span><span class="p">:</span> <span class="s1">&#39;#00BFBF&#39;</span><span class="p">,</span> <span class="s1">&#39;HG&#39;</span><span class="p">:</span> <span class="s1">&#39;#FFA000&#39;</span><span class="p">},</span>
+        <span class="n">inner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Don&#39;t show internal lines</span>
+        <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># Remove border lines</span>
+        <span class="n">bw</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>      <span class="c1"># Bandwidth for kernel density estimation</span>
+        <span class="n">cut</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>       <span class="c1"># Don&#39;t extend beyond data range</span>
+        <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;area&#39;</span> <span class="c1"># Scale violin area</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># Add mean lines for each category</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">category</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;LG&#39;</span><span class="p">,</span> <span class="s1">&#39;HG&#39;</span><span class="p">]):</span>
+        <span class="n">mean_val</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">category</span><span class="p">][</span><span class="s1">&#39;Speed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">mean_val</span><span class="p">,</span> 
+                   <span class="n">xmin</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mf">0.4</span><span class="p">,</span> 
+                   <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                   <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                   <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean velocity for </span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">mean_val</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> um/s&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Customize plot appearance</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Remove x-axis tick marks</span>
+    
+    <span class="c1"># Adjust axes</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_limit</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;0.0&#39;</span><span class="p">,</span> <span class="s1">&#39;0.2&#39;</span><span class="p">])</span>  <span class="c1"># Show only two y-axis ticks</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">ticks</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">])</span>  <span class="c1"># Remove x-axis labels</span>
+    
+    <span class="c1"># Set axis label styling</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;3D velocity of ISG [um/s]&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+    
+    <span class="c1"># # Save figure if path is provided</span>
+    <span class="c1"># if save_path:</span>
+    <span class="c1">#     plt.savefig(save_path, dpi=900, bbox_inches=&#39;tight&#39;)</span>
+    <span class="c1">#     print(f&quot;Figure saved to: {save_path}&quot;)</span>
+    
+    <span class="k">return</span> <span class="n">fig</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -16,11 +16,13 @@ from tqdm import tqdm
 
 # Add performance optimization dependencies
 try:
-    from numba import njit, prange
-    NUMBA_AVAILABLE = True
+    import torch
+    TORCH_AVAILABLE = True
+    DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 except ImportError:
-    NUMBA_AVAILABLE = False
-    print("Warning: Numba not available. Performance optimizations will be limited.")
+    TORCH_AVAILABLE = False
+    DEVICE = torch.device('cpu')
+    print("Warning: PyTorch not available. Falling back to CPU processing.")
 
 try:
     from joblib import Parallel, delayed
@@ -29,102 +31,7 @@ except ImportError:
     JOBLIB_AVAILABLE = False
     print("Warning: Joblib not available. Parallel processing will be disabled.")
 
-# Numba-accelerated core computation functions
-if NUMBA_AVAILABLE:
-    @njit(parallel=True)
-    def _vectorized_partition_assignment(coords, radial_dist, n_partitions, shape):
-        """
-        Numba-accelerated vectorized partition assignment with corrected logic
-        """
-        partition_ids = np.zeros(len(coords), dtype=np.int32)
-        
-        for i in prange(len(coords)):
-            z, y, x = coords[i]
-            if 0 <= z < shape[0] and 0 <= y < shape[1] and 0 <= x < shape[2]:
-                base_radial_pos = radial_dist[z, y, x]
-                
-                # Corrected partition assignment logic
-                # radial_dist ranges from 0 (at nucleus) to 1 (at PM)
-                # Partition 1 = innermost (near nucleus), Partition n = outermost (near PM)
-                if base_radial_pos <= 0.0:
-                    partition_id = 1  # Very close to nucleus -> innermost partition
-                elif base_radial_pos >= 1.0:
-                    partition_id = n_partitions  # Very close to PM -> outermost partition
-                else:
-                    # Linear mapping from (0,1) to (1, n_partitions)
-                    partition_id = int(base_radial_pos * n_partitions) + 1
-                    partition_id = min(max(1, partition_id), n_partitions)
-                
-                partition_ids[i] = partition_id
-            else:
-                partition_ids[i] = 0
-                
-        return partition_ids
 
-    @njit
-    def _fast_distance_calculation(p1, p2):
-        """
-        Fast distance calculation
-        """
-        return np.sqrt(np.sum((p1 - p2) ** 2))
-
-    @njit(parallel=True)
-    def _vectorized_distance_filter(pairs, min_dist, max_dist):
-        """
-        Vectorized distance filtering
-        """
-        n_pairs = len(pairs)
-        valid_mask = np.zeros(n_pairs, dtype=np.bool_)
-        
-        for i in prange(n_pairs):
-            ne_pt = pairs[i, :3]
-            pm_pt = pairs[i, 3:6]
-            dist = _fast_distance_calculation(ne_pt, pm_pt)
-            valid_mask[i] = min_dist <= dist <= max_dist
-            
-        return valid_mask
-else:
-    # Fallback functions for non-Numba version
-    def _vectorized_partition_assignment(coords, radial_dist, n_partitions, shape):
-        partition_ids = np.zeros(len(coords), dtype=np.int32)
-        valid_mask = (
-            (coords[:, 0] >= 0) & (coords[:, 0] < shape[0]) &
-            (coords[:, 1] >= 0) & (coords[:, 1] < shape[1]) &  
-            (coords[:, 2] >= 0) & (coords[:, 2] < shape[2])
-        )
-        
-        valid_coords = coords[valid_mask]
-        if len(valid_coords) > 0:
-            radial_values = radial_dist[valid_coords[:, 0], valid_coords[:, 1], valid_coords[:, 2]]
-            
-            # Corrected partition assignment logic
-            # radial_dist ranges from 0 (at nucleus) to 1 (at PM)
-            # Partition 1 = innermost (near nucleus), Partition n = outermost (near PM)
-            partition_values = np.zeros_like(radial_values, dtype=int)
-            
-            # Handle boundary cases
-            inner_mask = radial_values <= 0.0
-            outer_mask = radial_values >= 1.0
-            middle_mask = (radial_values > 0.0) & (radial_values < 1.0)
-            
-            partition_values[inner_mask] = 1  # Innermost partition
-            partition_values[outer_mask] = n_partitions  # Outermost partition
-            
-            # Linear mapping for middle values
-            if np.any(middle_mask):
-                middle_values = radial_values[middle_mask]
-                partition_values[middle_mask] = np.clip(
-                    (middle_values * n_partitions).astype(int) + 1,
-                    1, n_partitions
-                )
-            
-            partition_ids[valid_mask] = partition_values
-            
-        return partition_ids
-
-    def _vectorized_distance_filter(pairs, min_dist, max_dist):
-        distances = np.linalg.norm(pairs[:, :3] - pairs[:, 3:6], axis=1)
-        return (distances >= min_dist) & (distances <= max_dist)
 
 class Partitioning:
     """
@@ -202,7 +109,40 @@ class Partitioning:
         pm_mask = np.load(pm_path)
         return ne_mask, pm_mask
 
-    def extract_ne_pm_edges(self, pm_mask, ne_mask):
+    @staticmethod
+    def smooth_mask(mask: np.ndarray, sigma: float = 1.0, close_iter: int = 2) -> np.ndarray:
+        """
+        Smooth binary mask using Gaussian filtering and morphological closing.
+        
+        Parameters
+        ----------
+        mask : numpy.ndarray
+            Input binary mask.
+        sigma : float
+            Sigma for Gaussian filter. Higher values produce smoother boundaries.
+        close_iter : int
+            Number of iterations for morphological closing to fill small gaps.
+            
+        Returns
+        -------
+        numpy.ndarray
+            Smoothed binary mask.
+        """
+        from scipy.ndimage import gaussian_filter, binary_closing
+        
+        # 1. Gaussian smoothing on float mask
+        smoothed = gaussian_filter(mask.astype(float), sigma=sigma)
+        
+        # 2. Threshold back to binary
+        binary_smoothed = smoothed > 0.5
+        
+        # 3. Morphological closing to bridge small gaps
+        if close_iter > 0:
+            binary_smoothed = binary_closing(binary_smoothed, iterations=close_iter)
+            
+        return binary_smoothed.astype(np.uint8)
+
+    def extract_ne_pm_edges(self, pm_mask, ne_mask, smooth_sigma=1.0, smooth_close_iter=2):
         """
         Extract nuclear envelope and plasma membrane boundary points and cellular center from 3D mask data
         
@@ -215,6 +155,10 @@ class Partitioning:
             3D binary mask of plasma membrane, shape (Z, Y, X)
         ne_mask : numpy.ndarray
             3D binary mask of nuclear envelope, shape (Z, Y, X)
+        smooth_sigma : float, optional
+            Sigma for Gaussian smoothing. Set to 0 to disable smoothing.
+        smooth_close_iter : int, optional
+            Iterations for morphological closing to fill small gaps.
             
         Returns
         -------
@@ -226,6 +170,11 @@ class Partitioning:
             Plasma membrane boundary point coordinates array, shape (M, 3)
         """
         from scipy.ndimage import binary_erosion, binary_fill_holes
+        
+        # Apply smoothing if requested (improves robustness for WFM/SIM)
+        if smooth_sigma > 0:
+            ne_mask = self.smooth_mask(ne_mask, sigma=smooth_sigma, close_iter=smooth_close_iter)
+            pm_mask = self.smooth_mask(pm_mask, sigma=smooth_sigma, close_iter=smooth_close_iter)
         
         # Ensure binary masks
         pm_binary = pm_mask > 0
@@ -283,8 +232,8 @@ class Partitioning:
         Notes
         -----
         Uses cosine similarity to calculate vector angles:
-        cos(θ) = (v1 · v2) / (|v1| × |v2|)
-        Selects the point with maximum cos(θ), i.e., minimal angle.
+        cos(angle) = dot product of vectors divided by product of their magnitudes
+        Selects the point with maximum cosine value, i.e., minimal angle.
         
         Examples
         --------
@@ -311,42 +260,12 @@ class Partitioning:
     def find_ne_pm_pairs(self, center, ne_edge, pm_edge, 
                          step=8, save_txt=False, dataid=None):
         """
-        Pair nuclear envelope and plasma membrane boundary points to establish radial connections
-        
-        Reduces computational complexity through controlled sampling strategies while maintaining 
-        analysis accuracy. Algorithm prioritizes keeping NE point count within reasonable range, 
-        then finds optimal matching PM points for each NE point.
-        
-        Parameters
-        ----------
-        center : numpy.ndarray
-            Cell center coordinates
-        ne_edge : numpy.ndarray
-            Nuclear envelope boundary points array
-        pm_edge : numpy.ndarray
-            Plasma membrane boundary points array
-        step : int, default=8
-            Sampling step size for controlling point density (automatically adjusted based on target count)
-        save_txt : bool, default=False
-            Whether to save pairing results to text file
-        dataid : str, optional
-            Data identifier for file naming
-            
-        Returns
-        -------
-        numpy.ndarray
-            Paired points array, shape (K, 6), each row contains [ne_z, ne_y, ne_x, pm_z, pm_y, pm_x]
-            
-        Notes
-        -----
-        Optimized version using KDTree for accelerated NE-PM pairing algorithm with distance filtering
+        Pair nuclear envelope and plasma membrane boundary points using GPU acceleration.
         """
-        from scipy.spatial import cKDTree
-        
         print(f"Original NE edge points: {len(ne_edge)}")
         print(f"Original PM edge points: {len(pm_edge)}")
 
-        # Intelligent sampling control
+        # Sampling control
         target_ne_points = min(50000, len(ne_edge))
         if len(ne_edge) > target_ne_points:
             ne_step = len(ne_edge) // target_ne_points
@@ -354,17 +273,90 @@ class Partitioning:
         else:
             ne_sampled = ne_edge
         
-        target_pm_points = min(len(ne_sampled) * 8, len(pm_edge))
+        # Limit PM points to avoid memory issues (max 100k for GPU batch processing)
+        target_pm_points = min(len(ne_sampled) * 8, 100000, len(pm_edge))
         if len(pm_edge) > target_pm_points:
             pm_step = len(pm_edge) // target_pm_points
             pm_sampled = pm_edge[::pm_step]
         else:
             pm_sampled = pm_edge
         
-        print(f"Sampled NE edge points: {len(ne_sampled)}")
-        print(f"Sampled PM edge points: {len(pm_sampled)}")
+        print(f"Sampled NE: {len(ne_sampled)}, PM: {len(pm_sampled)}")
 
-        # Optimized batch vector computation
+        if TORCH_AVAILABLE and DEVICE.type == 'cuda':
+            return self._find_pairs_gpu(center, ne_sampled, pm_sampled, save_txt, dataid)
+        else:
+            return self._find_pairs_cpu(center, ne_sampled, pm_sampled, save_txt, dataid)
+
+    def _find_pairs_gpu(self, center, ne_sampled, pm_sampled, save_txt, dataid):
+        """GPU-accelerated pairing using PyTorch with dynamic batch sizing."""
+        import torch
+        
+        ne_tensor = torch.tensor(ne_sampled, dtype=torch.float32, device=DEVICE)
+        pm_tensor = torch.tensor(pm_sampled, dtype=torch.float32, device=DEVICE)
+        center_tensor = torch.tensor(center, dtype=torch.float32, device=DEVICE)
+
+        # Normalize vectors for angle matching
+        pm_vectors = pm_tensor - center_tensor
+        pm_norms = torch.norm(pm_vectors, dim=1, keepdim=True)
+        pm_unit = pm_vectors / (pm_norms + 1e-8)
+        
+        ne_vectors = ne_tensor - center_tensor
+        ne_norms = torch.norm(ne_vectors, dim=1, keepdim=True)
+        ne_unit = ne_vectors / (ne_norms + 1e-8)
+
+        # Dynamic batch size calculation based on GPU memory
+        num_pm = len(pm_unit)
+        # Estimate memory per row: num_pm * 4 bytes (float32) * 2 (for sim_matrix and overhead)
+        # Leave some margin (e.g., use 50% of available memory for this matrix)
+        try:
+            free_mem = torch.cuda.mem_get_info()[0]  # Available memory in bytes
+            target_mem = free_mem * 0.4  # Use 40% of free memory
+            max_rows = int(target_mem / (num_pm * 4))
+            batch_size = min(max(100, max_rows), 5000)  # Clamp between 100 and 5000
+        except:
+            batch_size = 1000  # Fallback fixed value
+            
+        print(f"[GPU] Using batch size: {batch_size} (PM points: {num_pm})")
+
+        matched_indices_list = []
+        
+        for i in range(0, len(ne_unit), batch_size):
+            ne_batch = ne_unit[i:i+batch_size]
+            
+            # Compute similarity matrix for this batch
+            sim_matrix = torch.mm(ne_batch, pm_unit.t())
+            
+            # Find best match for each NE point in batch
+            best_pm_indices = torch.argmax(sim_matrix, dim=1)
+            matched_indices_list.append(best_pm_indices)
+            
+            # Clear cache to prevent fragmentation
+            if i % (batch_size * 5) == 0:
+                torch.cuda.empty_cache()
+        
+        # Concatenate all matched indices
+        all_best_pm_indices = torch.cat(matched_indices_list, dim=0)
+        pm_matched = pm_tensor[all_best_pm_indices]
+        
+        pairs_array = torch.cat([ne_tensor, pm_matched], dim=1).cpu().numpy()
+        
+        # Distance filtering
+        dists = np.linalg.norm(pairs_array[:, :3] - pairs_array[:, 3:6], axis=1)
+        valid_mask = (dists >= 15.0) & (dists <= 200.0)
+        pairs = pairs_array[valid_mask]
+        
+        if save_txt and dataid:
+            os.makedirs(f"{self.root_dir}/results", exist_ok=True)
+            np.savetxt(f"{self.root_dir}/results/{dataid}_pairs.txt", pairs, fmt='%.2f')
+            
+        print(f"[GPU] Generated {len(pairs)} pairs")
+        return pairs
+
+    def _find_pairs_cpu(self, center, ne_sampled, pm_sampled, save_txt, dataid):
+        """Fallback CPU pairing using KDTree."""
+        from scipy.spatial import cKDTree
+        
         pm_vectors = pm_sampled - center
         pm_norms = np.linalg.norm(pm_vectors, axis=1)
         pm_unit_vectors = pm_vectors / (pm_norms[:, np.newaxis] + 1e-8)
@@ -373,59 +365,21 @@ class Partitioning:
         ne_norms = np.linalg.norm(ne_vectors, axis=1)
         ne_unit_vectors = ne_vectors / (ne_norms[:, np.newaxis] + 1e-8)
         
-        # Batch KDTree queries (key optimization)
-        print("Building KDTree and performing batch queries...")
         pm_tree = cKDTree(pm_unit_vectors)
-        
-        # Batch query all NE points at once
         distances, indices = pm_tree.query(ne_unit_vectors, k=1)
         
-        # Build initial pairing array
         pm_matched = pm_sampled[indices]
         pairs_array = np.column_stack([ne_sampled, pm_matched])
         
-        # Vectorized distance calculation and filtering
-        print("Applying vectorized distance filtering...")
-        min_distance_threshold = 15.0
-        max_distance_threshold = 200.0
-        
-        if NUMBA_AVAILABLE:
-            valid_mask = _vectorized_distance_filter(
-                pairs_array, min_distance_threshold, max_distance_threshold
-            )
-        else:
-            euclidean_dists = np.linalg.norm(pairs_array[:, :3] - pairs_array[:, 3:6], axis=1)
-            valid_mask = (euclidean_dists >= min_distance_threshold) & (euclidean_dists <= max_distance_threshold)
-        
+        euclidean_dists = np.linalg.norm(pairs_array[:, :3] - pairs_array[:, 3:6], axis=1)
+        valid_mask = (euclidean_dists >= 15.0) & (euclidean_dists <= 200.0)
         pairs = pairs_array[valid_mask]
         
-        if len(pairs) > 0:
-            # Calculate distance statistics
-            if NUMBA_AVAILABLE:
-                pair_distances = np.array([_fast_distance_calculation(pair[:3], pair[3:6]) for pair in pairs])
-            else:
-                pair_distances = np.linalg.norm(pairs[:, :3] - pairs[:, 3:6], axis=1)
-            
-            print(f"Distance statistics: min={np.min(pair_distances):.2f}, "
-                  f"max={np.max(pair_distances):.2f}, mean={np.mean(pair_distances):.2f}")
-            
-            # Further filtering based on distribution
-            distance_threshold_low = np.percentile(pair_distances, 5)
-            distance_threshold_high = np.percentile(pair_distances, 95)
-            
-            final_valid_mask = (pair_distances >= distance_threshold_low) & (pair_distances <= distance_threshold_high)
-            pairs = pairs[final_valid_mask]
-            
-            print(f"After distance filtering: {len(pairs)} pairs retained")
-
-        # Save results
-        if save_txt and dataid is not None:
+        if save_txt and dataid:
             os.makedirs(f"{self.root_dir}/results", exist_ok=True)
-            out_path = f"{self.root_dir}/results/{dataid}_pairs.txt"
-            np.savetxt(out_path, pairs, fmt='%.2f')
-            print(f"[INFO] Saved NE-PM pairs to {out_path}")
-
-        print(f"[INFO] NE-PM pairs generated: {len(pairs)}")
+            np.savetxt(f"{self.root_dir}/results/{dataid}_pairs.txt", pairs, fmt='%.2f')
+            
+        print(f"[CPU] Generated {len(pairs)} pairs")
         return pairs
 
     @staticmethod
@@ -1215,3 +1169,18 @@ class Partitioning:
         """
         print("Warning: create_shell_based_partitions is deprecated. Use create_nepm_radial_partitions_with_edt instead.")
         return self.create_nepm_radial_partitions_with_edt(ne_edge, pm_edge, shape, n_slices, pm_mask, ne_mask)
+    
+    # Alias for pure pairs method (for clarity)
+    def create_nepm_radial_partitions_pure_pairs(self, ne_edge, pm_edge, shape, n_slices=None, pm_mask=None, ne_mask=None):
+        """
+        Alias for create_nepm_radial_partitions().
+        
+        This method name explicitly indicates it uses the pure NE-PM pair approach
+        without EDT guidance. It's provided for clarity and backward compatibility.
+        
+        See Also
+        --------
+        create_nepm_radial_partitions : The main implementation
+        create_nepm_radial_partitions_with_edt : EDT-guided alternative
+        """
+        return self.create_nepm_radial_partitions(ne_edge, pm_edge, shape, n_slices, pm_mask, ne_mask)

@@ -79,6 +79,15 @@ def convert_img(img_3d):
     img_3d_new = (img_3d - min_val) / max_val * 255
     return img_3d_new.astype(np.uint8)
 
+def convert_img_with_params(img_3d, lac_factor=33.33):
+    """Convert image with LAC normalization factor."""
+    img = img_3d * lac_factor
+    img[img > 1] = 1
+    min_val = np.min(img)
+    max_val = 1
+    img_new = (img - min_val) / max_val * 255
+    return img_new.astype(np.uint8)
+
 
 def load_img(path):
 
@@ -129,17 +138,19 @@ def run_sphere_like_organelle_segmentation(save_dir=None,
     
     # Set default model path if not provided
     if model_path is None:
-        model_path = f'{filepath}/vesicle_mask0.63_processed.pth'
+        # Use relative path to the unified models directory
+        model_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'models', 'sxt')
+        model_path = os.path.join(model_dir, 'isg_unet_best.pth')
     
     # Set default save directory if not provided
     if save_dir is None:
-        save_dir = f'{filepath}/results/isg_semantic_mask'
+        save_dir = os.path.join(filepath, 'results', 'isg_semantic_mask')
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     # Load model
     net = UNet(n_channels=3, n_classes=2, bilinear=False)
-    net.load_state_dict(torch.load(model_path, map_location=device))
+    net.load_state_dict(torch.load(model_path, map_location=device, weights_only=False))
     net.to(device)
     
     os.makedirs(save_dir, exist_ok=True)

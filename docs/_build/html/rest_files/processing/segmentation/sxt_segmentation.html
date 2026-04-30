@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SXT Segmentation &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="SXT ISG Mask R-CNN Instance Segmentation" href="sxt_isg_mask_rcnn.html" />
+    <link rel="prev" title="Segmentation Module" href="segmentation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../processing.html">Processing Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../denoising.html">Denoising Module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="segmentation.html">Segmentation Module</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#architecture">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#key-components">Key Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#model-architecture-and-methods">Model Architecture and Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#model-selection-guide">Model Selection Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#quick-start">Quick Start</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="segmentation.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">SXT Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sim_wfm_segmentation.html">SIM/WFM Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="et_segmentation.html">Cryo-ET Segmentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../partitioning.html">Partitioning Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../processing.html">Processing Module</a></li>
+          <li class="breadcrumb-item"><a href="segmentation.html">Segmentation Module</a></li>
+      <li class="breadcrumb-item active">SXT Segmentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/rest_files/processing/segmentation/sxt_segmentation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sxt-segmentation">
+<h1>SXT Segmentation<a class="headerlink" href="#sxt-segmentation" title="Link to this heading"></a></h1>
+<p>Soft X-ray Tomography (SXT) segmentation provides specialized tools for cellular structure identification in SXT imaging data. SXT offers advantages including natural contrast, high spatial resolution, and the ability to image thick biological specimens in near-native states.</p>
+<p><strong>Key Features</strong>:</p>
+<ul class="simple">
+<li><p><strong>Multi-Structure Recognition</strong>: Simultaneous detection of cell membrane and nuclear boundaries</p></li>
+<li><p><strong>Deep Learning Powered</strong>: U-Net architectures optimized for SXT’s unique characteristics</p></li>
+<li><p><strong>High Resolution</strong>: Capable of resolving fine cellular structures in 3D volumes</p></li>
+<li><p><strong>Robust Performance</strong>: Handles SXT’s natural contrast variations and thick specimen artifacts</p></li>
+</ul>
+<section id="model-architecture">
+<h2>Model Architecture<a class="headerlink" href="#model-architecture" title="Link to this heading"></a></h2>
+<p>SXT segmentation employs specialized U-Net architectures tailored for different cellular components:</p>
+<p><strong>Cell and Nucleus Segmentation</strong> (<cite>run_cell_segmentation</cite>)</p>
+<ul class="simple">
+<li><p><strong>Model Type</strong>: Multi-class U-Net (3-class: background, membrane, nucleus)</p></li>
+<li><p><strong>Architecture</strong>: U-Net with dropout layers for regularization</p></li>
+<li><p><strong>Input Dimensions</strong>: 2D slices resized to 288×480 pixels</p></li>
+<li><p><strong>Output</strong>: Per-slice 3-class segmentation maps</p></li>
+<li><p><strong>Preprocessing Pipeline</strong>:
+- Intensity normalization to [0, 255] range
+- Resize using nearest-neighbor interpolation
+- Standardization: <code class="docutils literal notranslate"><span class="pre">(pixel_value</span> <span class="pre">/</span> <span class="pre">255.0</span> <span class="pre">-</span> <span class="pre">0.456)</span> <span class="pre">/</span> <span class="pre">0.224</span></code></p></li>
+<li><p><strong>Postprocessing</strong>: Slice-by-slice prediction followed by 3D volume assembly</p></li>
+<li><p><strong>Training Data</strong>: PBC Consortium pancreatic β-cell SXT datasets</p></li>
+<li><p><strong>Model File</strong>: <code class="docutils literal notranslate"><span class="pre">models/sxt/cell_nucleus_unet_best.pth</span></code></p></li>
+</ul>
+<p><strong>Mitochondria Segmentation</strong> (<cite>run_mito_segmentation</cite>)</p>
+<ul class="simple">
+<li><p><strong>Model Type</strong>: Binary U-Net</p></li>
+<li><p><strong>Architecture</strong>: Adapted from cell segmentation U-Net</p></li>
+<li><p><strong>Input</strong>: 2D slices from 3D SXT volumes</p></li>
+<li><p><strong>Output</strong>: Binary mitochondrial mask per slice</p></li>
+<li><p><strong>Optimization</strong>: Fine-tuned for mitochondrial shape and contrast patterns</p></li>
+<li><p><strong>Model File</strong>: <code class="docutils literal notranslate"><span class="pre">models/sxt/mito_unet_best.pth</span></code></p></li>
+</ul>
+<p><strong>ISG Segmentation</strong> (<cite>run_sphere_like_organelle_segmentation</cite>)</p>
+<ul class="simple">
+<li><p><strong>Model Type</strong>: Binary U-Net for sphere-like structures</p></li>
+<li><p><strong>Architecture</strong>: Specialized for spherical organelle detection</p></li>
+<li><p><strong>Input</strong>: 3D SXT volumes</p></li>
+<li><p><strong>Output</strong>: Semantic segmentation of ISG population</p></li>
+<li><p><strong>Use Case</strong>: Suitable for insulin secretory granules and other spherical organelles</p></li>
+<li><p><strong>Model File</strong>: <code class="docutils literal notranslate"><span class="pre">models/sxt/isg_unet_best.pth</span></code></p></li>
+</ul>
+</section>
+<section id="technical-details">
+<h2>Technical Details<a class="headerlink" href="#technical-details" title="Link to this heading"></a></h2>
+<p><strong>U-Net Architecture</strong>:</p>
+<p>The U-Net models used in SXT segmentation follow a classic encoder-decoder structure with skip connections:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># U-Net for SXT segmentation</span>
+<span class="n">Unet</span><span class="p">(</span>
+    <span class="n">n_class</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>           <span class="c1"># For cell/nucleus segmentation</span>
+    <span class="n">is_dropout</span><span class="o">=</span><span class="kc">True</span>        <span class="c1"># Enable dropout for regularization</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Data Preprocessing</strong>:</p>
+<p>SXT data undergoes specific preprocessing steps to optimize for the trained models:</p>
+<ol class="arabic simple">
+<li><p><strong>Normalization</strong>: Scale intensities to [0, 255] range as uint8</p></li>
+<li><p><strong>Resizing</strong>: Resize to (480, 288) for optimal model input</p></li>
+<li><p><strong>Standardization</strong>: Apply ImageNet normalization parameters (mean=0.456, std=0.224)</p></li>
+</ol>
+<p><strong>Multi-View Processing</strong>:</p>
+<p>The segmentation pipeline processes 3D volumes slice-by-slice to leverage 2D U-Net models while maintaining 3D context through post-processing assembly.</p>
+</section>
+<section id="core-segmentation-api">
+<h2>Core Segmentation API<a class="headerlink" href="#core-segmentation-api" title="Link to this heading"></a></h2>
+<p>SXT segmentation now uses the unified Segmenter API for consistent interface across all modalities.</p>
+<p><strong>Recommended Usage</strong> (Unified API):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">SXTCellSegmenter</span><span class="p">,</span> <span class="n">SXTMitoSegmenter</span><span class="p">,</span> <span class="n">SXTISGSegmenter</span>
+
+<span class="c1"># Cell and Nucleus Segmentation</span>
+<span class="n">cell_seg</span> <span class="o">=</span> <span class="n">SXTCellSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">cell_seg</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">cell_seg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+<span class="c1"># Mitochondria Segmentation</span>
+<span class="n">mito_seg</span> <span class="o">=</span> <span class="n">SXTMitoSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">mito_seg</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">mito_seg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+<span class="c1"># ISG Segmentation</span>
+<span class="n">isg_seg</span> <span class="o">=</span> <span class="n">SXTISGSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">isg_seg</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">isg_seg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For detailed API documentation, see <a class="reference internal" href="segmentation.html"><span class="doc">Segmentation Module</span></a>.</p>
+</section>
+<section id="cell-segmentation-for-sxt">
+<h2>Cell Segmentation for SXT<a class="headerlink" href="#cell-segmentation-for-sxt" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">run_cell_segmentation</span></code> function delivers comprehensive analysis capabilities for cellular nuclei, membranes, and combined structural elements in SXT tomographic data through an advanced multi-view deep learning approach.</p>
+<p>Example Usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_cell_segmentation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load SXT tomogram data</span>
+<span class="n">dataid_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;784_5&#39;</span><span class="p">]</span>
+<span class="n">image_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">dataid</span> <span class="ow">in</span> <span class="n">dataid_list</span><span class="p">:</span>
+    <span class="n">image_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/sxt_images/Stevens_pancreatic_INS_1E_784_5_pre_rec.mrc&#39;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">image_data</span><span class="p">[</span><span class="n">dataid</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+
+<span class="c1"># High-precision nuclear and membrane segmentation on SXT tomograms</span>
+<span class="n">run_cell_segmentation</span><span class="p">(</span>
+    <span class="n">save_dir</span><span class="o">=</span><span class="s2">&quot;results/mem_nu_seg_with_val/&quot;</span><span class="p">,</span>
+    <span class="n">dataid</span><span class="o">=</span><span class="n">dataid_list</span><span class="p">,</span>
+    <span class="n">image_data</span><span class="o">=</span><span class="n">image_data</span><span class="p">,</span>  <span class="c1"># Use pre-loaded image data</span>
+    <span class="n">pool_processes</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mitochondria-segmentation-for-sxt">
+<h2>Mitochondria Segmentation for SXT<a class="headerlink" href="#mitochondria-segmentation-for-sxt" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">run_mito_segmentation</span></code> function provides specialized capabilities for identifying and segmenting mitochondrial structures in SXT tomographic data.</p>
+<p>Example Usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_mito_segmentation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load SXT tomogram data</span>
+<span class="n">dataid_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;784_5&#39;</span><span class="p">]</span>
+<span class="n">image_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">dataid</span> <span class="ow">in</span> <span class="n">dataid_list</span><span class="p">:</span>
+    <span class="n">image_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/sxt_images/Stevens_pancreatic_INS_1E_784_5_pre_rec.mrc&#39;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">image_data</span><span class="p">[</span><span class="n">dataid</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+
+<span class="c1"># Specialized mitochondrial segmentation for SXT data</span>
+<span class="n">run_mito_segmentation</span><span class="p">(</span>
+    <span class="n">save_dir</span><span class="o">=</span><span class="s2">&quot;results/mito_segmentation/&quot;</span><span class="p">,</span>
+    <span class="n">dataid</span><span class="o">=</span><span class="n">dataid_list</span><span class="p">,</span>
+    <span class="n">image_data</span><span class="o">=</span><span class="n">image_data</span><span class="p">,</span>  <span class="c1"># Use pre-loaded image data</span>
+    <span class="n">pool_processes</span><span class="o">=</span><span class="mi">6</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="isg-segmentation-for-sxt">
+<h2>ISG Segmentation for SXT<a class="headerlink" href="#isg-segmentation-for-sxt" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">run_sphere_like_organelle_segmentation</span></code> function provides specialized capabilities for identifying and segmenting insulin secretory granules (ISG) and other sphere-like organelles in SXT tomographic data of pancreatic β-cells.</p>
+<p>Example Usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_sphere_like_organelle_segmentation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load SXT tomogram data</span>
+<span class="n">dataid_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;784_5&#39;</span><span class="p">]</span>
+<span class="n">image_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">dataid</span> <span class="ow">in</span> <span class="n">dataid_list</span><span class="p">:</span>
+    <span class="n">image_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/sxt_images/Stevens_pancreatic_INS_1E_784_5_pre_rec.mrc&#39;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">image_data</span><span class="p">[</span><span class="n">dataid</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+
+<span class="c1"># ISG and sphere-like organelle segmentation for SXT data</span>
+<span class="n">run_sphere_like_organelle_segmentation</span><span class="p">(</span>
+    <span class="n">save_dir</span><span class="o">=</span><span class="s2">&quot;results/isg_semantic_mask/&quot;</span><span class="p">,</span>
+    <span class="n">dataid</span><span class="o">=</span><span class="n">dataid_list</span><span class="p">,</span>
+    <span class="n">image_data</span><span class="o">=</span><span class="n">image_data</span><span class="p">,</span>  <span class="c1"># Use pre-loaded image data</span>
+    <span class="n">pool_processes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-workflow-example">
+<h2>Complete Workflow Example<a class="headerlink" href="#complete-workflow-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">run_cell_segmentation</span><span class="p">,</span>
+    <span class="n">run_mito_segmentation</span><span class="p">,</span>
+    <span class="n">run_sphere_like_organelle_segmentation</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span><span class="p">,</span> <span class="n">QuickLogger</span>
+
+<span class="c1"># Initialize logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">QuickLogger</span><span class="p">(</span><span class="s2">&quot;sxt_segmentation_workflow&quot;</span><span class="p">,</span> <span class="n">log_dir</span><span class="o">=</span><span class="s2">&quot;logs/&quot;</span><span class="p">)</span>
+
+<span class="c1"># Data preparation</span>
+<span class="n">dataid_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;784_5&#39;</span><span class="p">]</span>
+<span class="n">image_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">dataid</span> <span class="ow">in</span> <span class="n">dataid_list</span><span class="p">:</span>
+    <span class="n">image_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/sxt_images/Stevens_pancreatic_INS_1E_</span><span class="si">{</span><span class="n">dataid</span><span class="si">}</span><span class="s1">_pre_rec.mrc&#39;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">file_in</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">image_data</span><span class="p">[</span><span class="n">dataid</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="n">dataid</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, dtype: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run all segmentation tasks</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="s2">&quot;Running cell segmentation...&quot;</span><span class="p">)</span>
+<span class="n">run_cell_segmentation</span><span class="p">(</span>
+    <span class="n">save_dir</span><span class="o">=</span><span class="s2">&quot;results/cell_segmentation/&quot;</span><span class="p">,</span>
+    <span class="n">dataid</span><span class="o">=</span><span class="n">dataid_list</span><span class="p">,</span>
+    <span class="n">image_data</span><span class="o">=</span><span class="n">image_data</span><span class="p">,</span>
+    <span class="n">pool_processes</span><span class="o">=</span><span class="mi">6</span>
+<span class="p">)</span>
+
+<span class="n">logger</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="s2">&quot;Running mitochondria segmentation...&quot;</span><span class="p">)</span>
+<span class="n">run_mito_segmentation</span><span class="p">(</span>
+    <span class="n">save_dir</span><span class="o">=</span><span class="s2">&quot;results/mito_segmentation/&quot;</span><span class="p">,</span>
+    <span class="n">dataid</span><span class="o">=</span><span class="n">dataid_list</span><span class="p">,</span>
+    <span class="n">image_data</span><span class="o">=</span><span class="n">image_data</span><span class="p">,</span>
+    <span class="n">pool_processes</span><span class="o">=</span><span class="mi">6</span>
+<span class="p">)</span>
+
+<span class="n">logger</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="s2">&quot;Running ISG segmentation...&quot;</span><span class="p">)</span>
+<span class="n">run_sphere_like_organelle_segmentation</span><span class="p">(</span>
+    <span class="n">save_dir</span><span class="o">=</span><span class="s2">&quot;results/isg_segmentation/&quot;</span><span class="p">,</span>
+    <span class="n">dataid</span><span class="o">=</span><span class="n">dataid_list</span><span class="p">,</span>
+    <span class="n">image_data</span><span class="o">=</span><span class="n">image_data</span><span class="p">,</span>
+    <span class="n">pool_processes</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+
+<span class="n">logger</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="s2">&quot;All segmentation tasks completed successfully&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="cell-segmentation-models">
+<h3>Cell Segmentation Models<a class="headerlink" href="#cell-segmentation-models" title="Link to this heading"></a></h3>
+<p><strong>Combined (Mem-Nu) Model for SXT</strong></p>
+<ul class="simple">
+<li><p><strong>Architecture</strong>: Multi-task U-Net with shared encoder, designed for SXT multi-structure segmentation</p></li>
+<li><p><strong>Input Resolution</strong>: 288×480 pixels per slice</p></li>
+<li><p><strong>Training Strategy</strong>: Joint optimization with balanced loss weighting for SXT data characteristics</p></li>
+<li><p><strong>SXT Adaptations</strong>: Unified processing pipeline for multiple SXT-visible cellular structures</p></li>
+<li><p><strong>Optimization</strong>: AdamW with learning rate scheduling</p></li>
+</ul>
+</section>
+<section id="mitochondria-segmentation-model">
+<h3>Mitochondria Segmentation Model<a class="headerlink" href="#mitochondria-segmentation-model" title="Link to this heading"></a></h3>
+<p><strong>Mitochondria Model for SXT</strong></p>
+<ul class="simple">
+<li><p><strong>Architecture</strong>: Enhanced U-Net with morphology-aware modules for SXT mitochondrial features</p></li>
+<li><p><strong>Input Resolution</strong>: 288×480 pixels per slice</p></li>
+<li><p><strong>Training Strategy</strong>: Multi-view fusion with consensus learning on SXT tomographic datasets</p></li>
+<li><p><strong>SXT Adaptations</strong>: Custom processing pipeline for SXT mitochondrial contrast and morphology</p></li>
+<li><p><strong>Optimization</strong>: Adam with adaptive learning rate</p></li>
+</ul>
+</section>
+<section id="isg-segmentation-model">
+<h3>ISG Segmentation Model<a class="headerlink" href="#isg-segmentation-model" title="Link to this heading"></a></h3>
+<p><strong>ISG (Insulin Secretory Granules) Model for SXT</strong></p>
+<ul class="simple">
+<li><p><strong>Architecture</strong>: U-Net with 3-channel input and 2-class output for binary sphere-like organelle segmentation</p></li>
+<li><p><strong>Input Resolution</strong>: Variable resolution with 0.5 scale factor for efficient processing</p></li>
+<li><p><strong>Input Channels</strong>: 3 (RGB conversion from grayscale SXT data)</p></li>
+<li><p><strong>Output Classes</strong>: 2 (background and ISG/sphere-like organelles)</p></li>
+<li><p><strong>Training Strategy</strong>: Binary classification with sigmoid activation and threshold-based prediction</p></li>
+<li><p><strong>SXT Adaptations</strong>:
+- LAC (Linear Absorption Coefficient) normalization factor of 33.33
+- Custom preprocessing pipeline for SXT intensity conversion
+- Sphere-like organelle morphology optimization</p></li>
+<li><p><strong>Preprocessing</strong>:
+- LAC factor normalization: <code class="docutils literal notranslate"><span class="pre">img</span> <span class="pre">=</span> <span class="pre">img</span> <span class="pre">*</span> <span class="pre">lac_factor</span></code>
+- Intensity clamping: <code class="docutils literal notranslate"><span class="pre">img[img</span> <span class="pre">&gt;</span> <span class="pre">1]</span> <span class="pre">=</span> <span class="pre">1</span></code>
+- 8-bit conversion: <code class="docutils literal notranslate"><span class="pre">(img</span> <span class="pre">-</span> <span class="pre">min_val)</span> <span class="pre">/</span> <span class="pre">max_val</span> <span class="pre">*</span> <span class="pre">255</span></code></p></li>
+<li><p><strong>Output Threshold</strong>: 0.5 (configurable for sensitivity adjustment)</p></li>
+<li><p><strong>Model File</strong>: <code class="docutils literal notranslate"><span class="pre">vesicle_mask0.63_processed.pth</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="dataset-information-for-sxt">
+<h2>Dataset Information for SXT<a class="headerlink" href="#dataset-information-for-sxt" title="Link to this heading"></a></h2>
+<p><strong>SXT Cell Segmentation Dataset</strong></p>
+<ul class="simple">
+<li><p><strong>Source</strong>: Soft X-ray Tomography imaging datasets from PBC Consortium (Pancreatic Beta Cell Consortium)</p></li>
+<li><p><strong>Data Access</strong>: Available through <a class="reference external" href="https://pbcconsortium.isrd.isi.edu/">PBC Dataset Portal</a></p></li>
+<li><p><strong>Sample Size</strong>: 24 SXT tomograms total</p></li>
+<li><p><strong>Image Modality</strong>: Soft X-ray Tomography (SXT)</p></li>
+<li><p><strong>Imaging Parameters</strong>: Optimized for cellular structure visualization with natural contrast</p></li>
+<li><p><strong>Resolution</strong>: High spatial resolution enabling subcellular structure identification</p></li>
+<li><p><strong>Sample Types</strong>: Pancreatic β-cells during insulin secretion process</p></li>
+<li><p><strong>Annotation Method</strong>: Expert manual annotation on SXT tomographic slices for membrane, nucleus, and mitochondria</p></li>
+<li><p><strong>Data Partition</strong>: 18 training / 3 validation / 3 testing samples</p></li>
+</ul>
+<p><strong>Dataset Partition Details</strong></p>
+<p><em>Training Set (18 samples):</em>
+766_10, 766_11, 766_2, 766_7, 769_5, 769_7, 783_12, 783_6, 784_4, 784_6, 784_7, 785_7, 822_4, 822_6, 822_7, 842_13, 931_14, 931_9</p>
+<p><em>Validation Set (3 samples):</em>
+766_5, 783_5, 842_12</p>
+<p><em>Testing Set (3 samples):</em>
+766_8, 784_5, 842_17</p>
+<p><strong>SXT Mitochondria Dataset</strong></p>
+<ul class="simple">
+<li><p><strong>Source</strong>: High-resolution SXT tomographic datasets with focus on mitochondrial structures in pancreatic β-cells</p></li>
+<li><p><strong>Sample Size</strong>: Same 24 SXT samples with specialized mitochondrial annotations</p></li>
+<li><p><strong>Image Modality</strong>: Soft X-ray Tomography optimized for organelle visualization</p></li>
+<li><p><strong>Imaging Parameters</strong>: SXT-specific settings for optimal mitochondrial contrast in β-cells</p></li>
+<li><p><strong>Resolution</strong>: High-resolution specifications for mitochondrial detail analysis</p></li>
+<li><p><strong>Sample Preparation</strong>: Near-native state pancreatic β-cell samples during insulin secretion</p></li>
+<li><p><strong>Annotation Method</strong>: Expert manual annotation of mitochondrial boundaries in SXT tomograms</p></li>
+<li><p><strong>Validation Split</strong>: Same partition as cell segmentation dataset</p></li>
+</ul>
+</section>
+<section id="isg-instance-segmentation-mask-r-cnn">
+<h2>ISG Instance Segmentation (Mask R-CNN)<a class="headerlink" href="#isg-instance-segmentation-mask-r-cnn" title="Link to this heading"></a></h2>
+<p>For instance-level ISG segmentation using Mask R-CNN, see:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sxt_isg_mask_rcnn.html">SXT ISG Mask R-CNN Instance Segmentation</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="segmentation.html" class="btn btn-neutral float-left" title="Segmentation Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sxt_isg_mask_rcnn.html" class="btn btn-neutral float-right" title="SXT ISG Mask R-CNN Instance Segmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

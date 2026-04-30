@@ -1,0 +1,525 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Segmentation Module &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="SXT Segmentation" href="sxt_segmentation.html" />
+    <link rel="prev" title="Denoising Module" href="../denoising.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../processing.html">Processing Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../denoising.html">Denoising Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Segmentation Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#architecture">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#key-components">Key Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basesegmenter-class">BaseSegmenter Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unified-segmenter-classes">Unified Segmenter Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#model-architecture-and-methods">Model Architecture and Methods</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sxt-segmentation-models">SXT Segmentation Models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sim-wfm-segmentation-models">SIM/WFM Segmentation Models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cryo-et-segmentation-methods">Cryo-ET Segmentation Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#model-selection-guide">Model Selection Guide</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#choosing-the-right-model">Choosing the Right Model</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sxt_segmentation.html">SXT Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sim_wfm_segmentation.html">SIM/WFM Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="et_segmentation.html">Cryo-ET Segmentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../partitioning.html">Partitioning Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../processing.html">Processing Module</a></li>
+      <li class="breadcrumb-item active">Segmentation Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/rest_files/processing/segmentation/segmentation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="segmentation-module">
+<h1>Segmentation Module<a class="headerlink" href="#segmentation-module" title="Link to this heading"></a></h1>
+<p>The segmentation module provides a unified interface for automated cellular structure segmentation across multiple microscopy modalities, leveraging deep learning architectures optimized for each imaging technique.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p><strong>Unified API Design</strong></p>
+<p>iPA implements a consistent segmentation API through the <code class="docutils literal notranslate"><span class="pre">BaseSegmenter</span></code> abstract class and modality-specific implementations. This design enables:</p>
+<ul class="simple">
+<li><p><strong>Consistent Interface</strong>: Same methods (<code class="docutils literal notranslate"><span class="pre">load_model()</span></code>, <code class="docutils literal notranslate"><span class="pre">predict()</span></code>) across all segmenters</p></li>
+<li><p><strong>Modality-Specific Optimization</strong>: Custom preprocessing and postprocessing for each imaging type</p></li>
+<li><p><strong>Automatic Device Selection</strong>: GPU/CPU auto-detection with manual override option</p></li>
+<li><p><strong>Model Management</strong>: Unified model loading, saving, and training interfaces</p></li>
+</ul>
+<p><strong>Supported Modalities</strong>:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Modality</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Available Tasks</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SXT</p></td>
+<td><p>Soft X-ray Tomography</p></td>
+<td><p>Cell, Nucleus, Mito, ISG</p></td>
+</tr>
+<tr class="row-odd"><td><p>SIM</p></td>
+<td><p>Structured Illumination Microscopy</p></td>
+<td><p>ER, Mito, ISG</p></td>
+</tr>
+<tr class="row-even"><td><p>WFM</p></td>
+<td><p>Widefield Microscopy</p></td>
+<td><p>Cell, Nucleus, General</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cryo-ET</p></td>
+<td><p>Cryo-Electron Tomography</p></td>
+<td><p>Filaments, Membranes</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<p>The segmentation module follows a layered architecture:</p>
+<ol class="arabic simple">
+<li><p><strong>Base Layer</strong> (<code class="docutils literal notranslate"><span class="pre">base.py</span></code>): Abstract <code class="docutils literal notranslate"><span class="pre">BaseSegmenter</span></code> class defining the common interface</p></li>
+<li><p><strong>Unified Layer</strong> (<code class="docutils literal notranslate"><span class="pre">unified.py</span></code>): Concrete implementations for each modality/task combination</p></li>
+<li><p><strong>Specialized Layers</strong>: Modality-specific submodules with custom models and algorithms
+- <code class="docutils literal notranslate"><span class="pre">segmentation_sxt/</span></code>: SXT-specific U-Net models
+- <code class="docutils literal notranslate"><span class="pre">segmentation_sim_wfm/</span></code>: SIM/WFM ERNet and other models
+- <code class="docutils literal notranslate"><span class="pre">segmentation_et/</span></code>: Cryo-ET filament and membrane detection</p></li>
+</ol>
+</section>
+<section id="key-components">
+<h2>Key Components<a class="headerlink" href="#key-components" title="Link to this heading"></a></h2>
+<section id="basesegmenter-class">
+<h3>BaseSegmenter Class<a class="headerlink" href="#basesegmenter-class" title="Link to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.BaseSegmenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipa.processing.segmentation.</span></span><span class="sig-name descname"><span class="pre">BaseSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/base.html#BaseSegmenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.BaseSegmenter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class for all segmentation methods.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.BaseSegmenter.get_info">
+<span class="sig-name descname"><span class="pre">get_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/base.html#BaseSegmenter.get_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.BaseSegmenter.get_info" title="Link to this definition"></a></dt>
+<dd><p>Get segmenter information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.BaseSegmenter.load_model">
+<span class="sig-name descname"><span class="pre">load_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/base.html#BaseSegmenter.load_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.BaseSegmenter.load_model" title="Link to this definition"></a></dt>
+<dd><p>Load trained model from file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Path to the saved model. If None, uses default path if available.</p></li>
+<li><p><strong>**kwargs</strong> – Additional parameters for model loading</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.BaseSegmenter.predict">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/base.html#BaseSegmenter.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.BaseSegmenter.predict" title="Link to this definition"></a></dt>
+<dd><p>Predict segmentation mask.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Input image/volume data</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Segmentation mask (numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.BaseSegmenter.save_model">
+<span class="sig-name descname"><span class="pre">save_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/base.html#BaseSegmenter.save_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.BaseSegmenter.save_model" title="Link to this definition"></a></dt>
+<dd><p>Save trained model to file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – Path to save the model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.BaseSegmenter.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/base.html#BaseSegmenter.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.BaseSegmenter.train" title="Link to this definition"></a></dt>
+<dd><p>Train the segmentation model (optional).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> – Training data</p></li>
+<li><p><strong>val_data</strong> – Optional validation data</p></li>
+<li><p><strong>**kwargs</strong> – Training parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="unified-segmenter-classes">
+<h3>Unified Segmenter Classes<a class="headerlink" href="#unified-segmenter-classes" title="Link to this heading"></a></h3>
+<p>The following segmenter classes are available in <code class="docutils literal notranslate"><span class="pre">ipa.processing.segmentation.unified</span></code>:</p>
+<p><strong>SXT Segmenters</strong>:
+- <code class="docutils literal notranslate"><span class="pre">SXTCellSegmenter</span></code> - Cell and nucleus segmentation (U-Net, 3-class)
+- <code class="docutils literal notranslate"><span class="pre">SXTMitoSegmenter</span></code> - Mitochondria segmentation (U-Net)
+- <code class="docutils literal notranslate"><span class="pre">SXTISGSegmenter</span></code> - Insulin secretory granule segmentation (U-Net)
+- <code class="docutils literal notranslate"><span class="pre">SXTISGMaskRCNNSegmenter</span></code> - ISG instance segmentation (Mask R-CNN) <em>[Training in progress]</em></p>
+<p><strong>SIM/WFM Segmenters</strong>:
+- <code class="docutils literal notranslate"><span class="pre">SIMERSegmenter</span></code> - Endoplasmic reticulum segmentation (ERNet)
+- <code class="docutils literal notranslate"><span class="pre">SIMMitoSegmenter</span></code> - Mitochondria segmentation
+- <code class="docutils literal notranslate"><span class="pre">WFMSegmenter</span></code> - General widefield segmentation</p>
+<p><strong>Cryo-ET Segmenters</strong>:
+- <code class="docutils literal notranslate"><span class="pre">ETFilamentSegmenter</span></code> - Actin/microtubule filament detection
+- <code class="docutils literal notranslate"><span class="pre">ETMembraneSegmenter</span></code> - Membrane surface segmentation</p>
+</section>
+</section>
+<section id="model-architecture-and-methods">
+<h2>Model Architecture and Methods<a class="headerlink" href="#model-architecture-and-methods" title="Link to this heading"></a></h2>
+<p>This section provides detailed information about the deep learning models and algorithms used in each segmentation task.</p>
+<section id="sxt-segmentation-models">
+<h3>SXT Segmentation Models<a class="headerlink" href="#sxt-segmentation-models" title="Link to this heading"></a></h3>
+<p><strong>SXT Cell &amp; Nucleus Segmentation</strong> (<cite>SXTCellSegmenter</cite>)</p>
+<ul class="simple">
+<li><p><strong>Model Architecture</strong>: U-Net with dropout</p></li>
+<li><p><strong>Input</strong>: 2D slices from 3D SXT volumes (resized to 288×480)</p></li>
+<li><p><strong>Output</strong>: 3-class segmentation (background, membrane, nucleus)</p></li>
+<li><p><strong>Preprocessing</strong>:
+- Normalization to [0, 255] uint8
+- Resize to (288, 480) using nearest-neighbor interpolation
+- Standard normalization: <code class="docutils literal notranslate"><span class="pre">(x</span> <span class="pre">/</span> <span class="pre">255.0</span> <span class="pre">-</span> <span class="pre">0.456)</span> <span class="pre">/</span> <span class="pre">0.224</span></code></p></li>
+<li><p><strong>Postprocessing</strong>: Slice-by-slice prediction, assembled into 3D volume</p></li>
+<li><p><strong>Training Data</strong>: PBC Consortium pancreatic β-cell SXT datasets</p></li>
+<li><p><strong>Model File</strong>: <code class="docutils literal notranslate"><span class="pre">models/sxt/cell_nucleus_unet_best.pth</span></code></p></li>
+</ul>
+<p><strong>SXT Mitochondria Segmentation</strong> (<cite>SXTMitoSegmenter</cite>)</p>
+<ul class="simple">
+<li><p><strong>Model Architecture</strong>: U-Net (similar to cell segmentation)</p></li>
+<li><p><strong>Input</strong>: 2D slices from 3D SXT volumes</p></li>
+<li><p><strong>Output</strong>: Binary mitochondria mask</p></li>
+<li><p><strong>Preprocessing</strong>: Same as cell segmentation</p></li>
+<li><p><strong>Model File</strong>: <code class="docutils literal notranslate"><span class="pre">models/sxt/mito_unet_best.pth</span></code></p></li>
+</ul>
+<p><strong>SXT ISG Segmentation</strong> (<cite>SXTISGSegmenter</cite>)</p>
+<ul class="simple">
+<li><p><strong>Model Architecture</strong>: U-Net for semantic segmentation</p></li>
+<li><p><strong>Input</strong>: 3D SXT volumes</p></li>
+<li><p><strong>Output</strong>: Binary ISG mask (semantic segmentation)</p></li>
+<li><p><strong>Use Case</strong>: Identifying insulin secretory granules as a population</p></li>
+<li><p><strong>Model File</strong>: <code class="docutils literal notranslate"><span class="pre">models/sxt/isg_unet_best.pth</span></code></p></li>
+</ul>
+<p><strong>SXT ISG Instance Segmentation</strong> (<cite>SXTISGMaskRCNNSegmenter</cite>) <em>[In Development]</em></p>
+<ul class="simple">
+<li><p><strong>Model Architecture</strong>: Mask R-CNN with ResNet-50 FPN backbone</p></li>
+<li><p><strong>Input</strong>: 3D SXT volumes (slice-by-slice or volumetric)</p></li>
+<li><p><strong>Output</strong>: Instance-level masks with bounding boxes and confidence scores</p></li>
+<li><p><strong>Advantages over U-Net</strong>:
+- Distinguishes individual ISG instances
+- Provides per-instance morphological features
+- Enables ISG-ISG spatial relationship analysis</p></li>
+<li><p><strong>Status</strong>: Currently training, expected completion TBD</p></li>
+<li><p><strong>Alternative</strong>: Use <code class="docutils literal notranslate"><span class="pre">SXTISGSegmenter</span></code> + <code class="docutils literal notranslate"><span class="pre">scipy.ndimage.label()</span></code> for instance extraction</p></li>
+</ul>
+</section>
+<section id="sim-wfm-segmentation-models">
+<h3>SIM/WFM Segmentation Models<a class="headerlink" href="#sim-wfm-segmentation-models" title="Link to this heading"></a></h3>
+<p><strong>SIM ER Segmentation</strong> (<cite>SIMERSegmenter</cite>)</p>
+<ul class="simple">
+<li><p><strong>Model Architecture</strong>: ERNet (specialized U-Net variant for ER structures)</p></li>
+<li><p><strong>Input</strong>: SIM super-resolution images (~100 nm resolution)</p></li>
+<li><p><strong>Output</strong>: ER network mask</p></li>
+<li><p><strong>Key Features</strong>: Optimized for tubular network structures</p></li>
+<li><p><strong>Model File</strong>: <code class="docutils literal notranslate"><span class="pre">models/sim/ernet_final.pth</span></code></p></li>
+</ul>
+<p><strong>SIM Mitochondria Segmentation</strong> (<cite>SIMMitoSegmenter</cite>)</p>
+<ul class="simple">
+<li><p><strong>Model Architecture</strong>: U-Net based</p></li>
+<li><p><strong>Input</strong>: SIM images</p></li>
+<li><p><strong>Output</strong>: Mitochondria mask</p></li>
+<li><p><strong>Application</strong>: High-resolution mitochondrial morphology analysis</p></li>
+</ul>
+<p><strong>WFM General Segmentation</strong> (<cite>WFMSegmenter</cite>)</p>
+<ul class="simple">
+<li><p><strong>Model Architecture</strong>: Flexible U-Net framework</p></li>
+<li><p><strong>Input</strong>: Widefield microscopy images</p></li>
+<li><p><strong>Output</strong>: Configurable segmentation (cell, nucleus, organelles)</p></li>
+<li><p><strong>Flexibility</strong>: Can be trained for various targets</p></li>
+</ul>
+</section>
+<section id="cryo-et-segmentation-methods">
+<h3>Cryo-ET Segmentation Methods<a class="headerlink" href="#cryo-et-segmentation-methods" title="Link to this heading"></a></h3>
+<p><strong>Cryo-ET Filament Detection</strong> (<cite>ETFilamentSegmenter</cite>)</p>
+<ul class="simple">
+<li><p><strong>Method</strong>: Skeletonization-based filament extraction</p></li>
+<li><p><strong>Input</strong>: Cryo-ET tomograms with membrane/vesicle masks</p></li>
+<li><p><strong>Output</strong>: Filament coordinates and lengths</p></li>
+<li><p><strong>Applications</strong>:
+- F-actin filament length measurement
+- Microtubule tracking
+- Cytoskeleton network analysis</p></li>
+<li><p><strong>Algorithm</strong>:
+1. Extract skeleton from binary mask
+2. Build KDTree for efficient neighbor search
+3. Calculate filament lengths by summing adjacent voxel distances</p></li>
+</ul>
+<p><strong>Cryo-ET Membrane Segmentation</strong> (<cite>ETMembraneSegmenter</cite>)</p>
+<ul class="simple">
+<li><p><strong>Method</strong>: Membrane surface detection</p></li>
+<li><p><strong>Input</strong>: Cryo-ET tomograms</p></li>
+<li><p><strong>Output</strong>: Membrane surface coordinates</p></li>
+<li><p><strong>Applications</strong>: Vesicle-membrane interaction analysis</p></li>
+</ul>
+</section>
+</section>
+<section id="model-selection-guide">
+<h2>Model Selection Guide<a class="headerlink" href="#model-selection-guide" title="Link to this heading"></a></h2>
+<section id="choosing-the-right-model">
+<h3>Choosing the Right Model<a class="headerlink" href="#choosing-the-right-model" title="Link to this heading"></a></h3>
+<p><strong>For SXT Data</strong>:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Task</p></th>
+<th class="head"><p>Recommended</p></th>
+<th class="head"><p>When to Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Cell/Nucleus</p></td>
+<td><p>SXTCellSegmenter</p></td>
+<td><p>Whole-cell and nuclear boundary
+detection</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mitochondria</p></td>
+<td><p>SXTMitoSegmenter</p></td>
+<td><p>Mitochondrial morphology and
+distribution analysis</p></td>
+</tr>
+<tr class="row-even"><td><p>ISG (population)</p></td>
+<td><p>SXTISGSegmenter</p></td>
+<td><p>ISG density, RDF analysis,
+docking ratio</p></td>
+</tr>
+<tr class="row-odd"><td><p>ISG (instances)</p></td>
+<td><p>SXTISGMaskRCNN
+<em>[Training]</em></p></td>
+<td><p>Individual ISG features, ISG-ISG
+interactions, instance-level
+statistics</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>For SIM/WFM Data</strong>:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Task</p></th>
+<th class="head"><p>Recommended</p></th>
+<th class="head"><p>When to Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ER Network</p></td>
+<td><p>SIMERSegmenter</p></td>
+<td><p>ER morphology, ER-organelle
+contacts</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mitochondria</p></td>
+<td><p>SIMMitoSegmenter</p></td>
+<td><p>High-res mitochondrial analysis</p></td>
+</tr>
+<tr class="row-even"><td><p>Custom Targets</p></td>
+<td><p>WFMSegmenter</p></td>
+<td><p>Train on your specific organelle</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>For Cryo-ET Data</strong>:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Task</p></th>
+<th class="head"><p>Recommended</p></th>
+<th class="head"><p>When to Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Filaments</p></td>
+<td><p>ETFilamentSeg.</p></td>
+<td><p>F-actin/microtubule length,
+cytoskeleton analysis</p></td>
+</tr>
+<tr class="row-odd"><td><p>Membranes</p></td>
+<td><p>ETMembraneSeg.</p></td>
+<td><p>Vesicle-membrane interactions,
+contact site analysis</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<p>Basic Usage Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">SXTCellSegmenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load data</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;sxt_volume.mrc&#39;</span><span class="p">)</span>
+
+<span class="c1"># Initialize segmenter</span>
+<span class="n">segmenter</span> <span class="o">=</span> <span class="n">SXTCellSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>  <span class="c1"># or &#39;cpu&#39;</span>
+
+<span class="c1"># Load pre-trained model (auto-loads default model)</span>
+<span class="n">segmenter</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+
+<span class="c1"># Predict</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">segmenter</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+<span class="c1"># Access results</span>
+<span class="n">cell_mask</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;cell_mask&#39;</span><span class="p">]</span>
+<span class="n">nucleus_mask</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;nucleus_mask&#39;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cell mask shape: </span><span class="si">{</span><span class="n">cell_mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nucleus mask shape: </span><span class="si">{</span><span class="n">nucleus_mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<p>Detailed documentation for each modality:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sxt_segmentation.html">SXT Segmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sxt_segmentation.html#model-architecture">Model Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sxt_segmentation.html#technical-details">Technical Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sxt_segmentation.html#core-segmentation-api">Core Segmentation API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sxt_segmentation.html#cell-segmentation-for-sxt">Cell Segmentation for SXT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sxt_segmentation.html#mitochondria-segmentation-for-sxt">Mitochondria Segmentation for SXT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sxt_segmentation.html#isg-segmentation-for-sxt">ISG Segmentation for SXT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sxt_segmentation.html#complete-workflow-example">Complete Workflow Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sxt_segmentation.html#dataset-information-for-sxt">Dataset Information for SXT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sxt_segmentation.html#isg-instance-segmentation-mask-r-cnn">ISG Instance Segmentation (Mask R-CNN)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sim_wfm_segmentation.html">SIM/WFM Segmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sim_wfm_segmentation.html#core-functions">Core Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim_wfm_segmentation.html#core-segmentation-api">Core Segmentation API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim_wfm_segmentation.html#example-usage">Example Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="et_segmentation.html">Cryo-ET Segmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="et_segmentation.html#core-segmentation-api">Core Segmentation API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="et_segmentation.html#example-usage">Example Usage</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../denoising.html" class="btn btn-neutral float-left" title="Denoising Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sxt_segmentation.html" class="btn btn-neutral float-right" title="SXT Segmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

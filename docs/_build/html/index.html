@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integrated Processing and Analysis Toolkit (iPA) &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data Loader Module" href="rest_files/data_loader/data_loader.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rest_files/data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest_files/processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest_files/analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest_files/data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest_files/examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Integrated Processing and Analysis Toolkit (iPA)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="integrated-processing-and-analysis-toolkit-ipa">
+<h1>Integrated Processing and Analysis Toolkit (iPA)<a class="headerlink" href="#integrated-processing-and-analysis-toolkit-ipa" title="Link to this heading"></a></h1>
+<a class="reference internal image-reference" href="_images/figure_1_v39.jpg"><img alt="iPA Workflow Overview" class="align-center" src="_images/figure_1_v39.jpg" style="width: 80%;" />
+</a>
+<p><strong>iPA</strong> is an integrated toolkit for processing and analysis of multimodal cell images. It provides a comprehensive workflow from raw image loading to advanced quantitative analysis, supporting multiple imaging modalities including cryo-electron tomography (cryo-ET), soft X-ray tomography (SXT), structured illumination microscopy (SIM), and widefield microscopy (WFM).</p>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Multi-Modal Support</strong>: Unified interface for cryo-ET, SXT, SIM, and WFM data</p></li>
+<li><p><strong>Automated Segmentation</strong>: Deep learning-based organelle segmentation with pre-trained models</p></li>
+<li><p><strong>Spatial Partitioning</strong>: Novel radial cytoplasmic partitioning algorithm for standardized spatial analysis</p></li>
+<li><p><strong>Quantitative Analysis</strong>: Four-dimensional analysis framework:</p>
+<ul>
+<li><p><strong>Morphology</strong>: Volume, surface area, length, shape descriptors</p></li>
+<li><p><strong>Spatial Arrangement</strong>: Radial distribution functions (RDF), docking analysis, clustering</p></li>
+<li><p><strong>Dynamics</strong>: Velocity analysis, motion patterns (future: MSD, trajectory reconstruction)</p></li>
+<li><p><strong>Interactions</strong>: 14 predefined organelle interaction types with distance and contact analysis</p></li>
+</ul>
+</li>
+<li><p><strong>Self-Supervised Denoising</strong>: Noise2Void (N2V) and Noise2Noise (N2N) for improved image quality</p></li>
+<li><p><strong>Comprehensive Logging</strong>: Dual-output logging system (file + console) with Docker support</p></li>
+</ul>
+</section>
+<section id="supported-imaging-modalities">
+<h2>Supported Imaging Modalities<a class="headerlink" href="#supported-imaging-modalities" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Modality</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Key Applications</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Cryo-ET</p></td>
+<td><p>Cryo-electron tomography
+High-resolution 3D structures</p></td>
+<td><p>Filament analysis, membrane
+segmentation, vesicle docking</p></td>
+</tr>
+<tr class="row-odd"><td><p>SXT</p></td>
+<td><p>Soft X-ray tomography
+Natural contrast, thick specimens</p></td>
+<td><p>Whole-cell segmentation, ISG
+analysis, radial partitioning</p></td>
+</tr>
+<tr class="row-even"><td><p>SIM</p></td>
+<td><p>Structured illumination microscopy
+~100 nm resolution</p></td>
+<td><p>Super-resolution ER, mito,
+ISG segmentation</p></td>
+</tr>
+<tr class="row-odd"><td><p>WFM</p></td>
+<td><p>Widefield microscopy
+Standard fluorescence imaging</p></td>
+<td><p>General organelle analysis,
+multi-channel imaging</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<p>Basic Workflow Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">SXTCellSegmenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">Partitioning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_rdf_from_xvg</span>
+
+<span class="c1"># Step 1: Load data</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;sxt_volume.mrc&#39;</span><span class="p">)</span>
+<span class="n">pm_mask</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;plasma_membrane.mrc&#39;</span><span class="p">)</span>
+<span class="n">ne_mask</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;nuclear_envelope.mrc&#39;</span><span class="p">)</span>
+
+<span class="c1"># Step 2: Segment organelles</span>
+<span class="n">segmenter</span> <span class="o">=</span> <span class="n">SXTCellSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">segmenter</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">segmenter</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Create radial partitions</span>
+<span class="n">partitioner</span> <span class="o">=</span> <span class="n">Partitioning</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;results/&quot;</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">center</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">extract_ne_pm_edges</span><span class="p">(</span><span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span>
+<span class="n">partition_mask</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">create_nepm_radial_partitions</span><span class="p">(</span>
+    <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span>
+    <span class="n">shape</span><span class="o">=</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">pm_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">,</span>
+    <span class="n">ne_mask</span><span class="o">=</span><span class="n">ne_mask</span>
+<span class="p">)</span>
+
+<span class="c1"># Step 4: Analyze spatial distribution</span>
+<span class="c1"># (Calculate RDF for organelles in each partition)</span>
+<span class="n">rdf_results</span> <span class="o">=</span> <span class="n">calculate_rdf_from_xvg</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For more examples, see the <a class="reference internal" href="rest_files/examples.html"><span class="doc">examples section</span></a>.</p>
+</section>
+<section id="documentation-structure">
+<h2>Documentation Structure<a class="headerlink" href="#documentation-structure" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt><strong>Data Loading</strong> (<a class="reference internal" href="rest_files/data_loader/data_loader.html"><span class="doc">Data Loader Module</span></a>)</dt><dd><p>Universal data loader supporting MRC, TIFF, NPZ, LIF, CZI, ND2 formats with automatic format detection.</p>
+</dd>
+<dt><strong>Image Processing</strong> (<a class="reference internal" href="rest_files/processing/processing.html"><span class="doc">Processing Module</span></a>)</dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="rest_files/processing/denoising.html"><span class="doc">Denoising</span></a> - N2V/N2N self-supervised denoising</p></li>
+<li><p><a class="reference internal" href="rest_files/processing/segmentation/segmentation.html"><span class="doc">Segmentation</span></a> - Deep learning-based organelle segmentation</p></li>
+<li><p><a class="reference internal" href="rest_files/processing/partitioning.html"><span class="doc">Partitioning</span></a> - Radial cytoplasmic partitioning</p></li>
+</ul>
+</dd>
+<dt><strong>Image Analysis</strong> (<a class="reference internal" href="rest_files/analysis/analysis.html"><span class="doc">Analysis Module</span></a>)</dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="rest_files/analysis/morphology.html"><span class="doc">Morphology</span></a> - Structural feature extraction</p></li>
+<li><p><a class="reference internal" href="rest_files/analysis/distribution.html"><span class="doc">Distribution</span></a> - Spatial arrangement and RDF analysis</p></li>
+<li><p><a class="reference internal" href="rest_files/analysis/interaction.html"><span class="doc">Interaction</span></a> - Organelle interaction analysis</p></li>
+<li><p><a class="reference internal" href="rest_files/analysis/dynamics.html"><span class="doc">Dynamics</span></a> - Temporal analysis and velocity</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Install from source:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SunLab-SH/iPA.git
+<span class="nb">cd</span><span class="w"> </span>iPA
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+<p>Core dependencies are automatically installed. For segmentation modules, PyTorch is required.</p>
+</section>
+<section id="logging-system">
+<h2>Logging System<a class="headerlink" href="#logging-system" title="Link to this heading"></a></h2>
+<p>iPA includes a comprehensive logging system with dual output (file + console):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuickLogger</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">QuickLogger</span><span class="p">(</span><span class="s2">&quot;my_analysis&quot;</span><span class="p">,</span> <span class="n">log_dir</span><span class="o">=</span><span class="s2">&quot;logs&quot;</span><span class="p">,</span> <span class="n">console_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="s2">&quot;Starting analysis...&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">file_in</span><span class="p">(</span><span class="s2">&quot;input.mrc&quot;</span><span class="p">)</span>
+<span class="c1"># ... analysis code ...</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">file_out</span><span class="p">(</span><span class="s2">&quot;output.mrc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Logs are saved as timestamped files in the <code class="docutils literal notranslate"><span class="pre">logs/</span></code> directory with UTF-8 encoding.</p>
+</section>
+<section id="citation">
+<h2>Citation<a class="headerlink" href="#citation" title="Link to this heading"></a></h2>
+<p>If you use iPA in your research, please cite:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@software</span><span class="p">{</span><span class="nl">iPA2024</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="p">=</span><span class="s">{Integrated Processing and Analysis Toolkit for Multi-Scale Cellular Imaging}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Li, Angdi and others}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="p">=</span><span class="s">{2024}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">url</span><span class="p">=</span><span class="s">{https://github.com/SunLab-SH/iPA}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rest_files/data_loader/data_loader.html">Data Loader Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/data_loader.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/data_loader.html#supported-file-formats">Supported File Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/data_loader.html#universaldataloader-class">UniversalDataLoader Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/data_loader.html#complete-workflow-examples">Complete Workflow Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/data_loader.html#logging-system">Logging System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rest_files/processing/processing.html">Processing Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/processing/denoising.html">Denoising Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/processing/segmentation/segmentation.html">Segmentation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/processing/partitioning.html">Partitioning Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rest_files/analysis/analysis.html">Analysis Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/analysis/analysis.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/analysis/analysis.html#supported-analyses">Supported Analyses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/analysis/analysis.html#sub-modules">Sub-modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rest_files/data_loader/log.html">Log Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/log.html#ipa.data_loader.log_analysis"><code class="docutils literal notranslate"><span class="pre">log_analysis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/log.html#ipa.data_loader.QuickLogger"><code class="docutils literal notranslate"><span class="pre">QuickLogger</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/log.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/log.html#quicklogger-manual-step-logging">QuickLogger - Manual Step Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/log.html#log-analysis-automatic-function-logging">&#64;log_analysis - Automatic Function Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/log.html#example-from-sxt-demo">Example from SXT Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/data_loader/log.html#log-file-output">Log File Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rest_files/examples.html">Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/examples.html#example-categories">Example Categories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_files/examples.html#running-examples">Running Examples</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="rest_files/data_loader/data_loader.html" class="btn btn-neutral float-right" title="Data Loader Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

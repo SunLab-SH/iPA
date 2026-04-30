@@ -1,0 +1,50 @@
+Examples and Tutorials
+======================
+
+iPA provides comprehensive example scripts demonstrating various analysis workflows across different imaging modalities.
+
+Example Categories
+------------------
+
+SXT Examples (examples/examples_sxt/)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``demo_SXT_partitioning.py`` - Radial cytoplasmic partitioning workflow
+* ``demo_SXT_morphology.py`` - Morphological feature extraction
+* ``demo_SXT_interaction.py`` - Organelle interaction analysis
+* ``demo_SXT_spatial_arrangement.py`` - Spatial distribution analysis
+* ``train_SXT_isg_mask_rcnn_model.py`` - Mask R-CNN training for ISG instance segmentation
+
+SIM/WFM Examples (examples/examples_sim_wfm/)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``demo_SIM_partitioning.py`` - SIM data partitioning
+* ``demo_SIM_rdf_analysis.py`` - Radial distribution function analysis
+* ``demo_SIM_WFM_interaction.py`` - Multi-modal interaction analysis
+
+Cryo-ET Examples (examples/examples_et/)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``demo_ET_morphology.py`` - Filament length analysis
+* ``demo_ET_interaction.py`` - Vesicle-membrane interaction analysis
+
+Running Examples
+----------------
+
+All examples can be run directly from the command line:
+
+.. code-block:: bash
+
+    # Navigate to examples directory
+    cd examples/examples_sxt
+    
+    # Run a demo script
+    python demo_SXT_partitioning.py
+
+Each example includes detailed comments and generates output in the ``results/`` directory with corresponding log files in ``logs/``.
+
+For complete documentation of each module's API, see:
+
+* :doc:`data_loader/data_loader` - Data loading examples
+* :doc:`processing/processing` - Processing workflow examples
+* :doc:`analysis/analysis` - Analysis pipeline examples

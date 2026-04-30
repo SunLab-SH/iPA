@@ -1,1 +1,0 @@
-# UPSNet config package

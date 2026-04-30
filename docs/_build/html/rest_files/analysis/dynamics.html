@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamics Analysis &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Examples and Tutorials" href="../examples.html" />
+    <link rel="prev" title="Interaction Analysis" href="interaction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="analysis.html">Analysis Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#supported-analyses">Supported Analyses</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="analysis.html#sub-modules">Sub-modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="morphology.html">Morphology Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="distribution.html">Distribution Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interaction.html">Interaction Analysis</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Dynamics Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-functions">Core Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#future-extensions">Future Extensions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="analysis.html">Analysis Module</a></li>
+      <li class="breadcrumb-item active">Dynamics Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/rest_files/analysis/dynamics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dynamics-analysis">
+<h1>Dynamics Analysis<a class="headerlink" href="#dynamics-analysis" title="Link to this heading"></a></h1>
+<p>The dynamics module analyzes temporal features from time-lapse imaging data, including velocity and motion patterns of organelles.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Dynamic analysis is crucial for understanding organelle transport and cellular processes. iPA currently provides tools for:</p>
+<ul class="simple">
+<li><p><strong>3D Velocity</strong>: Displacement between consecutive frames divided by time interval</p></li>
+<li><p><strong>Radial Velocity</strong>: Projection of 3D velocity onto the radial direction (toward/away from PM)</p></li>
+<li><p><strong>Velocity Distribution Visualization</strong>: Violin plots for comparing conditions</p></li>
+</ul>
+<p>These analyses are particularly important for studying processes like glucose-stimulated insulin secretion (GSIS), where ISG transport dynamics change significantly under different glucose conditions.</p>
+</section>
+<section id="core-functions">
+<h2>Core Functions<a class="headerlink" href="#core-functions" title="Link to this heading"></a></h2>
+<section id="calculate-3d-velocity">
+<h3>calculate_3d_velocity<a class="headerlink" href="#calculate-3d-velocity" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.calculate_3d_velocity">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_3d_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions_t1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positions_t2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_interval_s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/dynamic.html#calculate_3d_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.calculate_3d_velocity" title="Link to this definition"></a></dt>
+<dd><p>Calculate 3D velocity from consecutive frame positions.</p>
+<p>The 3D velocity is calculated as the Euclidean distance of positions at two
+consecutive time steps, divided by the time interval between the steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>positions_t1</strong> (<em>np.ndarray</em>) – Organelle positions at time t1 [N, 3] (in micrometers)</p></li>
+<li><p><strong>positions_t2</strong> (<em>np.ndarray</em>) – Organelle positions at time t2 [N, 3] (in micrometers)</p></li>
+<li><p><strong>time_interval_s</strong> (<em>float</em>) – Time interval between frames (seconds)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array of 3D velocities [N] in μm/s</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_3d_velocity</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pos1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">35</span><span class="p">]])</span>  <span class="c1"># μm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pos2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">10.5</span><span class="p">,</span> <span class="mf">20.3</span><span class="p">,</span> <span class="mf">30.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">15.4</span><span class="p">,</span> <span class="mf">25.2</span><span class="p">,</span> <span class="mf">35.1</span><span class="p">]])</span>  <span class="c1"># μm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="mf">8.0</span>  <span class="c1"># seconds</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">velocities</span> <span class="o">=</span> <span class="n">calculate_3d_velocity</span><span class="p">(</span><span class="n">pos1</span><span class="p">,</span> <span class="n">pos2</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">velocities</span><span class="p">)</span>  <span class="c1"># [0.064, 0.051] μm/s</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p>Calculates the 3D velocity of organelles from consecutive frame positions. The velocity is computed as the Euclidean distance between positions at two time steps, divided by the time interval.</p>
+<p><strong>Algorithm</strong>:</p>
+<ol class="arabic simple">
+<li><p>Calculate Euclidean displacement: <code class="docutils literal notranslate"><span class="pre">displacement</span> <span class="pre">=</span> <span class="pre">||pos_t2</span> <span class="pre">-</span> <span class="pre">pos_t1||</span></code></p></li>
+<li><p>Divide by time interval: <code class="docutils literal notranslate"><span class="pre">velocity</span> <span class="pre">=</span> <span class="pre">displacement</span> <span class="pre">/</span> <span class="pre">Δt</span></code></p></li>
+<li><p>Return velocity in μm/s (assuming positions are in μm)</p></li>
+</ol>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">positions_t1</span></code> (np.ndarray): Organelle positions at time t1 [N, 3] (in micrometers)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">positions_t2</span></code> (np.ndarray): Organelle positions at time t2 [N, 3] (in micrometers)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">time_interval_s</span></code> (float): Time interval between frames (seconds)</p></li>
+</ul>
+<p><strong>Returns</strong>: np.ndarray - Array of 3D velocities [N] in μm/s</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_3d_velocity</span>
+
+<span class="c1"># Positions at two consecutive frames (μm)</span>
+<span class="n">pos_t1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">35</span><span class="p">]])</span>
+<span class="n">pos_t2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">10.5</span><span class="p">,</span> <span class="mf">20.3</span><span class="p">,</span> <span class="mf">30.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">15.4</span><span class="p">,</span> <span class="mf">25.2</span><span class="p">,</span> <span class="mf">35.1</span><span class="p">]])</span>
+
+<span class="c1"># Time interval (8 seconds for WFM)</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">8.0</span>
+
+<span class="c1"># Calculate velocities</span>
+<span class="n">velocities</span> <span class="o">=</span> <span class="n">calculate_3d_velocity</span><span class="p">(</span><span class="n">pos_t1</span><span class="p">,</span> <span class="n">pos_t2</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Velocities: </span><span class="si">{</span><span class="n">velocities</span><span class="si">}</span><span class="s2"> μm/s&quot;</span><span class="p">)</span>
+<span class="c1"># Output: [0.064, 0.051] μm/s</span>
+</pre></div>
+</div>
+</section>
+<section id="calculate-radial-velocity">
+<h3>calculate_radial_velocity<a class="headerlink" href="#calculate-radial-velocity" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.calculate_radial_velocity">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_radial_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/dynamic.html#calculate_radial_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.calculate_radial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Calculate radial velocity of organelles projected along the direction to the nearest PM voxel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>positions</strong> (<em>np.ndarray</em>) – Array of organelle positions [N, 3].</p></li>
+<li><p><strong>velocities</strong> (<em>np.ndarray</em>) – Array of 3D velocity vectors [N, 3].</p></li>
+<li><p><strong>pm_mask</strong> (<em>np.ndarray</em>) – 3D binary mask of the plasma membrane.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array of radial velocity values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Calculates the radial velocity of organelles by projecting their 3D velocity vectors onto the direction toward the nearest plasma membrane voxel. This metric reveals whether organelles are moving toward or away from the cell periphery.</p>
+<p><strong>Algorithm</strong>:</p>
+<ol class="arabic simple">
+<li><p>Find the nearest plasma membrane (PM) voxel for each organelle position using KD-tree</p></li>
+<li><p>Calculate the unit vector from organelle to PM: <code class="docutils literal notranslate"><span class="pre">vec_to_pm</span> <span class="pre">/</span> <span class="pre">||vec_to_pm||</span></code></p></li>
+<li><p>Project the 3D velocity onto this radial direction: <code class="docutils literal notranslate"><span class="pre">v_radial</span> <span class="pre">=</span> <span class="pre">dot(velocity,</span> <span class="pre">unit_vector)</span></code></p></li>
+<li><p>Positive values indicate movement toward PM; negative values indicate movement away</p></li>
+</ol>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">positions</span></code> (np.ndarray): Array of organelle positions [N, 3]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">velocities</span></code> (np.ndarray): Array of 3D velocity vectors [N, 3]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pm_mask</span></code> (np.ndarray): 3D binary mask of the plasma membrane</p></li>
+</ul>
+<p><strong>Returns</strong>: np.ndarray - Array of radial velocity values</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_radial_velocity</span>
+
+<span class="c1"># Load time-lapse data</span>
+<span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">35</span><span class="p">]])</span>  <span class="c1"># [N, 3]</span>
+<span class="n">velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]])</span>  <span class="c1"># [N, 3]</span>
+<span class="n">pm_mask</span> <span class="o">=</span> <span class="n">load_plasma_membrane_mask</span><span class="p">()</span>  <span class="c1"># 3D binary mask</span>
+
+<span class="c1"># Calculate radial velocities</span>
+<span class="n">radial_vels</span> <span class="o">=</span> <span class="n">calculate_radial_velocity</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span><span class="p">,</span> <span class="n">pm_mask</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Radial velocities: </span><span class="si">{</span><span class="n">radial_vels</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Positive values: moving toward PM</span>
+<span class="c1"># Negative values: moving away from PM</span>
+</pre></div>
+</div>
+</section>
+<section id="create-velocity-violin-plot">
+<h3>create_velocity_violin_plot<a class="headerlink" href="#create-velocity-violin-plot" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.create_velocity_violin_plot">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">create_velocity_violin_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.35</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figure_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1.5,</span> <span class="pre">1.2)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/dynamic.html#create_velocity_violin_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.create_velocity_violin_plot" title="Link to this definition"></a></dt>
+<dd><p>Create a violin plot for velocity data comparison between categories</p>
+<section id="parameters">
+<h4>Parameters:<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>speed_data<span class="classifier">list</span></dt><dd><p>List of tuples (speed, category)</p>
+</dd>
+<dt>max_speed<span class="classifier">float, optional</span></dt><dd><p>Maximum speed threshold for filtering outliers</p>
+</dd>
+<dt>y_limit<span class="classifier">float, optional</span></dt><dd><p>Y-axis upper limit for the plot</p>
+</dd>
+<dt>figure_size<span class="classifier">tuple, optional</span></dt><dd><p>Figure size as (width, height) in inches</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns:<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<p>matplotlib.figure.Figure : The created figure object</p>
+</section>
+</dd></dl>
+
+<p>Generates violin plots comparing velocity distributions across different conditions or time points.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">velocity_data</span></code> (dict or list): Velocity measurements for different conditions. Can be:
+- Dictionary: {condition_name: array_of_velocities}
+- List: [array1, array2, …]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code> (list): Labels for different datasets (e.g., [‘Control’, ‘Treatment’])</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> (str): Plot title</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ylabel</span></code> (str, optional): Y-axis label. Default: “Velocity”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save_path</span></code> (str, optional): Path to save the figure. If None, displays interactively</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fig</span></code> (matplotlib.figure.Figure): Matplotlib figure object with violin plot</p></li>
+</ul>
+<p><strong>Biological Context</strong>:</p>
+<p>In pancreatic β-cells, ISG velocities increase under high glucose conditions, reflecting enhanced MT-mediated transport toward the plasma membrane for secretion.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_velocity_violin_plot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Example: Compare velocities under different glucose conditions</span>
+<span class="n">velocity_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Low Glucose&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>  <span class="c1"># μm/s</span>
+    <span class="s1">&#39;High Glucose&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">7.2</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># Create violin plot</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">create_velocity_violin_plot</span><span class="p">(</span>
+    <span class="n">velocity_data</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Low Glucose&#39;</span><span class="p">,</span> <span class="s1">&#39;High Glucose&#39;</span><span class="p">],</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;ISG Velocity Distribution&#39;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Velocity (μm/s)&#39;</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="s1">&#39;results/velocity_comparison.png&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="time-series-analysis">
+<h3>Time-Series Analysis<a class="headerlink" href="#time-series-analysis" title="Link to this heading"></a></h3>
+<p>For analyzing velocity changes over time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_velocity_violin_plot</span>
+
+<span class="c1"># Time-series velocity data</span>
+<span class="n">timepoints</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0 min&#39;</span><span class="p">,</span> <span class="s1">&#39;5 min&#39;</span><span class="p">,</span> <span class="s1">&#39;10 min&#39;</span><span class="p">,</span> <span class="s1">&#39;15 min&#39;</span><span class="p">,</span> <span class="s1">&#39;20 min&#39;</span><span class="p">]</span>
+<span class="n">velocity_by_time</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;0 min&#39;</span><span class="p">:</span> <span class="n">load_velocity_data</span><span class="p">(</span><span class="s1">&#39;data_0min.csv&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;5 min&#39;</span><span class="p">:</span> <span class="n">load_velocity_data</span><span class="p">(</span><span class="s1">&#39;data_5min.csv&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;10 min&#39;</span><span class="p">:</span> <span class="n">load_velocity_data</span><span class="p">(</span><span class="s1">&#39;data_10min.csv&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;15 min&#39;</span><span class="p">:</span> <span class="n">load_velocity_data</span><span class="p">(</span><span class="s1">&#39;data_15min.csv&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;20 min&#39;</span><span class="p">:</span> <span class="n">load_velocity_data</span><span class="p">(</span><span class="s1">&#39;data_20min.csv&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># Visualize temporal changes</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">create_velocity_violin_plot</span><span class="p">(</span>
+    <span class="n">velocity_by_time</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">timepoints</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;ISG Velocity Changes Over Time&#39;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Velocity (μm/s)&#39;</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="s1">&#39;results/velocity_timeseries.png&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="future-extensions">
+<h2>Future Extensions<a class="headerlink" href="#future-extensions" title="Link to this heading"></a></h2>
+<p>Planned features for future releases:</p>
+<ul class="simple">
+<li><p><strong>Trajectory Reconstruction</strong>: Full path tracking and visualization</p></li>
+<li><p><strong>Mean Square Displacement (MSD)</strong>: Quantifying diffusion characteristics</p></li>
+<li><p><strong>Diffusion Coefficient Estimation</strong>: D values for different organelle types</p></li>
+<li><p><strong>Motion Pattern Classification</strong>: Directed vs. random vs. confined motion</p></li>
+<li><p><strong>Kymograph Generation</strong>: Space-time plots for visualizing transport</p></li>
+</ul>
+<p>These extensions will further enhance iPA’s capabilities for dynamic analysis of cellular processes.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="interaction.html" class="btn btn-neutral float-left" title="Interaction Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../examples.html" class="btn btn-neutral float-right" title="Examples and Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

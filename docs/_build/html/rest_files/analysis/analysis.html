@@ -1,0 +1,194 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analysis Module &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Morphology Analysis" href="morphology.html" />
+    <link rel="prev" title="Partitioning Module" href="../processing/partitioning.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#key-capabilities">Key Capabilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-analyses">Supported Analyses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sub-modules">Sub-modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="morphology.html">Morphology Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="distribution.html">Distribution Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interaction.html">Interaction Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamics.html">Dynamics Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Analysis Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/rest_files/analysis/analysis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="analysis-module">
+<h1>Analysis Module<a class="headerlink" href="#analysis-module" title="Link to this heading"></a></h1>
+<p>The analysis module provides comprehensive tools for quantitative analysis of cellular imaging data, extracting biologically meaningful features from segmented organelles and partitioned cytoplasmic regions.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Based on the radial cytoplasmic partitioning framework, iPA extracts diverse organelle features across four key dimensions (as described in the manuscript):</p>
+<ol class="arabic simple">
+<li><p><strong>Morphology</strong>: Volume, surface area, length, and shape descriptors of subcellular structures</p></li>
+<li><p><strong>Spatial Arrangement</strong>: Radial Distribution Functions (RDF), organelle pools, angle distributions, and aggregation patterns</p></li>
+<li><p><strong>Dynamics</strong>: 3D velocity and radial velocity from time-lapse imaging</p></li>
+<li><p><strong>Interactions</strong>: Distance-based and contact-based analysis between different organelle types</p></li>
+</ol>
+<p>This multi-dimensional feature extraction enables both intra-modal analysis (within a single imaging modality) and inter-modal comparison (across WFM, SIM, SXT, and cryo-ET), providing a comprehensive view of cell structure and function.</p>
+<section id="key-capabilities">
+<h3>Key Capabilities<a class="headerlink" href="#key-capabilities" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Radial Distribution Function (RDF)</strong>: Standardized quantification of organelle localization from NE to PM</p></li>
+<li><p><strong>14 Predefined Interaction Types</strong>: Comprehensive coverage of organelle-organelle spatial relationships</p></li>
+<li><p><strong>Multi-Organelle Support</strong>: ISGs, F-actin, microtubules, mitochondria, ER, vesicles</p></li>
+<li><p><strong>Cross-Modal Compatibility</strong>: Consistent analysis pipeline across all supported imaging modalities</p></li>
+<li><p><strong>Statistical Rigor</strong>: Pearson correlation, distance statistics, contact probability calculations</p></li>
+</ul>
+</section>
+</section>
+<section id="supported-analyses">
+<h2>Supported Analyses<a class="headerlink" href="#supported-analyses" title="Link to this heading"></a></h2>
+<p>The analysis module is organized into four specialized sub-modules:</p>
+<ul class="simple">
+<li><p><strong>Morphology Analysis</strong>: Extract structural features (volume, length, shape) from segmented masks</p></li>
+<li><p><strong>Distribution Analysis</strong>: Calculate RDF and analyze spatial arrangement patterns</p></li>
+<li><p><strong>Interaction Analysis</strong>: Quantify distances and contacts between different organelle types</p></li>
+<li><p><strong>Dynamics Analysis</strong>: Analyze velocity and motion patterns from time-lapse data</p></li>
+</ul>
+<p>Each sub-module provides both low-level functions for custom workflows and high-level analysis pipelines for standard use cases.</p>
+</section>
+<section id="sub-modules">
+<h2>Sub-modules<a class="headerlink" href="#sub-modules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="morphology.html">Morphology Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="morphology.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morphology.html#core-functions">Core Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morphology.html#usage-examples">Usage Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#core-functions">Core Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#complete-rdf-workflow-example">Complete RDF Workflow Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="interaction.html">Interaction Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interaction.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interaction.html#core-functions">Core Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interaction.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interaction.html#configuration-parameters">Configuration Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dynamics.html">Dynamics Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dynamics.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamics.html#core-functions">Core Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamics.html#future-extensions">Future Extensions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../processing/partitioning.html" class="btn btn-neutral float-left" title="Partitioning Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="morphology.html" class="btn btn-neutral float-right" title="Morphology Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

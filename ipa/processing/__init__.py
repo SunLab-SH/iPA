@@ -11,14 +11,8 @@ from . import partitioning
 
 # Export commonly used classes/functions for convenient access
 from .partitioning import Partitioning, visualize_partitions, plot_partition_features
-from .denoising import N2V, predict_3d, train_and_predict_3d
-from .segmentation import (
-    run_cell_segmentation,
-    run_mito_segmentation,
-    segment_sphere_like_organelle,
-    segment_cell_shape,
-    segment_nucleus,
-)
+from .denoising import N2V, N2N, predict_3d
+from .segmentation import create_segmenter
 
 __all__ = [
     # Submodules
@@ -26,16 +20,12 @@ __all__ = [
     'denoising',
     'partitioning',
     
-    # Commonly used classes/functions
+    # Commonly used classes/functions (Unified API)
     'Partitioning',
     'visualize_partitions',
     'plot_partition_features',
     'N2V',
+    'N2N',
     'predict_3d',
-    'train_and_predict_3d',
-    'run_cell_segmentation',
-    'run_mito_segmentation',
-    'segment_sphere_like_organelle',
-    'segment_cell_shape',
-    'segment_nucleus',
+    'create_segmenter',
 ]

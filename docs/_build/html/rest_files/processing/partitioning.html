@@ -1,0 +1,940 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Partitioning Module &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Analysis Module" href="../analysis/analysis.html" />
+    <link rel="prev" title="Cryo-ET Segmentation" href="segmentation/et_segmentation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="processing.html">Processing Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="denoising.html">Denoising Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation/segmentation.html">Segmentation Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Partitioning Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#partitioning-class">Partitioning Class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ipa.processing.partitioning.Partitioning"><code class="docutils literal notranslate"><span class="pre">Partitioning</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-methods">Core Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#visualization-functions">Visualization Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#visualize-partitions">visualize_partitions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plot-partition-features">plot_partition_features</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#complete-workflow-example">Complete Workflow Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#output-data-formats">Output Data Formats</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xvg-coordinate-files">XVG Coordinate Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#usage-in-analysis-modules">Usage in Analysis Modules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="processing.html">Processing Module</a></li>
+      <li class="breadcrumb-item active">Partitioning Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/rest_files/processing/partitioning.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="partitioning-module">
+<h1>Partitioning Module<a class="headerlink" href="#partitioning-module" title="Link to this heading"></a></h1>
+<p>The partitioning module implements a novel <strong>radial cytoplasmic partitioning algorithm</strong> that divides the cytoplasm between nuclear envelope (NE) and plasma membrane (PM) into concentric shells. This enables standardized spatial analysis across cells of varying geometries and imaging modalities, addressing a key challenge in quantitative cell biology.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Radial partitioning normalizes the cytoplasmic space into radial shells from NE to PM, providing a unified framework for spatial quantification. This approach is particularly powerful for:</p>
+<ul class="simple">
+<li><p><strong>Cross-cell comparisons</strong>: Eliminating biases from variations in nuclear and cellular shapes</p></li>
+<li><p><strong>Multi-modal integration</strong>: Enabling direct comparison of organelle distributions across WFM, SIM, SXT, and cryo-ET</p></li>
+<li><p><strong>Radial Distribution Function (RDF) analysis</strong>: Quantifying organelle localization patterns with fine-grained spatial resolution</p></li>
+</ul>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Pure NE-PM Pair Method</strong>: Fast and interpretable partitioning based on shell point clouds generated from NE-PM pairs</p></li>
+<li><p><strong>Boundary Extraction</strong>: Automatic identification and extraction of cellular membrane structure boundary points using Gaussian smoothing</p></li>
+<li><p><strong>Spatial Pairing</strong>: NE-PM point mapping based on angular similarity for robust pair generation</p></li>
+<li><p><strong>Coordinate Extraction</strong>: Sampling partition coordinates for downstream RDF and interaction analysis</p></li>
+<li><p><strong>3D Visualization</strong>: Multi-level visualization tools for partitioning results</p></li>
+</ul>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../../_images/784_5_partition_comparison.png"><img alt="Partitioning visualization showing original masks and partition results" src="../../_images/784_5_partition_comparison.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Figure 1</strong>: Cellular radial partitioning visualization. Left: Original PM and NE masks; Middle and Right: Radial partitioning results with 8 concentric shells from NE to PM, showing color gradient representation of spatial zones.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="partitioning-class">
+<h2>Partitioning Class<a class="headerlink" href="#partitioning-class" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipa.processing.partitioning.</span></span><span class="sig-name descname"><span class="pre">Partitioning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_slices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class provides a comprehensive toolkit for cellular partitioning analysis,
+including boundary extraction, partition generation, feature calculation, and
+visualization. Primarily used for analyzing organelle spatial distribution
+between nuclear envelope and plasma membrane.</p>
+<p>Parameters</p>
+<dl class="simple">
+<dt>root_dir<span class="classifier">str</span></dt><dd><p>Root directory path for result outputs</p>
+</dd>
+<dt>n_slices<span class="classifier">int, default=8</span></dt><dd><p>Number of radial partitions, dividing nucleus-membrane distance into n_slices regions</p>
+</dd>
+<dt>num_cores<span class="classifier">int, optional</span></dt><dd><p>Number of CPU cores for parallel processing, defaults to 1</p>
+</dd>
+</dl>
+<p>Attributes</p>
+<dl class="simple">
+<dt>root_dir<span class="classifier">str</span></dt><dd><p>Output directory path</p>
+</dd>
+<dt>n_slices<span class="classifier">int</span></dt><dd><p>Number of partitions</p>
+</dd>
+<dt>num_cores<span class="classifier">int</span></dt><dd><p>Number of CPU cores</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.load_mask_data">
+<span class="sig-name descname"><span class="pre">load_mask_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ne_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.load_mask_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.load_mask_data" title="Link to this definition"></a></dt>
+<dd><p>Load nuclear envelope (NE) and plasma membrane (PM) mask data from files</p>
+<p>Supports multiple file formats including numpy arrays (.npy), TIFF images
+(.tif/.tiff), MRC format (.mrc), and other common biological imaging formats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ne_path</strong> (<em>str</em>) – Path to nuclear envelope mask file</p></li>
+<li><p><strong>pm_path</strong> (<em>str</em>) – Path to plasma membrane mask file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(ne_mask, pm_mask) - Binary mask arrays for nuclear envelope and plasma membrane</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple of numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – When specified file paths do not exist</p></li>
+<li><p><strong>ValueError</strong> – When file format is unsupported or data format is incorrect</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ne_mask</span><span class="p">,</span> <span class="n">pm_mask</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">load_mask_data</span><span class="p">(</span><span class="s2">&quot;nuclear.npy&quot;</span><span class="p">,</span> <span class="s2">&quot;membrane.npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NE mask shape: </span><span class="si">{</span><span class="n">ne_mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, PM mask shape: </span><span class="si">{</span><span class="n">pm_mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.smooth_mask">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">smooth_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.smooth_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.smooth_mask" title="Link to this definition"></a></dt>
+<dd><p>Smooth binary mask using Gaussian filtering and morphological closing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mask</strong> (<em>numpy.ndarray</em>) – Input binary mask.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – Sigma for Gaussian filter. Higher values produce smoother boundaries.</p></li>
+<li><p><strong>close_iter</strong> (<em>int</em>) – Number of iterations for morphological closing to fill small gaps.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Smoothed binary mask.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.extract_ne_pm_edges">
+<span class="sig-name descname"><span class="pre">extract_ne_pm_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pm_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ne_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_close_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.extract_ne_pm_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.extract_ne_pm_edges" title="Link to this definition"></a></dt>
+<dd><p>Extract nuclear envelope and plasma membrane boundary points and cellular center from 3D mask data</p>
+<p>Uses morphological operations to extract proper boundaries instead of EDT method
+which may produce incorrect boundary representations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pm_mask</strong> (<em>numpy.ndarray</em>) – 3D binary mask of plasma membrane, shape (Z, Y, X)</p></li>
+<li><p><strong>ne_mask</strong> (<em>numpy.ndarray</em>) – 3D binary mask of nuclear envelope, shape (Z, Y, X)</p></li>
+<li><p><strong>smooth_sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Sigma for Gaussian smoothing. Set to 0 to disable smoothing.</p></li>
+<li><p><strong>smooth_close_iter</strong> (<em>int</em><em>, </em><em>optional</em>) – Iterations for morphological closing to fill small gaps.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>center</strong> (<em>numpy.ndarray</em>) – Cell center coordinates, shape (3,), order (Z, Y, X)</p></li>
+<li><p><strong>ne_edge</strong> (<em>numpy.ndarray</em>) – Nuclear envelope boundary point coordinates array, shape (N, 3)</p></li>
+<li><p><strong>pm_edge</strong> (<em>numpy.ndarray</em>) – Plasma membrane boundary point coordinates array, shape (M, 3)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.min_angle">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ne_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.min_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.min_angle" title="Link to this definition"></a></dt>
+<dd><p>Find nuclear envelope point with minimal angle to plasma membrane point relative to center</p>
+<p>Calculates cosine angles between vectors to find the directionally closest
+nuclear envelope point. Used for establishing optimal NE-PM point pair matching.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ne_points</strong> (<em>numpy.ndarray</em>) – Nuclear envelope point coordinates array, shape (N, 3)</p></li>
+<li><p><strong>pm_point</strong> (<em>numpy.ndarray</em>) – Single plasma membrane point coordinates, shape (3,)</p></li>
+<li><p><strong>center</strong> (<em>numpy.ndarray</em>) – Cell center coordinates, shape (3,)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Nuclear envelope point coordinates with minimal angle, shape (3,)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Uses cosine similarity to calculate vector angles:
+cos(angle) = dot product of vectors divided by product of their magnitudes
+Selects the point with maximum cosine value, i.e., minimal angle.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">closest_ne</span> <span class="o">=</span> <span class="n">Partitioning</span><span class="o">.</span><span class="n">min_angle</span><span class="p">(</span><span class="n">ne_points</span><span class="p">,</span> <span class="n">pm_point</span><span class="p">,</span> <span class="n">center</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Closest NE point: </span><span class="si">{</span><span class="n">closest_ne</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.find_ne_pm_pairs">
+<span class="sig-name descname"><span class="pre">find_ne_pm_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ne_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_txt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.find_ne_pm_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.find_ne_pm_pairs" title="Link to this definition"></a></dt>
+<dd><p>Pair nuclear envelope and plasma membrane boundary points using GPU acceleration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.points_along_vector">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">points_along_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_slices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.points_along_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.points_along_vector" title="Link to this definition"></a></dt>
+<dd><p>Generate equally spaced division points between two points</p>
+<p>Creates n_slices+1 equally spaced points along the vector from p1 to p2,
+including start and end points. These points are used to create boundary
+surfaces for radial partitions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p1</strong> (<em>numpy.ndarray</em>) – Starting point coordinates, shape (3,)</p></li>
+<li><p><strong>p2</strong> (<em>numpy.ndarray</em>) – Ending point coordinates, shape (3,)</p></li>
+<li><p><strong>n_slices</strong> (<em>int</em>) – Number of division segments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Equally spaced points array, shape (n_slices+1, 3)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="n">Partitioning</span><span class="o">.</span><span class="n">points_along_vector</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="si">}</span><span class="s2"> division points&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.shell_partition">
+<span class="sig-name descname"><span class="pre">shell_partition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pairs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.shell_partition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.shell_partition" title="Link to this definition"></a></dt>
+<dd><p>Generate shell partition points from paired NE-PM points with adaptive partitioning</p>
+<p>Creates equally spaced partition points along the connection line for each
+NE-PM point pair, with adaptive subdivision for better handling of irregular cell shapes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pairs</strong> (<em>numpy.ndarray</em>) – Paired points array, shape (K, 6)</p></li>
+<li><p><strong>cell_mask</strong> (<em>numpy.ndarray</em><em>, </em><em>optional</em>) – Binary mask indicating the active cell regions, shape (H, W, D)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shell points list, each element is a coordinate array of all points in one shell</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Optimized version with adaptive partitioning for irregular cell shapes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions_with_edt">
+<span class="sig-name descname"><span class="pre">create_nepm_radial_partitions_with_edt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ne_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_slices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ne_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.create_nepm_radial_partitions_with_edt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions_with_edt" title="Link to this definition"></a></dt>
+<dd><p>Optimized version of radial partition generation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ne_edge</strong> (<em>numpy.ndarray</em>) – Nuclear envelope boundary coordinates array, shape (N, 3)</p></li>
+<li><p><strong>pm_edge</strong> (<em>numpy.ndarray</em>) – Plasma membrane boundary coordinates array, shape (M, 3)</p></li>
+<li><p><strong>shape</strong> (<em>tuple</em>) – Shape of original image volume (Z, Y, X)</p></li>
+<li><p><strong>n_slices</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of radial partitions, defaults to self.n_slices</p></li>
+<li><p><strong>pm_mask</strong> (<em>numpy.ndarray</em><em>, </em><em>optional</em>) – Original plasma membrane mask for improved accuracy</p></li>
+<li><p><strong>ne_mask</strong> (<em>numpy.ndarray</em><em>, </em><em>optional</em>) – Original nuclear envelope mask for improved accuracy</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>3D partition mask array where each voxel value indicates partition ID (0=background)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Uses local EDT-guided pair matching for better handling of irregular cell shapes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.shell_partition_optimized">
+<span class="sig-name descname"><span class="pre">shell_partition_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pairs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.shell_partition_optimized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.shell_partition_optimized" title="Link to this definition"></a></dt>
+<dd><p>Optimized version of shell partition generation with parallel processing support</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.extract_partition_coordinates">
+<span class="sig-name descname"><span class="pre">extract_partition_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partition_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.extract_partition_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.extract_partition_coordinates" title="Link to this definition"></a></dt>
+<dd><p>Extract coordinate points from continuous partition mask for saving in XVG format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>partition_mask</strong> (<em>numpy.ndarray</em>) – 3D partition mask array</p></li>
+<li><p><strong>sampling_density</strong> (<em>float</em><em>, </em><em>default=0.1</em>) – Sampling density, 0.1 means sampling 10% of points</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of coordinate points for each partition</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.save_partition_coords_to_xvg">
+<span class="sig-name descname"><span class="pre">save_partition_coords_to_xvg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partition_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.save_partition_coords_to_xvg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.save_partition_coords_to_xvg" title="Link to this definition"></a></dt>
+<dd><p>Save partition coordinates to XVG format file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>partition_coords</strong> (<em>list</em><em> of </em><em>numpy.ndarray</em>) – List of partition coordinates</p></li>
+<li><p><strong>dataid</strong> (<em>str</em>) – Data identifier</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em>) – Output directory</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Output directory path</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions">
+<span class="sig-name descname"><span class="pre">create_nepm_radial_partitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ne_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_slices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ne_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.create_nepm_radial_partitions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions" title="Link to this definition"></a></dt>
+<dd><p>Create radial partitions using pure NE-PM pair information without EDT guidance</p>
+<p>This method generates radial partitions based solely on the shell points created from
+NE-PM pairs, without using Euclidean Distance Transform for edge refinement.
+It’s more straightforward and computationally efficient than the EDT-guided version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ne_edge</strong> (<em>numpy.ndarray</em>) – Nuclear envelope boundary coordinates array, shape (N, 3)</p></li>
+<li><p><strong>pm_edge</strong> (<em>numpy.ndarray</em>) – Plasma membrane boundary coordinates array, shape (M, 3)</p></li>
+<li><p><strong>shape</strong> (<em>tuple</em>) – Shape of original image volume (Z, Y, X)</p></li>
+<li><p><strong>n_slices</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of radial partitions, defaults to self.n_slices</p></li>
+<li><p><strong>pm_mask</strong> (<em>numpy.ndarray</em><em>, </em><em>optional</em>) – Original plasma membrane mask for defining cell boundaries</p></li>
+<li><p><strong>ne_mask</strong> (<em>numpy.ndarray</em><em>, </em><em>optional</em>) – Original nuclear envelope mask for defining nuclear boundaries</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>3D partition mask array where each voxel value indicates partition ID (0=background)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This pure pair-based method is recommended when:
+- You want faster computation without EDT overhead
+- The cell shape is relatively regular
+- You prefer simpler, more interpretable partitioning logic</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">partition_mask</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">create_nepm_radial_partitions</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ne_coords</span><span class="p">,</span> <span class="n">pm_coords</span><span class="p">,</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created partitions with shape: </span><span class="si">{</span><span class="n">partition_mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.create_shell_based_partitions">
+<span class="sig-name descname"><span class="pre">create_shell_based_partitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ne_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_slices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ne_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.create_shell_based_partitions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.create_shell_based_partitions" title="Link to this definition"></a></dt>
+<dd><p>Deprecated: Use create_nepm_radial_partitions_with_edt instead.</p>
+<p>This method is kept for backward compatibility.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions_pure_pairs">
+<span class="sig-name descname"><span class="pre">create_nepm_radial_partitions_pure_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ne_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_slices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ne_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.create_nepm_radial_partitions_pure_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions_pure_pairs" title="Link to this definition"></a></dt>
+<dd><p>Alias for create_nepm_radial_partitions().</p>
+<p>This method name explicitly indicates it uses the pure NE-PM pair approach
+without EDT guidance. It’s provided for clarity and backward compatibility.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#id1" title="ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_nepm_radial_partitions</span></code></a></dt><dd><p>The main implementation</p>
+</dd>
+<dt><a class="reference internal" href="#ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions_with_edt" title="ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions_with_edt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_nepm_radial_partitions_with_edt</span></code></a></dt><dd><p>EDT-guided alternative</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<p>The <code class="docutils literal notranslate"><span class="pre">Partitioning</span></code> class provides the complete workflow for radial cytoplasmic partitioning, from boundary extraction to coordinate sampling.</p>
+<section id="core-methods">
+<h3>Core Methods<a class="headerlink" href="#core-methods" title="Link to this heading"></a></h3>
+<section id="extract-ne-pm-edges">
+<h4>extract_ne_pm_edges<a class="headerlink" href="#extract-ne-pm-edges" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-prename descclassname"><span class="pre">Partitioning.</span></span><span class="sig-name descname"><span class="pre">extract_ne_pm_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pm_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ne_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_close_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.extract_ne_pm_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>Extract nuclear envelope and plasma membrane boundary points and cellular center from 3D mask data</p>
+<p>Uses morphological operations to extract proper boundaries instead of EDT method
+which may produce incorrect boundary representations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pm_mask</strong> (<em>numpy.ndarray</em>) – 3D binary mask of plasma membrane, shape (Z, Y, X)</p></li>
+<li><p><strong>ne_mask</strong> (<em>numpy.ndarray</em>) – 3D binary mask of nuclear envelope, shape (Z, Y, X)</p></li>
+<li><p><strong>smooth_sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Sigma for Gaussian smoothing. Set to 0 to disable smoothing.</p></li>
+<li><p><strong>smooth_close_iter</strong> (<em>int</em><em>, </em><em>optional</em>) – Iterations for morphological closing to fill small gaps.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>center</strong> (<em>numpy.ndarray</em>) – Cell center coordinates, shape (3,), order (Z, Y, X)</p></li>
+<li><p><strong>ne_edge</strong> (<em>numpy.ndarray</em>) – Nuclear envelope boundary point coordinates array, shape (N, 3)</p></li>
+<li><p><strong>pm_edge</strong> (<em>numpy.ndarray</em>) – Plasma membrane boundary point coordinates array, shape (M, 3)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Extracts boundary points from nuclear envelope and plasma membrane masks using Gaussian smoothing for robust edge detection.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pm_mask</span></code> (np.ndarray): Plasma membrane binary mask</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ne_mask</span></code> (np.ndarray): Nuclear envelope binary mask</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">smooth_sigma</span></code> (float, optional): Gaussian smoothing sigma. Default: 1.0</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">center</span></code> (np.ndarray): Cell center coordinates (Z, Y, X)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ne_edge</span></code> (np.ndarray): NE boundary point coordinates (N, 3)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pm_edge</span></code> (np.ndarray): PM boundary point coordinates (M, 3)</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">Partitioning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Initialize partitioner</span>
+<span class="n">partitioner</span> <span class="o">=</span> <span class="n">Partitioning</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;results/&quot;</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="c1"># Load masks</span>
+<span class="n">ne_mask</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;nuclear_envelope.mrc&quot;</span><span class="p">)</span>
+<span class="n">pm_mask</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;plasma_membrane.mrc&quot;</span><span class="p">)</span>
+
+<span class="c1"># Extract boundaries</span>
+<span class="n">center</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">extract_ne_pm_edges</span><span class="p">(</span><span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cell center: </span><span class="si">{</span><span class="n">center</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NE points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ne_edge</span><span class="p">)</span><span class="si">}</span><span class="s2">, PM points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pm_edge</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="create-nepm-radial-partitions">
+<h4>create_nepm_radial_partitions<a class="headerlink" href="#create-nepm-radial-partitions" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-prename descclassname"><span class="pre">Partitioning.</span></span><span class="sig-name descname"><span class="pre">create_nepm_radial_partitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ne_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_slices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ne_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.create_nepm_radial_partitions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd><p>Create radial partitions using pure NE-PM pair information without EDT guidance</p>
+<p>This method generates radial partitions based solely on the shell points created from
+NE-PM pairs, without using Euclidean Distance Transform for edge refinement.
+It’s more straightforward and computationally efficient than the EDT-guided version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ne_edge</strong> (<em>numpy.ndarray</em>) – Nuclear envelope boundary coordinates array, shape (N, 3)</p></li>
+<li><p><strong>pm_edge</strong> (<em>numpy.ndarray</em>) – Plasma membrane boundary coordinates array, shape (M, 3)</p></li>
+<li><p><strong>shape</strong> (<em>tuple</em>) – Shape of original image volume (Z, Y, X)</p></li>
+<li><p><strong>n_slices</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of radial partitions, defaults to self.n_slices</p></li>
+<li><p><strong>pm_mask</strong> (<em>numpy.ndarray</em><em>, </em><em>optional</em>) – Original plasma membrane mask for defining cell boundaries</p></li>
+<li><p><strong>ne_mask</strong> (<em>numpy.ndarray</em><em>, </em><em>optional</em>) – Original nuclear envelope mask for defining nuclear boundaries</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>3D partition mask array where each voxel value indicates partition ID (0=background)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This pure pair-based method is recommended when:
+- You want faster computation without EDT overhead
+- The cell shape is relatively regular
+- You prefer simpler, more interpretable partitioning logic</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">partition_mask</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">create_nepm_radial_partitions</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ne_coords</span><span class="p">,</span> <span class="n">pm_coords</span><span class="p">,</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created partitions with shape: </span><span class="si">{</span><span class="n">partition_mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p>Creates radial partitions using pure NE-PM pair information without EDT guidance. This is the <strong>recommended method</strong> for most applications, offering fast computation with interpretable logic.</p>
+<p><strong>Algorithm Overview</strong>:</p>
+<ol class="arabic simple">
+<li><p>Generate NE-PM point pairs based on angular similarity from cell center</p></li>
+<li><p>Create intermediate shell points along each NE-PM pair at equal intervals</p></li>
+<li><p>Assign cytoplasmic voxels to partitions based on distance to shells with relative position interpolation (60%/40% threshold)</p></li>
+<li><p>Post-process with morphological closing to fill small gaps</p></li>
+</ol>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ne_edge</span></code> (np.ndarray): NE boundary coordinates (N, 3)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pm_edge</span></code> (np.ndarray): PM boundary coordinates (M, 3)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shape</span></code> (tuple): Output volume shape (Z, Y, X)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_slices</span></code> (int, optional): Number of radial partitions. Default: 8</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pm_mask</span></code> (np.ndarray, optional): Original PM mask for defining cell boundaries</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ne_mask</span></code> (np.ndarray, optional): Original NE mask for defining nuclear boundaries</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">partition_mask</span></code> (np.ndarray): 3D partition mask where voxel values indicate partition ID (0=background, 1-N=partition IDs)</p></li>
+</ul>
+<p><strong>Biological Significance</strong>:</p>
+<p>This method creates concentric shells that normalize for cell shape variations, enabling direct comparison of organelle distributions across different cells and imaging modalities. The pure pair-based approach is particularly suitable for SIM/WFM data where cell shapes are relatively regular.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create 8 radial partitions</span>
+<span class="n">partition_mask</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">create_nepm_radial_partitions</span><span class="p">(</span>
+    <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span>
+    <span class="n">shape</span><span class="o">=</span><span class="n">volume_shape</span><span class="p">,</span>
+    <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">pm_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">,</span>
+    <span class="n">ne_mask</span><span class="o">=</span><span class="n">ne_mask</span>
+<span class="p">)</span>
+
+<span class="c1"># Check partition distribution</span>
+<span class="n">unique_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">partition_mask</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_ids</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2"> partitions&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">unique_ids</span><span class="p">[</span><span class="n">unique_ids</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]:</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">partition_mask</span> <span class="o">==</span> <span class="n">pid</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition </span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> voxels&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="extract-partition-coordinates">
+<h4>extract_partition_coordinates<a class="headerlink" href="#extract-partition-coordinates" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-prename descclassname"><span class="pre">Partitioning.</span></span><span class="sig-name descname"><span class="pre">extract_partition_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partition_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.extract_partition_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd><p>Extract coordinate points from continuous partition mask for saving in XVG format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>partition_mask</strong> (<em>numpy.ndarray</em>) – 3D partition mask array</p></li>
+<li><p><strong>sampling_density</strong> (<em>float</em><em>, </em><em>default=0.1</em>) – Sampling density, 0.1 means sampling 10% of points</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of coordinate points for each partition</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Extracts coordinate points from partition mask for downstream RDF analysis. Uses random sampling to reduce memory usage while maintaining spatial distribution patterns.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">partition_mask</span></code> (np.ndarray): 3D partition mask</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sampling_density</span></code> (float, optional): Sampling ratio (0-1). Default: 0.1 (10% of voxels)</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">partition_coords</span></code> (dict): Dictionary mapping partition ID (int) to coordinate arrays (np.ndarray of shape [N, 3])</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract coordinates with 5% sampling</span>
+<span class="n">partition_coords</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">extract_partition_coordinates</span><span class="p">(</span>
+    <span class="n">partition_mask</span><span class="p">,</span>
+    <span class="n">sampling_density</span><span class="o">=</span><span class="mf">0.05</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">partition_id</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="n">partition_coords</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition </span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span><span class="si">}</span><span class="s2"> sampled points&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="save-partition-coords-to-xvg">
+<h4>save_partition_coords_to_xvg<a class="headerlink" href="#save-partition-coords-to-xvg" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-prename descclassname"><span class="pre">Partitioning.</span></span><span class="sig-name descname"><span class="pre">save_partition_coords_to_xvg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partition_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/partitioning.html#Partitioning.save_partition_coords_to_xvg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd><p>Save partition coordinates to XVG format file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>partition_coords</strong> (<em>list</em><em> of </em><em>numpy.ndarray</em>) – List of partition coordinates</p></li>
+<li><p><strong>dataid</strong> (<em>str</em>) – Data identifier</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em>) – Output directory</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Output directory path</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Saves partition coordinates in XVG format for compatibility with analysis modules. XVG is a simple text format that stores 3D coordinates with layer indices.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">partition_coords</span></code> (dict): Dictionary of partition coordinates from <code class="docutils literal notranslate"><span class="pre">extract_partition_coordinates()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dataid</span></code> (str): Dataset identifier for filename</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output_dir</span></code> (str): Output directory path</p></li>
+</ul>
+<p><strong>Output Format</strong>:</p>
+<p>The XVG file contains lines in the format: <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">y</span> <span class="pre">z</span> <span class="pre">partition_id</span></code>, where coordinates are in voxel units.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save coordinates for RDF analysis</span>
+<span class="n">partitioner</span><span class="o">.</span><span class="n">save_partition_coords_to_xvg</span><span class="p">(</span>
+    <span class="n">partition_coords</span><span class="p">,</span>
+    <span class="n">dataid</span><span class="o">=</span><span class="s2">&quot;sample_cell_01&quot;</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;results/partitions/&quot;</span>
+<span class="p">)</span>
+<span class="c1"># Creates: results/partitions/sample_cell_01_partition_coords.xvg</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="visualization-functions">
+<h2>Visualization Functions<a class="headerlink" href="#visualization-functions" title="Link to this heading"></a></h2>
+<section id="visualize-partitions">
+<h3>visualize_partitions<a class="headerlink" href="#visualize-partitions" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.visualize_partitions">
+<span class="sig-prename descclassname"><span class="pre">ipa.processing.partitioning.</span></span><span class="sig-name descname"><span class="pre">visualize_partitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partition_masks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/visualization.html#visualize_partitions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.visualize_partitions" title="Link to this definition"></a></dt>
+<dd><p>Visualize radial partition zones in 2D or 3D.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>partition_masks</strong> (<em>list</em><em> of </em><em>numpy.ndarray</em>) – List of partition masks for each radial zone</p></li>
+<li><p><strong>slice_idx</strong> (<em>int</em><em>, </em><em>optional</em>) – Z-slice index for 2D visualization (shows 3D if None)</p></li>
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to save the visualization</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Generates 2D slice visualization of partitioning results with customizable color mapping.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">partition_list</span></code> (list): List of binary masks for each partition layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slice_idx</span></code> (int): Index of Z-slice to display</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save_path</span></code> (str, optional): Path to save the figure. If None, displays interactively</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize_partitions</span>
+
+<span class="c1"># Create list of binary masks for each partition</span>
+<span class="n">partition_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">partition_mask</span> <span class="o">==</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">)]</span>
+
+<span class="c1"># Visualize middle slice</span>
+<span class="n">visualize_partitions</span><span class="p">(</span>
+    <span class="n">partition_list</span><span class="o">=</span><span class="n">partition_list</span><span class="p">,</span>
+    <span class="n">slice_idx</span><span class="o">=</span><span class="n">partition_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;results/partitions_slice.png&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="plot-partition-features">
+<h3>plot_partition_features<a class="headerlink" href="#plot-partition-features" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.processing.partitioning.plot_partition_features">
+<span class="sig-prename descclassname"><span class="pre">ipa.processing.partitioning.</span></span><span class="sig-name descname"><span class="pre">plot_partition_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/partitioning/visualization.html#plot_partition_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.partitioning.plot_partition_features" title="Link to this definition"></a></dt>
+<dd><p>Plot partition feature analysis results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>features_df</strong> (<em>pandas.DataFrame</em>) – Feature table from compute_partition_features</p></li>
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to save the plot</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Generates statistical charts showing volume distribution and geometric features of each partition layer.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">partition_mask</span></code> (np.ndarray): 3D partition mask</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save_path</span></code> (str, optional): Path to save the figure</p></li>
+</ul>
+<p><strong>Output</strong>:</p>
+<ul class="simple">
+<li><p>Bar chart showing voxel count per partition</p></li>
+<li><p>Summary statistics table</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_partition_features</span>
+
+<span class="n">plot_partition_features</span><span class="p">(</span>
+    <span class="n">partition_mask</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;results/partition_statistics.png&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="complete-workflow-example">
+<h2>Complete Workflow Example<a class="headerlink" href="#complete-workflow-example" title="Link to this heading"></a></h2>
+<p>This example demonstrates the complete partitioning workflow from mask loading to coordinate extraction:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">Partitioning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Step 1: Initialize partitioner</span>
+<span class="n">partitioner</span> <span class="o">=</span> <span class="n">Partitioning</span><span class="p">(</span>
+    <span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;results/&quot;</span><span class="p">,</span>
+    <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>  <span class="c1"># Create 8 radial partitions</span>
+    <span class="n">num_cores</span><span class="o">=</span><span class="mi">4</span>  <span class="c1"># Use 4 CPU cores for parallel processing</span>
+<span class="p">)</span>
+
+<span class="c1"># Step 2: Load cellular membrane mask data</span>
+<span class="n">ne_mask</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;data/nuclear_envelope.mrc&quot;</span><span class="p">)</span>
+<span class="n">pm_mask</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;data/plasma_membrane.mrc&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded masks with shape: </span><span class="si">{</span><span class="n">pm_mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Extract boundary coordinates</span>
+<span class="n">center</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">extract_ne_pm_edges</span><span class="p">(</span><span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected cell center: </span><span class="si">{</span><span class="n">center</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NE boundary points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ne_edge</span><span class="p">)</span><span class="si">}</span><span class="s2">, PM boundary points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pm_edge</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 4: Create radial partitions using pure NE-PM pair method</span>
+<span class="n">partition_mask</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">create_nepm_radial_partitions</span><span class="p">(</span>
+    <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span>
+    <span class="n">shape</span><span class="o">=</span><span class="n">pm_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">pm_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">,</span>
+    <span class="n">ne_mask</span><span class="o">=</span><span class="n">ne_mask</span>
+<span class="p">)</span>
+
+<span class="c1"># Check partition distribution</span>
+<span class="n">unique_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">partition_mask</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_ids</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2"> radial partitions&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unique_ids</span><span class="p">[</span><span class="n">unique_ids</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]):</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">partition_mask</span> <span class="o">==</span> <span class="n">pid</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Partition </span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> voxels&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 5: Extract and save coordinate data for RDF analysis</span>
+<span class="n">partition_coords</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">extract_partition_coordinates</span><span class="p">(</span>
+    <span class="n">partition_mask</span><span class="p">,</span>
+    <span class="n">sampling_density</span><span class="o">=</span><span class="mf">0.05</span>  <span class="c1"># Sample 5% of voxels</span>
+<span class="p">)</span>
+
+<span class="n">partitioner</span><span class="o">.</span><span class="n">save_partition_coords_to_xvg</span><span class="p">(</span>
+    <span class="n">partition_coords</span><span class="p">,</span>
+    <span class="n">dataid</span><span class="o">=</span><span class="s2">&quot;sample_cell_01&quot;</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;results/partitions/&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Partition coordinates saved to: results/partitions/sample_cell_01_partition_coords.xvg&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 6: Visualize results</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize_partitions</span><span class="p">,</span> <span class="n">plot_partition_features</span>
+
+<span class="c1"># 2D slice visualization</span>
+<span class="n">partition_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">partition_mask</span> <span class="o">==</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">)]</span>
+<span class="n">visualize_partitions</span><span class="p">(</span>
+    <span class="n">partition_list</span><span class="o">=</span><span class="n">partition_list</span><span class="p">,</span>
+    <span class="n">slice_idx</span><span class="o">=</span><span class="n">pm_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;results/partitions_slice.png&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Statistical analysis</span>
+<span class="n">plot_partition_features</span><span class="p">(</span>
+    <span class="n">partition_mask</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;results/partition_statistics.png&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="output-data-formats">
+<h2>Output Data Formats<a class="headerlink" href="#output-data-formats" title="Link to this heading"></a></h2>
+<section id="xvg-coordinate-files">
+<h3>XVG Coordinate Files<a class="headerlink" href="#xvg-coordinate-files" title="Link to this heading"></a></h3>
+<p>The XVG format is a simple text-based format for storing 3D coordinates with layer indices. Each line contains:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">x</span> <span class="pre">y</span> <span class="pre">z</span> <span class="pre">partition_id</span>
+<span class="pre">`</span></code></p>
+<p><strong>Features</strong>:</p>
+<ul class="simple">
+<li><p>3D coordinate points for each partition layer</p></li>
+<li><p>Layer index markers (1 to N)</p></li>
+<li><p>Sampling density control via <code class="docutils literal notranslate"><span class="pre">sampling_density</span></code> parameter</p></li>
+<li><p>Compatible with downstream RDF and interaction analysis modules</p></li>
+</ul>
+<p><strong>Example XVG file content</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Partition coordinates for sample_cell_01
+# Format: x y z partition_id
+45.2 120.5 30.1 1
+46.8 121.2 30.5 1
+...
+50.3 130.7 35.2 2
+...
+</pre></div>
+</div>
+</section>
+<section id="usage-in-analysis-modules">
+<h3>Usage in Analysis Modules<a class="headerlink" href="#usage-in-analysis-modules" title="Link to this heading"></a></h3>
+<p>The partition coordinates can be directly used with analysis functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_rdf_from_xvg</span><span class="p">,</span> <span class="n">load_partition_coords_from_xvg</span>
+
+<span class="c1"># Load partition coordinates</span>
+<span class="n">partition_coords</span> <span class="o">=</span> <span class="n">load_partition_coords_from_xvg</span><span class="p">(</span>
+    <span class="s2">&quot;results/partitions/sample_cell_01_partition_coords.xvg&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Calculate RDF for ISG</span>
+<span class="n">rdf_results</span> <span class="o">=</span> <span class="n">calculate_rdf_from_xvg</span><span class="p">(</span>
+    <span class="n">organelle_mask</span><span class="o">=</span><span class="n">isg_mask</span><span class="p">,</span>
+    <span class="n">partition_coords</span><span class="o">=</span><span class="n">partition_coords</span><span class="p">,</span>
+    <span class="n">radial_positions</span><span class="o">=</span><span class="n">radial_positions_dict</span><span class="p">,</span>
+    <span class="n">bins</span><span class="o">=</span><span class="mi">8</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ISG RDF values: </span><span class="si">{</span><span class="n">rdf_results</span><span class="p">[</span><span class="s1">&#39;rdf&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="segmentation/et_segmentation.html" class="btn btn-neutral float-left" title="Cryo-ET Segmentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../analysis/analysis.html" class="btn btn-neutral float-right" title="Analysis Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

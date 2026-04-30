@@ -8,8 +8,14 @@ import numpy as np
 import tifffile
 import mrcfile
 from pathlib import Path
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from parsers import get_args
+
+# --- Path Configuration ---
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, '..', '..'))
+sys.path.insert(0, PROJECT_ROOT)
 
 from ipa.processing.partitioning import visualize_complete_scene
 from ipa.data_loader import UniversalDataLoader
@@ -18,12 +24,12 @@ from ipa.data_loader import QuickLogger
 def main():
     """Main function to run the complete SIM visualization pipeline."""
     # Initialize logger
-    logger = QuickLogger("sim_visualization")
+    log_dir = f'{PROJECT_ROOT}/logs'
+    logger = QuickLogger("sim_visualization", log_dir=log_dir)
     logger.step("Starting SIM Data 3D Visualization Demo")
     
-    mainpath = get_args().main_path
     # Configuration
-    rootpath = f'{mainpath}/data/sim_images/'
+    rootpath = f'{PROJECT_ROOT}/data/sim/'
     dataid = "20220909_30-2-1-SIM"
     
     # File paths
@@ -92,7 +98,11 @@ def main():
     for ax in axes:
         ax.axis('off')
     plt.tight_layout()
-    plt.show()
+    viz_path = f'{PROJECT_ROOT}/results/sim_visualization_2d.png'
+    os.makedirs(os.path.dirname(viz_path), exist_ok=True)
+    plt.savefig(viz_path, dpi=150, bbox_inches='tight')
+    logger.step(f"2D visualization saved to: {viz_path}")
+    plt.close()
     
     # 3D Visualization
     logger.step("Creating 3D visualization")

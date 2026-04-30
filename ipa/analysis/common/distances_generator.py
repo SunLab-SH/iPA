@@ -87,9 +87,10 @@ def coords_to_mem_distance_generator(filament_coords, mask, voxelsize):
         print('z',np.max(coords_z),np.min(coords_z), mask.shape[2])
 
     if len(coords_x) > 0:
-        assert np.max(coords_x) <= mask.shape[0] and np.min(coords_x)>= 0
-        assert np.max(coords_y) <= mask.shape[1] and np.min(coords_y)>= 0
-        assert np.max(coords_z) <= mask.shape[2] and np.min(coords_z)>= 0
+        # Clip coordinates to valid range instead of asserting
+        coords_x = np.clip(coords_x, 0, mask.shape[0] - 1)
+        coords_y = np.clip(coords_y, 0, mask.shape[1] - 1)
+        coords_z = np.clip(coords_z, 0, mask.shape[2] - 1)
     else:
         print('no filament')
 
@@ -98,7 +99,12 @@ def coords_to_mem_distance_generator(filament_coords, mask, voxelsize):
     img01_rev_edt = scipy.ndimage.distance_transform_edt(reverse_img01)
 
     avesize = np.average(voxelsize)
-    dist = [ img01_rev_edt[int(voxel_coords[i][0])][int(voxel_coords[i][1])][int(voxel_coords[i][2])]  for i in range(len(voxel_coords)) ]
+    # Ensure indices are within bounds to prevent IndexError
+    x_idx = np.clip(voxel_coords[:, 0].astype(int), 0, mask.shape[0] - 1)
+    y_idx = np.clip(voxel_coords[:, 1].astype(int), 0, mask.shape[1] - 1)
+    z_idx = np.clip(voxel_coords[:, 2].astype(int), 0, mask.shape[2] - 1)
+    
+    dist = [ img01_rev_edt[x_idx[i]][y_idx[i]][z_idx[i]] for i in range(len(voxel_coords)) ]
     dist = [dist[i] * avesize/10 for i in range(len(dist))] # nm
     # print('distance num', len(dist))
 

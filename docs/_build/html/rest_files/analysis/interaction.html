@@ -1,0 +1,900 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interaction Analysis &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Dynamics Analysis" href="dynamics.html" />
+    <link rel="prev" title="Distribution Analysis" href="distribution.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="analysis.html">Analysis Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#supported-analyses">Supported Analyses</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="analysis.html#sub-modules">Sub-modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="morphology.html">Morphology Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="distribution.html">Distribution Analysis</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Interaction Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-functions">Core Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#usage-examples">Usage Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration-parameters">Configuration Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dynamics.html">Dynamics Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="analysis.html">Analysis Module</a></li>
+      <li class="breadcrumb-item active">Interaction Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/rest_files/analysis/interaction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="interaction-analysis">
+<h1>Interaction Analysis<a class="headerlink" href="#interaction-analysis" title="Link to this heading"></a></h1>
+<p>The interaction module quantifies spatial relationships between different organelle types through distance-based and contact-based analyses. iPA supports 14 predefined organelle interaction types, covering combinations of spherical, tubular, cylindrical, and network organelles.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Organelle interactions are fundamental to cellular function. For example:</p>
+<ul class="simple">
+<li><p><strong>Actin-vesicle</strong>: Regulates vesicle transport and docking</p></li>
+<li><p><strong>Mito-ER</strong>: Mitochondria-associated membranes (MAMs) for calcium signaling</p></li>
+<li><p><strong>Microtubule-organelle</strong>: Long-range transport tracks</p></li>
+</ul>
+<p>iPA calculates minimal Euclidean distances between organelle pairs and identifies contact sites (distance &lt; threshold), enabling quantitative analysis of inter-organelle spatial relationships.</p>
+<section id="supported-interaction-types">
+<h3>Supported Interaction Types<a class="headerlink" href="#supported-interaction-types" title="Link to this heading"></a></h3>
+<p>iPA provides analysis functions for the following organelle pairs:</p>
+<p><strong>Actin-based Interactions</strong>:
+- Actin ↔ Vesicle
+- Actin ↔ Microtubule
+- Actin ↔ Mitochondria
+- Actin ↔ Endoplasmic Reticulum (ER)</p>
+<p><strong>Microtubule-based Interactions</strong>:
+- Microtubule ↔ Actin
+- Microtubule ↔ Vesicle
+- Microtubule ↔ Mitochondria
+- Microtubule ↔ ER</p>
+<p><strong>Organelle-Organelle Interactions</strong>:
+- Vesicle ↔ Mitochondria
+- Vesicle ↔ ER
+- Mitochondria ↔ ER</p>
+<p>Each function follows a unified template:</p>
+<ol class="arabic simple">
+<li><p>Load organelle masks or coordinates</p></li>
+<li><p>Apply coordinate shift correction (if needed)</p></li>
+<li><p>Calculate pairwise distance matrix using <code class="docutils literal notranslate"><span class="pre">scipy.spatial.distance.cdist</span></code></p></li>
+<li><p>Extract minimum distances and corresponding point pairs</p></li>
+<li><p>Compute statistics (mean, std, percentiles)</p></li>
+<li><p>Identify contact sites (distance &lt; threshold)</p></li>
+<li><p>Generate visualizations and save results</p></li>
+</ol>
+</section>
+</section>
+<section id="core-functions">
+<h2>Core Functions<a class="headerlink" href="#core-functions" title="Link to this heading"></a></h2>
+<p>All interaction analysis functions share a common signature and return structure.</p>
+<section id="common-parameters">
+<h3>Common Parameters<a class="headerlink" href="#common-parameters" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data_id</span></code> (str): Dataset identifier for output files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*_file</span></code> (str): File paths for organelle masks (.mrc) or coordinates (.json)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config</span></code> (dict): Configuration dictionary with keys:
+- <code class="docutils literal notranslate"><span class="pre">voxel_size_xyz</span></code> (list): Voxel dimensions [nm]
+- <code class="docutils literal notranslate"><span class="pre">shift_bias</span></code> (list): Coordinate offset correction [nm]
+- <code class="docutils literal notranslate"><span class="pre">contact_threshold_nm</span></code> (float, optional): Distance threshold for contacts. Default: 20.0
+- <code class="docutils literal notranslate"><span class="pre">visualization</span></code> (bool): Enable visualization. Default: True
+- <code class="docutils literal notranslate"><span class="pre">save_intermediate</span></code> (bool): Save intermediate results. Default: False
+- <code class="docutils literal notranslate"><span class="pre">output_dir</span></code> (str): Output directory. Default: “./results”</p></li>
+</ul>
+</section>
+<section id="common-returns">
+<h3>Common Returns<a class="headerlink" href="#common-returns" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">results</span></code> (dict): Dictionary containing:
+- <code class="docutils literal notranslate"><span class="pre">distance_stats</span></code> (dict): Distance statistics (mean, std, min, max, percentiles)
+- <code class="docutils literal notranslate"><span class="pre">contact_sites_count</span></code> (int): Number of contact sites
+- <code class="docutils literal notranslate"><span class="pre">contact_coords</span></code> (list): Contact point coordinates (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">visualization_path</span></code> (str): Path to saved figure (if enabled)</p></li>
+</ul>
+</section>
+<section id="actin-interaction-functions">
+<h3>Actin Interaction Functions<a class="headerlink" href="#actin-interaction-functions" title="Link to this heading"></a></h3>
+<section id="actin-to-vesicle-analysis">
+<h4>actin_to_vesicle_analysis<a class="headerlink" href="#actin-to-vesicle-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.actin_to_vesicle_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">actin_to_vesicle_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#actin_to_vesicle_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.actin_to_vesicle_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from actin filaments to vesicle membranes</p>
+<p>This function analyzes shortest distances from actin filaments to vesicle
+membrane surfaces, providing quantitative analysis of cytoskeleton-membrane
+structure interactions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>mask_file</strong> (<em>str</em>) – Vesicle mask file path (.mrc format)</p></li>
+<li><p><strong>json_file</strong> (<em>str</em>) – Actin point coordinates file path (.json format)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration parameters dictionary, same as actin_to_actin_analysis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Analysis result dictionary containing actin-to-vesicle membrane distance statistics</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">actin_to_vesicle_analysis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">mask_file</span><span class="o">=</span><span class="s2">&quot;vesicle_mask.mrc&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">json_file</span><span class="o">=</span><span class="s2">&quot;actin_coords.json&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average distance: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;distance_stats&#39;</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p>Analyzes shortest distances from actin filaments to vesicle membranes.</p>
+<p><strong>Biological Context</strong>: Actin cortex regulates vesicle docking and secretion at the plasma membrane.</p>
+</section>
+<section id="actin-to-vesicle-dist-angle-pair-analysis">
+<h4>actin_to_vesicle_dist_angle_pair_analysis<a class="headerlink" href="#actin-to-vesicle-dist-angle-pair-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.actin_to_vesicle_dist_angle_pair_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">actin_to_vesicle_dist_angle_pair_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#actin_to_vesicle_dist_angle_pair_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.actin_to_vesicle_dist_angle_pair_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance-angle pair analysis from actin filaments to vesicle membranes</p>
+<p>This function simultaneously analyzes distance and angle relationships between
+actin filaments and vesicle membranes, providing comprehensive spatial
+interaction information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>mask_file</strong> (<em>str</em>) – Vesicle mask file path (.mrc format)</p></li>
+<li><p><strong>json_file</strong> (<em>str</em>) – Actin point coordinates file path (.json format)</p></li>
+<li><p><strong>angle_file</strong> (<em>str</em>) – Actin angle data file path (.json format)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration parameters dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Analysis result dictionary containing distance and angle statistics</dt><dd><ul class="simple">
+<li><p>distance_stats (Dict): Distance statistics</p></li>
+<li><p>angle_stats (Dict): Angle statistics (in degrees)</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Angle calculation based on angle between actin filament direction vectors
+and vesicle membrane normal vectors</p>
+</div>
+</dd></dl>
+
+<p>Combined distance-angle analysis for actin-vesicle interactions, providing both spatial proximity and angular orientation metrics.</p>
+</section>
+<section id="actin-to-microtube-analysis">
+<h4>actin_to_microtube_analysis<a class="headerlink" href="#actin-to-microtube-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.actin_to_microtube_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">actin_to_microtube_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actin_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">microtube_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#actin_to_microtube_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.actin_to_microtube_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from actin filaments to microtubules</p>
+<p>Analyzes spatial relationships between actin filaments and microtubules in
+the cytoskeleton, calculating shortest distances between two types of
+filamentous structures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>actin_file</strong> (<em>str</em>) – Actin point coordinates file path (.json format)</p></li>
+<li><p><strong>microtube_file</strong> (<em>str</em>) – Microtubule data file path (.json format)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration parameters dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Analysis result dictionary containing actin-to-microtubule distance analysis results</dt><dd><ul class="simple">
+<li><p>total_distance_vectors (int): Total number of distance vectors</p></li>
+<li><p>total_shortest_distances (int): Total number of shortest distances</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">actin_to_microtube_analysis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;cytoskeleton_01&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">actin_file</span><span class="o">=</span><span class="s2">&quot;actin.json&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">microtube_file</span><span class="o">=</span><span class="s2">&quot;microtube.json&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p>Analyzes spatial relationships between actin filaments and microtubules, revealing cytoskeletal network organization.</p>
+</section>
+<section id="actin-to-mito-analysis">
+<h4>actin_to_mito_analysis<a class="headerlink" href="#actin-to-mito-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.actin_to_mito_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">actin_to_mito_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actin_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mito_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#actin_to_mito_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.actin_to_mito_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from actin filaments to mitochondria</p>
+<p>Analyzes spatial relationships between actin filaments and mitochondria,
+studying interaction patterns between cytoskeleton and organelles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>actin_file</strong> (<em>str</em>) – Actin point coordinates file path (.json format)</p></li>
+<li><p><strong>mito_file</strong> (<em>str</em>) – Mitochondria mask file path (.mrc format)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration parameters dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Analysis result dictionary containing actin-to-mitochondria distance statistics</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Quantifies interactions between actin filaments and mitochondria, important for mitochondrial positioning and dynamics.</p>
+</section>
+<section id="actin-to-endoreticulum-analysis">
+<h4>actin_to_endoreticulum_analysis<a class="headerlink" href="#actin-to-endoreticulum-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.actin_to_endoreticulum_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">actin_to_endoreticulum_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actin_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">er_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#actin_to_endoreticulum_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.actin_to_endoreticulum_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from actin filaments to endoplasmic reticulum membranes,
+using original distances_generator and outplot functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>actin_file</strong> (<em>str</em>) – Actin filament coordinates file (.json)</p></li>
+<li><p><strong>er_file</strong> (<em>str</em>) – ER mask file (.mrc)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration dictionary
+- voxel_size_xyz (List[float])
+- shift_bias (List[float])
+- visualization (bool)
+- save_intermediate (bool)
+- output_dir (str, optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Analysis result dictionary with distance stats, saved files, and visualizations</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Analyzes actin-endoplasmic reticulum spatial interactions, relevant for ER shaping and trafficking.</p>
+</section>
+</section>
+<section id="microtubule-interaction-functions">
+<h3>Microtubule Interaction Functions<a class="headerlink" href="#microtubule-interaction-functions" title="Link to this heading"></a></h3>
+<section id="microtube-to-actin-analysis">
+<h4>microtube_to_actin_analysis<a class="headerlink" href="#microtube-to-actin-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.microtube_to_actin_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">microtube_to_actin_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actin_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">microtube_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#microtube_to_actin_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.microtube_to_actin_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from microtubules to actin filaments (reverse analysis)</p>
+<p>Analyzes distance relationships from microtubules to actin filaments,
+providing another perspective on cytoskeletal network interactions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>actin_file</strong> (<em>str</em>) – Actin point coordinates file path (.json format)</p></li>
+<li><p><strong>microtube_file</strong> (<em>str</em>) – Microtubule data file path (.json format)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration parameters dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Analysis result dictionary containing microtubule-to-actin distance and vector analysis results</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Analyzes microtubule-actin filament interactions from microtubule perspective (complementary to <code class="docutils literal notranslate"><span class="pre">actin_to_microtube_analysis</span></code>).</p>
+</section>
+<section id="microtube-to-vesicle-analysis">
+<h4>microtube_to_vesicle_analysis<a class="headerlink" href="#microtube-to-vesicle-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.microtube_to_vesicle_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">microtube_to_vesicle_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">microtube_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vesicle_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#microtube_to_vesicle_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.microtube_to_vesicle_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from microtubules to vesicle membranes,
+using original distances_generator and outplot functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>microtube_file</strong> (<em>str</em>) – Microtubule point coordinates file path (.json format)</p></li>
+<li><p><strong>vesicle_file</strong> (<em>str</em>) – Vesicle mask file path (.mrc format)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration dictionary
+- voxel_size_xyz (List[float])
+- shift_bias (List[float])
+- visualization (bool)
+- save_intermediate (bool)
+- output_dir (str, optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Analysis result with distance statistics, saved files, and plot results</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Quantifies spatial relationships between microtubules and vesicles, critical for long-range vesicle transport.</p>
+</section>
+<section id="microtube-to-mito-analysis">
+<h4>microtube_to_mito_analysis<a class="headerlink" href="#microtube-to-mito-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.microtube_to_mito_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">microtube_to_mito_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">microtube_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mito_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#microtube_to_mito_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.microtube_to_mito_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from microtubules to mitochondria membranes,
+using original distances_generator and outplot functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>microtube_file</strong> (<em>str</em>) – Microtubule coordinates file (.json)</p></li>
+<li><p><strong>mito_file</strong> (<em>str</em>) – Mitochondria mask file (.mrc)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration dictionary
+- voxel_size_xyz (List[float])
+- shift_bias (List[float])
+- visualization (bool)
+- save_intermediate (bool)
+- output_dir (str, optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Analysis result with distance stats, saved result files, and plots</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Analyzes microtubule-mitochondria interactions, essential for mitochondrial distribution and motility.</p>
+</section>
+<section id="microtube-to-endoreticulum-analysis">
+<h4>microtube_to_endoreticulum_analysis<a class="headerlink" href="#microtube-to-endoreticulum-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.microtube_to_endoreticulum_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">microtube_to_endoreticulum_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">microtube_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">er_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#microtube_to_endoreticulum_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.microtube_to_endoreticulum_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from microtubules to endoplasmic reticulum membranes,
+using original distances_generator and outplot functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>microtube_file</strong> (<em>str</em>) – Microtubule coordinates file (.json)</p></li>
+<li><p><strong>er_file</strong> (<em>str</em>) – ER mask file (.mrc)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration dictionary
+- voxel_size_xyz (List[float])
+- shift_bias (List[float])
+- visualization (bool)
+- save_intermediate (bool)
+- output_dir (str, optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Analysis result with distance stats, saved result files, and plots</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Studies microtubule-ER spatial relationships, important for ER network organization.</p>
+</section>
+</section>
+<section id="organelle-organelle-interaction-functions">
+<h3>Organelle-Organelle Interaction Functions<a class="headerlink" href="#organelle-organelle-interaction-functions" title="Link to this heading"></a></h3>
+<section id="vesicle-to-mito-analysis">
+<h4>vesicle_to_mito_analysis<a class="headerlink" href="#vesicle-to-mito-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.vesicle_to_mito_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">vesicle_to_mito_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vesicle_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mito_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#vesicle_to_mito_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.vesicle_to_mito_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from vesicle membranes to mitochondria membranes using image processing,
+compatible with original batch-wise calculation and outplot functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>vesicle_file</strong> (<em>str</em>) – Vesicle mask file (.mrc)</p></li>
+<li><p><strong>mito_file</strong> (<em>str</em>) – Mitochondria mask file (.mrc)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration dictionary
+- voxel_size_xyz (List[float])
+- visualization (bool)
+- save_intermediate (bool)
+- output_dir (str, optional)
+- zoom_degree (float, optional, default 0.10)
+- batch_size (int, optional, default 1024)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Analysis result dictionary with distance stats, saved files, and plots</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Analyzes direct vesicle-mitochondria spatial interactions, relevant for metabolic coupling.</p>
+</section>
+<section id="vesicle-to-endoreticulum-analysis">
+<h4>vesicle_to_endoreticulum_analysis<a class="headerlink" href="#vesicle-to-endoreticulum-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.vesicle_to_endoreticulum_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">vesicle_to_endoreticulum_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vesicle_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">er_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#vesicle_to_endoreticulum_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.vesicle_to_endoreticulum_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from vesicle membranes to endoplasmic reticulum membranes using image processing,
+compatible with original batch-wise calculation and outplot functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>vesicle_file</strong> (<em>str</em>) – Vesicle mask file (.mrc)</p></li>
+<li><p><strong>er_file</strong> (<em>str</em>) – ER mask file (.mrc)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration dictionary
+- voxel_size_xyz (List[float])
+- visualization (bool)
+- save_intermediate (bool)
+- output_dir (str, optional)
+- zoom_degree (float, optional, default 0.10)
+- batch_size (int, optional, default 1024)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Analysis result dictionary with distance stats, saved files, and plots</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Quantifies vesicle-ER spatial relationships, important for protein trafficking.</p>
+</section>
+<section id="mito-to-endoreticulum-analysis">
+<h4>mito_to_endoreticulum_analysis<a class="headerlink" href="#mito-to-endoreticulum-analysis" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.mito_to_endoreticulum_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">mito_to_endoreticulum_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mito_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">er_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#mito_to_endoreticulum_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.mito_to_endoreticulum_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis from mitochondria to endoplasmic reticulum (using image processing)</p>
+<p>Uses image processing methods to analyze spatial relationships between mitochondria
+and endoplasmic reticulum, studying interaction patterns between two important organelles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier</p></li>
+<li><p><strong>mito_file</strong> (<em>str</em>) – Mitochondria mask file path (.mrc format)</p></li>
+<li><p><strong>er_file</strong> (<em>str</em>) – Endoplasmic reticulum mask file path (.mrc format)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration parameters dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Analysis result dictionary containing mitochondria-to-ER distance statistics</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Analyzes mitochondria-endoplasmic reticulum interactions, critical for calcium signaling and lipid transfer at MAMs (Mitochondria-Associated Membranes).</p>
+</section>
+</section>
+</section>
+<section id="usage-examples">
+<h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
+<section id="basic-actin-vesicle-analysis">
+<h3>Basic Actin-Vesicle Analysis<a class="headerlink" href="#basic-actin-vesicle-analysis" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">actin_to_vesicle_analysis</span>
+
+<span class="c1"># Configuration for cryo-ET data</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;voxel_size_xyz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">],</span>  <span class="c1"># nm</span>
+    <span class="s1">&#39;shift_bias&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="s1">&#39;contact_threshold_nm&#39;</span><span class="p">:</span> <span class="mf">20.0</span><span class="p">,</span>
+    <span class="s1">&#39;visualization&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;save_intermediate&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="s2">&quot;results/interactions/&quot;</span>
+<span class="p">}</span>
+
+<span class="c1"># Analyze actin-vesicle interactions</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">actin_to_vesicle_analysis</span><span class="p">(</span>
+    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span><span class="p">,</span>
+    <span class="n">mask_file</span><span class="o">=</span><span class="s2">&quot;vesicle_mask.mrc&quot;</span><span class="p">,</span>
+    <span class="n">json_file</span><span class="o">=</span><span class="s2">&quot;actin_coords.json&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean distance: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;distance_stats&#39;</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> nm&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contact sites: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;contact_sites_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="multi-organelle-interaction-pipeline">
+<h3>Multi-Organelle Interaction Pipeline<a class="headerlink" href="#multi-organelle-interaction-pipeline" title="Link to this heading"></a></h3>
+<p>This example demonstrates analyzing multiple interaction pairs in a single workflow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">actin_to_microtube_analysis</span><span class="p">,</span>
+    <span class="n">actin_to_mito_analysis</span><span class="p">,</span>
+    <span class="n">vesicle_to_mito_analysis</span><span class="p">,</span>
+    <span class="n">mito_to_endoreticulum_analysis</span>
+<span class="p">)</span>
+
+<span class="c1"># Common configuration</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;voxel_size_xyz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">],</span>
+    <span class="s1">&#39;shift_bias&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="s1">&#39;contact_threshold_nm&#39;</span><span class="p">:</span> <span class="mf">20.0</span><span class="p">,</span>
+    <span class="s1">&#39;visualization&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="s2">&quot;results/interactions/&quot;</span>
+<span class="p">}</span>
+
+<span class="c1"># Analyze multiple interaction pairs</span>
+<span class="n">interactions</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1"># Cytoskeletal interactions</span>
+<span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;actin_microtubule&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">actin_to_microtube_analysis</span><span class="p">(</span>
+    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span><span class="p">,</span>
+    <span class="n">actin_file</span><span class="o">=</span><span class="s2">&quot;actin_coords.json&quot;</span><span class="p">,</span>
+    <span class="n">microtube_file</span><span class="o">=</span><span class="s2">&quot;microtubule_coords.json&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+<span class="p">)</span>
+
+<span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;actin_mito&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">actin_to_mito_analysis</span><span class="p">(</span>
+    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span><span class="p">,</span>
+    <span class="n">actin_file</span><span class="o">=</span><span class="s2">&quot;actin_coords.json&quot;</span><span class="p">,</span>
+    <span class="n">mito_file</span><span class="o">=</span><span class="s2">&quot;mito_mask.mrc&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+<span class="p">)</span>
+
+<span class="c1"># Organelle-organelle interactions</span>
+<span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;vesicle_mito&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vesicle_to_mito_analysis</span><span class="p">(</span>
+    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span><span class="p">,</span>
+    <span class="n">vesicle_file</span><span class="o">=</span><span class="s2">&quot;vesicle_mask.mrc&quot;</span><span class="p">,</span>
+    <span class="n">mito_file</span><span class="o">=</span><span class="s2">&quot;mito_mask.mrc&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+<span class="p">)</span>
+
+<span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;mito_er&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mito_to_endoreticulum_analysis</span><span class="p">(</span>
+    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span><span class="p">,</span>
+    <span class="n">mito_file</span><span class="o">=</span><span class="s2">&quot;mito_mask.mrc&quot;</span><span class="p">,</span>
+    <span class="n">er_file</span><span class="o">=</span><span class="s2">&quot;er_mask.mrc&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+<span class="p">)</span>
+
+<span class="c1"># Summarize results</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Interaction Summary ===&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pair</span><span class="p">,</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">interactions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">mean_dist</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;distance_stats&#39;</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span>
+    <span class="n">contacts</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;contact_sites_count&#39;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pair</span><span class="si">}</span><span class="s2">: mean distance = </span><span class="si">{</span><span class="n">mean_dist</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> nm, contacts = </span><span class="si">{</span><span class="n">contacts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="configuration-parameters">
+<h2>Configuration Parameters<a class="headerlink" href="#configuration-parameters" title="Link to this heading"></a></h2>
+<p>All interaction analysis functions accept a configuration dictionary. Here’s a complete reference:</p>
+<p><strong>Required Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">voxel_size_xyz</span></code> (list): Voxel dimensions in xyz [nm]. Example: [1.34, 1.34, 1.34] for cryo-ET</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shift_bias</span></code> (list): Coordinate offset correction [nm]. Use [0.0, 0.0, 0.0] if no correction needed</p></li>
+</ul>
+<p><strong>Optional Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">contact_threshold_nm</span></code> (float): Distance threshold for defining contacts. Default: 20.0 nm</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">visualization</span></code> (bool): Enable result visualization. Default: True</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save_intermediate</span></code> (bool): Save intermediate processing results. Default: False</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output_dir</span></code> (str): Directory for output files. Default: “./results”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zoom_degree</span></code> (float): Visualization zoom factor. Default: 1.0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_size</span></code> (int): Processing batch size for memory management. Default: 10000</p></li>
+</ul>
+<p><strong>Example Configuration</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For cryo-ET data</span>
+<span class="n">config_cryoet</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;voxel_size_xyz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">],</span>
+    <span class="s1">&#39;shift_bias&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="s1">&#39;contact_threshold_nm&#39;</span><span class="p">:</span> <span class="mf">20.0</span><span class="p">,</span>
+    <span class="s1">&#39;visualization&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="s2">&quot;results/cryoet_interactions/&quot;</span>
+<span class="p">}</span>
+
+<span class="c1"># For SIM data</span>
+<span class="n">config_sim</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;voxel_size_xyz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">31.3</span><span class="p">,</span> <span class="mf">31.3</span><span class="p">,</span> <span class="mf">90.9</span><span class="p">],</span>
+    <span class="s1">&#39;shift_bias&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="s1">&#39;contact_threshold_nm&#39;</span><span class="p">:</span> <span class="mf">100.0</span><span class="p">,</span>  <span class="c1"># Larger threshold for lower resolution</span>
+    <span class="s1">&#39;visualization&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="s2">&quot;results/sim_interactions/&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<section id="contact-analysis-functions">
+<h3>Contact Analysis Functions<a class="headerlink" href="#contact-analysis-functions" title="Link to this heading"></a></h3>
+<p>Beyond pairwise distances, iPA provides specialized functions for analyzing organelle contacts using radial distribution and probability metrics.</p>
+<section id="calculate-contact-rdf">
+<h4>calculate_contact_rdf<a class="headerlink" href="#calculate-contact-rdf" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.calculate_contact_rdf">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_contact_rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partition_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_shells</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#calculate_contact_rdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.calculate_contact_rdf" title="Link to this definition"></a></dt>
+<dd><p>Calculate the Radial Distribution Function (RDF) of organelle contacts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>contact_coords</strong> (<em>list</em><em> of </em><em>tuples</em>) – List of (z, y, x) coordinates for contact points.</p></li>
+<li><p><strong>partition_mask</strong> (<em>np.ndarray</em>) – 3D mask where values 1-n_shells represent radial shells.</p></li>
+<li><p><strong>n_shells</strong> (<em>int</em>) – Number of radial shells.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing contact counts per shell and normalized RDF.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Calculates the Radial Distribution Function (RDF) of organelle contacts. This function quantifies how contact sites are distributed across different radial shells from the nucleus to the plasma membrane.</p>
+<p><strong>Algorithm</strong>:</p>
+<ol class="arabic simple">
+<li><p>Count contact points in each radial shell</p></li>
+<li><p>Calculate shell volumes (total voxels per shell)</p></li>
+<li><p>Compute contact density: <code class="docutils literal notranslate"><span class="pre">density</span> <span class="pre">=</span> <span class="pre">count</span> <span class="pre">/</span> <span class="pre">volume</span></code></p></li>
+<li><p>Normalize by average density across all shells: <code class="docutils literal notranslate"><span class="pre">RDF</span> <span class="pre">=</span> <span class="pre">density</span> <span class="pre">/</span> <span class="pre">mean_density</span></code></p></li>
+</ol>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">contact_coords</span></code> (list of tuples): List of (z, y, x) coordinates for contact points</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">partition_mask</span></code> (np.ndarray): 3D mask where values 1-n_shells represent radial shells</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_shells</span></code> (int): Number of radial shells. Default: 8</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code>: Dictionary containing:
+- <code class="docutils literal notranslate"><span class="pre">contact_counts</span></code> (np.ndarray): Contact counts per shell
+- <code class="docutils literal notranslate"><span class="pre">shell_volumes</span></code> (np.ndarray): Volume of each shell
+- <code class="docutils literal notranslate"><span class="pre">rdf</span></code> (np.ndarray): Normalized RDF values</p></li>
+</ul>
+<p><strong>Biological Significance</strong>:</p>
+<p>Contact RDF reveals spatial patterns of organelle interactions. For example:
+- <strong>Enrichment near PM</strong> (RDF &gt; 1 in outer shells): Contacts cluster at cell periphery
+- <strong>Uniform distribution</strong> (RDF ≈ 1): Contacts evenly distributed
+- <strong>Depletion near PM</strong> (RDF &lt; 1 in outer shells): Contacts avoid cell periphery</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_contact_rdf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">Partitioning</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Assume you have contact coordinates from interaction analysis</span>
+<span class="n">contact_coords</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span>  <span class="c1"># (z, y, x)</span>
+    <span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">155</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">148</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="c1"># Create partition mask</span>
+<span class="n">partitioner</span> <span class="o">=</span> <span class="n">Partitioning</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;results/&quot;</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">center</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">extract_ne_pm_edges</span><span class="p">(</span><span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span>
+<span class="n">partition_mask</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">create_nepm_radial_partitions</span><span class="p">(</span>
+    <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span>
+    <span class="n">shape</span><span class="o">=</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">pm_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">,</span>
+    <span class="n">ne_mask</span><span class="o">=</span><span class="n">ne_mask</span>
+<span class="p">)</span>
+
+<span class="c1"># Calculate contact RDF</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">calculate_contact_rdf</span><span class="p">(</span>
+    <span class="n">contact_coords</span><span class="p">,</span>
+    <span class="n">partition_mask</span><span class="p">,</span>
+    <span class="n">n_shells</span><span class="o">=</span><span class="mi">8</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contact counts per shell: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;contact_counts&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contact RDF: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;rdf&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="calculate-contact-probability">
+<h4>calculate_contact_probability<a class="headerlink" href="#calculate-contact-probability" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.calculate_contact_probability">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_contact_probability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact_counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_organelles_per_shell</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/interaction.html#calculate_contact_probability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.calculate_contact_probability" title="Link to this definition"></a></dt>
+<dd><p>Calculate the probability that an organelle participates in a contact within each shell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>contact_counts</strong> (<em>np.ndarray</em>) – Number of contacts in each shell.</p></li>
+<li><p><strong>total_organelles_per_shell</strong> (<em>np.ndarray</em>) – Total number of organelles in each shell.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Probability of contact per shell.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Calculates the probability that an organelle participates in a contact within each radial shell.</p>
+<p><strong>Formula</strong>:</p>
+<div class="math notranslate nohighlight">
+\[P_{contact}(r) = \frac{N_{contacts}(r)}{N_{organelles}(r)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N_{contacts}(r)\)</span> is the number of contacts in shell r, and <span class="math notranslate nohighlight">\(N_{organelles}(r)\)</span> is the total number of organelles in shell r.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">contact_counts</span></code> (np.ndarray): Number of contacts in each shell</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_organelles_per_shell</span></code> (np.ndarray): Total number of organelles in each shell</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>: Probability of contact per shell (values between 0 and 1)</p></li>
+</ul>
+<p><strong>Interpretation</strong>:</p>
+<ul class="simple">
+<li><p><strong>High probability</strong> (&gt; 0.5): Most organelles in this region participate in contacts</p></li>
+<li><p><strong>Low probability</strong> (&lt; 0.1): Few organelles form contacts</p></li>
+<li><p><strong>Spatial variation</strong>: Different probabilities across shells reveal regional specialization</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_contact_probability</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Contact counts from previous analysis</span>
+<span class="n">contact_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+
+<span class="c1"># Total organelles per shell (e.g., ISG counts)</span>
+<span class="n">total_isgs_per_shell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">65</span><span class="p">])</span>
+
+<span class="c1"># Calculate contact probability</span>
+<span class="n">probs</span> <span class="o">=</span> <span class="n">calculate_contact_probability</span><span class="p">(</span><span class="n">contact_counts</span><span class="p">,</span> <span class="n">total_isgs_per_shell</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Contact probability per shell:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">shell_idx</span><span class="p">,</span> <span class="n">prob</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">probs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Shell </span><span class="si">{</span><span class="n">shell_idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">prob</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Visualization</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="n">probs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Radial Shell (1=NE, 8=PM)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Contact Probability&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;ISG Contact Probability Across Radial Shells&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;contact_probability.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="distribution.html" class="btn btn-neutral float-left" title="Distribution Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dynamics.html" class="btn btn-neutral float-right" title="Dynamics Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

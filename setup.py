@@ -8,38 +8,53 @@ setup(
     long_description_content_type="text/markdown",
     author="liad",
     packages=find_packages(),
-    python_requires=">=3.8,<3.12",
+    python_requires=">=3.9,<3.10",
     install_requires=[
-        "numpy>=1.20.0",
-        "scipy>=1.7.0",
-        "matplotlib>=3.3.0",
-        "scikit-image>=0.18.0",
-        "tifffile>=2021.7.2",
-        "pandas>=1.3.0",
-        "tqdm>=4.60.0",
-        "plotly>=5.0.0",
-        "Pillow>=8.0.0",
+        # Core scientific computing
+        "numpy>=1.21.0,<2.0.0",
+        "scipy>=1.9.0",
+        "pandas>=1.5.0",
+        "matplotlib>=3.6.0",
+        
+        # Image processing
+        "scikit-image>=0.20.0",
+        "tifffile>=2022.4.8",
+        "Pillow>=9.0.0",
         "mrcfile>=1.3.0",
-        "h5py>=3.0.0",
+        "imageio>=2.25.0",
+        
+        # Deep learning
+        "torch>=1.13.0",
+        "torchvision>=0.14.0",
+        
+        # Utilities
+        "tqdm>=4.60.0",
+        "h5py>=3.7.0",
     ],
     extras_require={
-        "ml": [
-            "torch>=1.9.0",
-            "torchvision>=0.10.0",
-            "n2v>=0.3.0",
-        ],
         "cv": [
-            "opencv-python>=4.5.0",
+            "opencv-python>=4.6.0",
         ],
         "viz": [
-            "seaborn>=0.11.0",
+            "plotly>=5.0.0",
+            "seaborn>=0.12.0",
+        ],
+        "ml": [
+            "scikit-learn>=1.2.0",
         ],
         "fileformats": [
             "readlif>=0.6.0",
             "czifile>=2019.7.2", 
             "nd2reader>=3.2.0",
-            "aicsimageio>=4.0.0",
-            "imageio>=2.9.0",
+            "aicsimageio>=4.10.0",
+        ],
+        "training": [
+            "tensorboard>=2.10.0",
+            "wandb>=0.13.0",
+            "pycocotools>=2.0.6",
+        ],
+        "perf": [
+            # numba removed as per project cleanup
         ],
         "jupyter": [
             "jupyter>=1.0.0",
@@ -54,20 +69,18 @@ setup(
             "sphinx-rtd-theme>=1.0.0",
         ],
         "all": [
-            "torch>=1.9.0",
-            "torchvision>=0.10.0",
-            "opencv-python>=4.5.0",
-            "seaborn>=0.11.0",
+            "opencv-python>=4.6.0",
+            "plotly>=5.0.0",
+            "seaborn>=0.12.0",
+            "scikit-learn>=1.2.0",
+            "readlif>=0.6.0",
+            "czifile>=2019.7.2",
+            "nd2reader>=3.2.0",
+            "aicsimageio>=4.10.0",
+            "pycocotools>=2.0.6",
             "jupyter>=1.0.0",
             "jupyterlab>=3.0.0",
             "ipywidgets>=7.6.0",
-            "scikit-learn>=1.0.0",
-            "n2v>=0.3.0",
-            "readlif>=0.6.0",
-            "czifile>=2019.7.2",
-            "nd2reader>=3.2.0", 
-            "aicsimageio>=4.0.0",
-            "imageio>=2.9.0",
         ],
     },
     classifiers=[
@@ -75,10 +88,7 @@ setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
     ],
 )
 

@@ -1,4 +1,3 @@
-
 import os
 import sys
 import numpy as np
@@ -7,29 +6,27 @@ import torch
 import argparse
 
 # Add iPA module path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-ipa_root = os.path.dirname(current_dir)
-sys.path.insert(0, ipa_root)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, '..', '..'))
+sys.path.insert(0, PROJECT_ROOT)
 
 from ipa.processing.denoising.noise2void.n2v_wrapper import N2V
 from ipa.data_loader import UniversalDataLoader
 from ipa.data_loader import QuickLogger
-from parsers import get_args
 
 def main():
     """
     Main function for SXT N2V denoising training
     """
-    # Get main path and initialize logger
-    mainpath = get_args().main_path
-    log_dir = f'{mainpath}/logs'
+    # Initialize logger
+    log_dir = os.path.join(PROJECT_ROOT, 'logs')
     logger = QuickLogger("sxt_denoising_train", log_dir=log_dir)
     
     logger.step("Starting SXT N2V Denoising Training Demo")
     
     # 1. Setup Data Paths
     # Default SXT example file
-    default_input = os.path.join(mainpath, 'data', 'sxt_images', 'Stevens_pancreatic_INS_1E_784_5_pre_rec.mrc')
+    default_input = os.path.join(PROJECT_ROOT, 'data', 'sxt', 'Stevens_pancreatic_INS_1E_784_5_pre_rec.mrc')
     
     parser = argparse.ArgumentParser(description="Train N2V model (Reproduction)")
     parser.add_argument('--input', type=str, default=default_input, help='Path to input data')

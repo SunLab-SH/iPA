@@ -1,0 +1,1336 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ipa.processing.partitioning.partitioning &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rest_files/data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rest_files/processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rest_files/analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rest_files/data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rest_files/examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">ipa.processing.partitioning.partitioning</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ipa.processing.partitioning.partitioning</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Cellular Partitioning Module</span>
+
+<span class="sd">This module implements radial cytoplasmic partitioning analysis, a novel approach for </span>
+<span class="sd">spatial zoning of cellular structures from nucleus to plasma membrane.</span>
+<span class="sd">Through creating concentric radial partitions, it enables quantitative analysis of </span>
+<span class="sd">organelle distribution patterns across different cytoplasmic regions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ndimage</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="c1"># Add performance optimization dependencies</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+    <span class="n">TORCH_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">DEVICE</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">TORCH_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">DEVICE</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: PyTorch not available. Falling back to CPU processing.&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+    <span class="n">JOBLIB_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">JOBLIB_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Joblib not available. Parallel processing will be disabled.&quot;</span><span class="p">)</span>
+
+
+
+<div class="viewcode-block" id="Partitioning">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Partitioning</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class provides a comprehensive toolkit for cellular partitioning analysis,</span>
+<span class="sd">    including boundary extraction, partition generation, feature calculation, and </span>
+<span class="sd">    visualization. Primarily used for analyzing organelle spatial distribution </span>
+<span class="sd">    between nuclear envelope and plasma membrane.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    </span>
+<span class="sd">    root_dir : str</span>
+<span class="sd">        Root directory path for result outputs</span>
+<span class="sd">    n_slices : int, default=8</span>
+<span class="sd">        Number of radial partitions, dividing nucleus-membrane distance into n_slices regions</span>
+<span class="sd">    num_cores : int, optional</span>
+<span class="sd">        Number of CPU cores for parallel processing, defaults to 1</span>
+<span class="sd">        </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    </span>
+<span class="sd">    root_dir : str</span>
+<span class="sd">        Output directory path</span>
+<span class="sd">    n_slices : int</span>
+<span class="sd">        Number of partitions</span>
+<span class="sd">    num_cores : int</span>
+<span class="sd">        Number of CPU cores</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root_dir</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">num_cores</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize Partitioning instance.</span>
+<span class="sd">        :param root_dir: Directory to save outputs.</span>
+<span class="sd">        :param n_slices: Number of shell partitions.</span>
+<span class="sd">        :param num_cores: Number of CPU cores for parallel processing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">=</span> <span class="n">root_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span> <span class="o">=</span> <span class="n">n_slices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_cores</span> <span class="o">=</span> <span class="n">num_cores</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;results&#39;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Partitioning.load_mask_data">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.load_mask_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_mask_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ne_path</span><span class="p">,</span> <span class="n">pm_path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load nuclear envelope (NE) and plasma membrane (PM) mask data from files</span>
+<span class="sd">        </span>
+<span class="sd">        Supports multiple file formats including numpy arrays (.npy), TIFF images </span>
+<span class="sd">        (.tif/.tiff), MRC format (.mrc), and other common biological imaging formats.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ne_path : str</span>
+<span class="sd">            Path to nuclear envelope mask file</span>
+<span class="sd">        pm_path : str</span>
+<span class="sd">            Path to plasma membrane mask file</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of numpy.ndarray</span>
+<span class="sd">            (ne_mask, pm_mask) - Binary mask arrays for nuclear envelope and plasma membrane</span>
+<span class="sd">            </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        FileNotFoundError</span>
+<span class="sd">            When specified file paths do not exist</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            When file format is unsupported or data format is incorrect</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; ne_mask, pm_mask = partitioner.load_mask_data(&quot;nuclear.npy&quot;, &quot;membrane.npy&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;NE mask shape: {ne_mask.shape}, PM mask shape: {pm_mask.shape}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Implement loading logic here (e.g., using tifffile or mrcfile)</span>
+        <span class="c1"># Placeholder:</span>
+        <span class="n">ne_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ne_path</span><span class="p">)</span>
+        <span class="n">pm_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pm_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ne_mask</span><span class="p">,</span> <span class="n">pm_mask</span></div>
+
+
+<div class="viewcode-block" id="Partitioning.smooth_mask">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.smooth_mask">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">smooth_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">close_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Smooth binary mask using Gaussian filtering and morphological closing.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mask : numpy.ndarray</span>
+<span class="sd">            Input binary mask.</span>
+<span class="sd">        sigma : float</span>
+<span class="sd">            Sigma for Gaussian filter. Higher values produce smoother boundaries.</span>
+<span class="sd">        close_iter : int</span>
+<span class="sd">            Number of iterations for morphological closing to fill small gaps.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Smoothed binary mask.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaussian_filter</span><span class="p">,</span> <span class="n">binary_closing</span>
+        
+        <span class="c1"># 1. Gaussian smoothing on float mask</span>
+        <span class="n">smoothed</span> <span class="o">=</span> <span class="n">gaussian_filter</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+        
+        <span class="c1"># 2. Threshold back to binary</span>
+        <span class="n">binary_smoothed</span> <span class="o">=</span> <span class="n">smoothed</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+        
+        <span class="c1"># 3. Morphological closing to bridge small gaps</span>
+        <span class="k">if</span> <span class="n">close_iter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">binary_smoothed</span> <span class="o">=</span> <span class="n">binary_closing</span><span class="p">(</span><span class="n">binary_smoothed</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">close_iter</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">binary_smoothed</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Partitioning.extract_ne_pm_edges">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.extract_ne_pm_edges">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_ne_pm_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">,</span> <span class="n">smooth_sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">smooth_close_iter</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract nuclear envelope and plasma membrane boundary points and cellular center from 3D mask data</span>
+<span class="sd">        </span>
+<span class="sd">        Uses morphological operations to extract proper boundaries instead of EDT method</span>
+<span class="sd">        which may produce incorrect boundary representations.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pm_mask : numpy.ndarray</span>
+<span class="sd">            3D binary mask of plasma membrane, shape (Z, Y, X)</span>
+<span class="sd">        ne_mask : numpy.ndarray</span>
+<span class="sd">            3D binary mask of nuclear envelope, shape (Z, Y, X)</span>
+<span class="sd">        smooth_sigma : float, optional</span>
+<span class="sd">            Sigma for Gaussian smoothing. Set to 0 to disable smoothing.</span>
+<span class="sd">        smooth_close_iter : int, optional</span>
+<span class="sd">            Iterations for morphological closing to fill small gaps.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        center : numpy.ndarray</span>
+<span class="sd">            Cell center coordinates, shape (3,), order (Z, Y, X)</span>
+<span class="sd">        ne_edge : numpy.ndarray</span>
+<span class="sd">            Nuclear envelope boundary point coordinates array, shape (N, 3)</span>
+<span class="sd">        pm_edge : numpy.ndarray</span>
+<span class="sd">            Plasma membrane boundary point coordinates array, shape (M, 3)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">binary_erosion</span><span class="p">,</span> <span class="n">binary_fill_holes</span>
+        
+        <span class="c1"># Apply smoothing if requested (improves robustness for WFM/SIM)</span>
+        <span class="k">if</span> <span class="n">smooth_sigma</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ne_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth_mask</span><span class="p">(</span><span class="n">ne_mask</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">smooth_sigma</span><span class="p">,</span> <span class="n">close_iter</span><span class="o">=</span><span class="n">smooth_close_iter</span><span class="p">)</span>
+            <span class="n">pm_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth_mask</span><span class="p">(</span><span class="n">pm_mask</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">smooth_sigma</span><span class="p">,</span> <span class="n">close_iter</span><span class="o">=</span><span class="n">smooth_close_iter</span><span class="p">)</span>
+        
+        <span class="c1"># Ensure binary masks</span>
+        <span class="n">pm_binary</span> <span class="o">=</span> <span class="n">pm_mask</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="n">ne_binary</span> <span class="o">=</span> <span class="n">ne_mask</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        
+        <span class="c1"># Fill holes to get solid regions</span>
+        <span class="n">pm_filled</span> <span class="o">=</span> <span class="n">binary_fill_holes</span><span class="p">(</span><span class="n">pm_binary</span><span class="p">)</span>
+        <span class="n">ne_filled</span> <span class="o">=</span> <span class="n">binary_fill_holes</span><span class="p">(</span><span class="n">ne_binary</span><span class="p">)</span>
+        
+        <span class="c1"># Extract boundaries using morphological operations</span>
+        <span class="c1"># NE boundary: original mask minus eroded mask</span>
+        <span class="n">ne_eroded</span> <span class="o">=</span> <span class="n">binary_erosion</span><span class="p">(</span><span class="n">ne_filled</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ne_boundary</span> <span class="o">=</span> <span class="n">ne_filled</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">ne_eroded</span>
+        
+        <span class="c1"># PM boundary: filled mask minus eroded mask (inner boundary)</span>
+        <span class="n">pm_eroded</span> <span class="o">=</span> <span class="n">binary_erosion</span><span class="p">(</span><span class="n">pm_filled</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">pm_boundary</span> <span class="o">=</span> <span class="n">pm_filled</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">pm_eroded</span>
+        
+        <span class="c1"># Get boundary coordinates</span>
+        <span class="n">ne_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ne_boundary</span><span class="p">))</span>
+        <span class="n">pm_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pm_boundary</span><span class="p">))</span>
+        
+        <span class="c1"># Calculate center as centroid of nuclear region</span>
+        <span class="n">ne_center_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ne_filled</span><span class="p">))</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ne_center_coords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Extracted NE boundary points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ne_coords</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Extracted PM boundary points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pm_coords</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cell center: </span><span class="si">{</span><span class="n">center</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">center</span><span class="p">,</span> <span class="n">ne_coords</span><span class="p">,</span> <span class="n">pm_coords</span></div>
+
+
+<div class="viewcode-block" id="Partitioning.min_angle">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.min_angle">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">min_angle</span><span class="p">(</span><span class="n">ne_points</span><span class="p">,</span> <span class="n">pm_point</span><span class="p">,</span> <span class="n">center</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find nuclear envelope point with minimal angle to plasma membrane point relative to center</span>
+<span class="sd">        </span>
+<span class="sd">        Calculates cosine angles between vectors to find the directionally closest </span>
+<span class="sd">        nuclear envelope point. Used for establishing optimal NE-PM point pair matching.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ne_points : numpy.ndarray</span>
+<span class="sd">            Nuclear envelope point coordinates array, shape (N, 3)</span>
+<span class="sd">        pm_point : numpy.ndarray</span>
+<span class="sd">            Single plasma membrane point coordinates, shape (3,)</span>
+<span class="sd">        center : numpy.ndarray</span>
+<span class="sd">            Cell center coordinates, shape (3,)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Nuclear envelope point coordinates with minimal angle, shape (3,)</span>
+<span class="sd">            </span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Uses cosine similarity to calculate vector angles:</span>
+<span class="sd">        cos(angle) = dot product of vectors divided by product of their magnitudes</span>
+<span class="sd">        Selects the point with maximum cosine value, i.e., minimal angle.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; closest_ne = Partitioning.min_angle(ne_points, pm_point, center)</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Closest NE point: {closest_ne}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vectors_ne</span> <span class="o">=</span> <span class="n">ne_points</span> <span class="o">-</span> <span class="n">center</span>
+        <span class="n">vector_pm</span> <span class="o">=</span> <span class="n">pm_point</span> <span class="o">-</span> <span class="n">center</span>
+        
+        <span class="c1"># Vectorized calculation of all angles</span>
+        <span class="n">norms_ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vectors_ne</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">norm_pm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vector_pm</span><span class="p">)</span>
+        
+        <span class="c1"># Avoid division by zero</span>
+        <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">norms_ne</span> <span class="o">&gt;</span> <span class="mf">1e-8</span>
+        <span class="n">cos_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vectors_ne</span><span class="p">),</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># Initialize with minimum value</span>
+        
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">valid_mask</span><span class="p">):</span>
+            <span class="n">cos_angles</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vectors_ne</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">],</span> <span class="n">vector_pm</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">norms_ne</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">norm_pm</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+        
+        <span class="n">max_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">cos_angles</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ne_points</span><span class="p">[</span><span class="n">max_idx</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Partitioning.find_ne_pm_pairs">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.find_ne_pm_pairs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_ne_pm_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span> 
+                         <span class="n">step</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">save_txt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dataid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pair nuclear envelope and plasma membrane boundary points using GPU acceleration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original NE edge points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ne_edge</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original PM edge points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pm_edge</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Sampling control</span>
+        <span class="n">target_ne_points</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">50000</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ne_edge</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ne_edge</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">target_ne_points</span><span class="p">:</span>
+            <span class="n">ne_step</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ne_edge</span><span class="p">)</span> <span class="o">//</span> <span class="n">target_ne_points</span>
+            <span class="n">ne_sampled</span> <span class="o">=</span> <span class="n">ne_edge</span><span class="p">[::</span><span class="n">ne_step</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ne_sampled</span> <span class="o">=</span> <span class="n">ne_edge</span>
+        
+        <span class="n">target_pm_points</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ne_sampled</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pm_edge</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pm_edge</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">target_pm_points</span><span class="p">:</span>
+            <span class="n">pm_step</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pm_edge</span><span class="p">)</span> <span class="o">//</span> <span class="n">target_pm_points</span>
+            <span class="n">pm_sampled</span> <span class="o">=</span> <span class="n">pm_edge</span><span class="p">[::</span><span class="n">pm_step</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pm_sampled</span> <span class="o">=</span> <span class="n">pm_edge</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sampled NE: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ne_sampled</span><span class="p">)</span><span class="si">}</span><span class="s2">, PM: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pm_sampled</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">TORCH_AVAILABLE</span> <span class="ow">and</span> <span class="n">DEVICE</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;cuda&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_pairs_gpu</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">ne_sampled</span><span class="p">,</span> <span class="n">pm_sampled</span><span class="p">,</span> <span class="n">save_txt</span><span class="p">,</span> <span class="n">dataid</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_pairs_cpu</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">ne_sampled</span><span class="p">,</span> <span class="n">pm_sampled</span><span class="p">,</span> <span class="n">save_txt</span><span class="p">,</span> <span class="n">dataid</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_pairs_gpu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">ne_sampled</span><span class="p">,</span> <span class="n">pm_sampled</span><span class="p">,</span> <span class="n">save_txt</span><span class="p">,</span> <span class="n">dataid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;GPU-accelerated pairing using PyTorch with dynamic batch sizing.&quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+        
+        <span class="n">ne_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">ne_sampled</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">DEVICE</span><span class="p">)</span>
+        <span class="n">pm_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">pm_sampled</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">DEVICE</span><span class="p">)</span>
+        <span class="n">center_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">DEVICE</span><span class="p">)</span>
+
+        <span class="c1"># Normalize vectors for angle matching</span>
+        <span class="n">pm_vectors</span> <span class="o">=</span> <span class="n">pm_tensor</span> <span class="o">-</span> <span class="n">center_tensor</span>
+        <span class="n">pm_norms</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pm_vectors</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pm_unit</span> <span class="o">=</span> <span class="n">pm_vectors</span> <span class="o">/</span> <span class="p">(</span><span class="n">pm_norms</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+        
+        <span class="n">ne_vectors</span> <span class="o">=</span> <span class="n">ne_tensor</span> <span class="o">-</span> <span class="n">center_tensor</span>
+        <span class="n">ne_norms</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">ne_vectors</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ne_unit</span> <span class="o">=</span> <span class="n">ne_vectors</span> <span class="o">/</span> <span class="p">(</span><span class="n">ne_norms</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+
+        <span class="c1"># Dynamic batch size calculation based on GPU memory</span>
+        <span class="n">num_pm</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pm_unit</span><span class="p">)</span>
+        <span class="c1"># Estimate memory per row: num_pm * 4 bytes (float32) * 2 (for sim_matrix and overhead)</span>
+        <span class="c1"># Leave some margin (e.g., use 50% of available memory for this matrix)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">free_mem</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">mem_get_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Available memory in bytes</span>
+            <span class="n">target_mem</span> <span class="o">=</span> <span class="n">free_mem</span> <span class="o">*</span> <span class="mf">0.4</span>  <span class="c1"># Use 40% of free memory</span>
+            <span class="n">max_rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target_mem</span> <span class="o">/</span> <span class="p">(</span><span class="n">num_pm</span> <span class="o">*</span> <span class="mi">4</span><span class="p">))</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">max_rows</span><span class="p">),</span> <span class="mi">5000</span><span class="p">)</span>  <span class="c1"># Clamp between 100 and 5000</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># Fallback fixed value</span>
+            
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[GPU] Using batch size: </span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2"> (PM points: </span><span class="si">{</span><span class="n">num_pm</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="n">matched_indices_list</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ne_unit</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
+            <span class="n">ne_batch</span> <span class="o">=</span> <span class="n">ne_unit</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">batch_size</span><span class="p">]</span>
+            
+            <span class="c1"># Compute similarity matrix for this batch</span>
+            <span class="n">sim_matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">ne_batch</span><span class="p">,</span> <span class="n">pm_unit</span><span class="o">.</span><span class="n">t</span><span class="p">())</span>
+            
+            <span class="c1"># Find best match for each NE point in batch</span>
+            <span class="n">best_pm_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">sim_matrix</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">matched_indices_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_pm_indices</span><span class="p">)</span>
+            
+            <span class="c1"># Clear cache to prevent fragmentation</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="p">(</span><span class="n">batch_size</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+        
+        <span class="c1"># Concatenate all matched indices</span>
+        <span class="n">all_best_pm_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">matched_indices_list</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">pm_matched</span> <span class="o">=</span> <span class="n">pm_tensor</span><span class="p">[</span><span class="n">all_best_pm_indices</span><span class="p">]</span>
+        
+        <span class="n">pairs_array</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">ne_tensor</span><span class="p">,</span> <span class="n">pm_matched</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        
+        <span class="c1"># Distance filtering</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pairs_array</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">pairs_array</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">valid_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dists</span> <span class="o">&gt;=</span> <span class="mf">15.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dists</span> <span class="o">&lt;=</span> <span class="mf">200.0</span><span class="p">)</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">pairs_array</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">save_txt</span> <span class="ow">and</span> <span class="n">dataid</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="si">}</span><span class="s2">/results&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="si">}</span><span class="s2">/results/</span><span class="si">{</span><span class="n">dataid</span><span class="si">}</span><span class="s2">_pairs.txt&quot;</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[GPU] Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span><span class="si">}</span><span class="s2"> pairs&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pairs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_pairs_cpu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">ne_sampled</span><span class="p">,</span> <span class="n">pm_sampled</span><span class="p">,</span> <span class="n">save_txt</span><span class="p">,</span> <span class="n">dataid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fallback CPU pairing using KDTree.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">cKDTree</span>
+        
+        <span class="n">pm_vectors</span> <span class="o">=</span> <span class="n">pm_sampled</span> <span class="o">-</span> <span class="n">center</span>
+        <span class="n">pm_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pm_vectors</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pm_unit_vectors</span> <span class="o">=</span> <span class="n">pm_vectors</span> <span class="o">/</span> <span class="p">(</span><span class="n">pm_norms</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+        
+        <span class="n">ne_vectors</span> <span class="o">=</span> <span class="n">ne_sampled</span> <span class="o">-</span> <span class="n">center</span>
+        <span class="n">ne_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">ne_vectors</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ne_unit_vectors</span> <span class="o">=</span> <span class="n">ne_vectors</span> <span class="o">/</span> <span class="p">(</span><span class="n">ne_norms</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+        
+        <span class="n">pm_tree</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">pm_unit_vectors</span><span class="p">)</span>
+        <span class="n">distances</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">pm_tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">ne_unit_vectors</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="n">pm_matched</span> <span class="o">=</span> <span class="n">pm_sampled</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">pairs_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">ne_sampled</span><span class="p">,</span> <span class="n">pm_matched</span><span class="p">])</span>
+        
+        <span class="n">euclidean_dists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pairs_array</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">pairs_array</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">valid_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">euclidean_dists</span> <span class="o">&gt;=</span> <span class="mf">15.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">euclidean_dists</span> <span class="o">&lt;=</span> <span class="mf">200.0</span><span class="p">)</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">pairs_array</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">save_txt</span> <span class="ow">and</span> <span class="n">dataid</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="si">}</span><span class="s2">/results&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="si">}</span><span class="s2">/results/</span><span class="si">{</span><span class="n">dataid</span><span class="si">}</span><span class="s2">_pairs.txt&quot;</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[CPU] Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span><span class="si">}</span><span class="s2"> pairs&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pairs</span>
+
+<div class="viewcode-block" id="Partitioning.points_along_vector">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.points_along_vector">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">points_along_vector</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">n_slices</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate equally spaced division points between two points</span>
+<span class="sd">        </span>
+<span class="sd">        Creates n_slices+1 equally spaced points along the vector from p1 to p2, </span>
+<span class="sd">        including start and end points. These points are used to create boundary </span>
+<span class="sd">        surfaces for radial partitions.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        p1 : numpy.ndarray</span>
+<span class="sd">            Starting point coordinates, shape (3,)</span>
+<span class="sd">        p2 : numpy.ndarray</span>
+<span class="sd">            Ending point coordinates, shape (3,)</span>
+<span class="sd">        n_slices : int</span>
+<span class="sd">            Number of division segments</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Equally spaced points array, shape (n_slices+1, 3)</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; points = Partitioning.points_along_vector([0,0,0], [10,10,10], 4)</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Generated {len(points)} division points&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p1</span> <span class="o">+</span> <span class="p">(</span><span class="n">p2</span> <span class="o">-</span> <span class="n">p1</span><span class="p">)</span> <span class="o">*</span> <span class="n">i</span> <span class="o">/</span> <span class="n">n_slices</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_slices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span></div>
+
+
+<div class="viewcode-block" id="Partitioning.shell_partition">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.shell_partition">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shell_partition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">cell_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate shell partition points from paired NE-PM points with adaptive partitioning</span>
+<span class="sd">        </span>
+<span class="sd">        Creates equally spaced partition points along the connection line for each </span>
+<span class="sd">        NE-PM point pair, with adaptive subdivision for better handling of irregular cell shapes.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pairs : numpy.ndarray</span>
+<span class="sd">            Paired points array, shape (K, 6)</span>
+<span class="sd">        cell_mask : numpy.ndarray, optional</span>
+<span class="sd">            Binary mask indicating the active cell regions, shape (H, W, D)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of numpy.ndarray</span>
+<span class="sd">            Shell points list, each element is a coordinate array of all points in one shell</span>
+<span class="sd">            </span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Optimized version with adaptive partitioning for irregular cell shapes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span><span class="si">}</span><span class="s2"> adaptive shells from </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span><span class="si">}</span><span class="s2"> pairs...&quot;</span><span class="p">)</span>
+        
+        <span class="n">all_points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">pair_distances</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Calculate distances for adaptive partitioning</span>
+        <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+            <span class="n">ne_pt</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">pm_pt</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">ne_pt</span> <span class="o">-</span> <span class="n">pm_pt</span><span class="p">)</span>
+            <span class="n">pair_distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+        
+        <span class="n">pair_distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pair_distances</span><span class="p">)</span>
+        <span class="n">median_distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">pair_distances</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pair distance statistics: min=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">pair_distances</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;median=</span><span class="si">{</span><span class="n">median_distance</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, max=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pair_distances</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+            <span class="n">ne_pt</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">pm_pt</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+            <span class="n">current_distance</span> <span class="o">=</span> <span class="n">pair_distances</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            
+            <span class="c1"># Adaptive subdivision based on distance</span>
+            <span class="k">if</span> <span class="n">current_distance</span> <span class="o">&lt;</span> <span class="n">median_distance</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">:</span>
+                <span class="c1"># For very short distances (indentations), use fewer subdivisions</span>
+                <span class="n">adaptive_n_slices</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">current_distance</span> <span class="o">&gt;</span> <span class="n">median_distance</span> <span class="o">*</span> <span class="mf">2.0</span><span class="p">:</span>
+                <span class="c1"># For very long distances, use more subdivisions</span>
+                <span class="n">adaptive_n_slices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span> <span class="o">+</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Normal distances use standard subdivisions</span>
+                <span class="n">adaptive_n_slices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span>
+            
+            <span class="c1"># Generate adaptive subdivision points</span>
+            <span class="n">slice_pts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points_along_vector</span><span class="p">(</span><span class="n">ne_pt</span><span class="p">,</span> <span class="n">pm_pt</span><span class="p">,</span> <span class="n">adaptive_n_slices</span><span class="p">)</span>
+            <span class="n">all_points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">slice_pts</span><span class="p">,</span> <span class="n">adaptive_n_slices</span><span class="p">))</span>
+
+        <span class="c1"># Organize points into shells with weighted contribution</span>
+        <span class="n">shell_points</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        
+        <span class="k">for</span> <span class="n">pts_info</span> <span class="ow">in</span> <span class="n">all_points</span><span class="p">:</span>
+            <span class="n">slice_pts</span><span class="p">,</span> <span class="n">adaptive_n_slices</span> <span class="o">=</span> <span class="n">pts_info</span>
+            
+            <span class="c1"># Map adaptive points to standard shell indices</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">slice_pts</span><span class="p">):</span>
+                <span class="c1"># Calculate relative position (0 to 1)</span>
+                <span class="n">relative_pos</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="n">adaptive_n_slices</span>
+                
+                <span class="c1"># Map to standard shell index</span>
+                <span class="n">shell_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">relative_pos</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span><span class="p">)</span>
+                <span class="n">shell_points</span><span class="p">[</span><span class="n">shell_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
+
+        <span class="n">cleaned_shells</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shell_points</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">cleaned_shells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]))</span>
+                <span class="k">continue</span>
+                
+            <span class="n">shell_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shell</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">cell_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Use vectorized operations to filter points</span>
+                <span class="n">shell_int</span> <span class="o">=</span> <span class="n">shell_arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+                <span class="n">valid_mask</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">cell_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">cell_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">cell_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">valid_mask</span><span class="p">):</span>
+                    <span class="n">valid_shell_int</span> <span class="o">=</span> <span class="n">shell_int</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
+                    <span class="n">mask_values</span> <span class="o">=</span> <span class="n">cell_mask</span><span class="p">[</span><span class="n">valid_shell_int</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">valid_shell_int</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">valid_shell_int</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]]</span>
+                    <span class="n">final_mask</span> <span class="o">=</span> <span class="n">mask_values</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="n">shell_arr</span> <span class="o">=</span> <span class="n">shell_arr</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">][</span><span class="n">final_mask</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">shell_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            
+            <span class="n">cleaned_shells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shell_arr</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shell </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shell_arr</span><span class="p">)</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cleaned_shells</span><span class="p">)</span><span class="si">}</span><span class="s2"> adaptive shells total&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cleaned_shells</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_convert_shells_to_partition_mask_pure_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shells</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">pm_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ne_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert shell point cloud data to continuous 3D partition masks using pure NE-PM pair information</span>
+<span class="sd">        </span>
+<span class="sd">        This method only uses the shell points generated from NE-PM pairs without any EDT guidance.</span>
+<span class="sd">        It assigns partition IDs based on proximity to shell boundaries and interpolation between shells.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        shells : list of numpy.ndarray</span>
+<span class="sd">            List of shell point arrays, each containing 3D coordinates</span>
+<span class="sd">        shape : tuple</span>
+<span class="sd">            Shape of the output partition mask (Z, Y, X)</span>
+<span class="sd">        pm_mask : numpy.ndarray, optional</span>
+<span class="sd">            Original plasma membrane mask for defining cell boundaries</span>
+<span class="sd">        ne_mask : numpy.ndarray, optional</span>
+<span class="sd">            Original nuclear envelope mask for defining nuclear boundaries</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            3D partition mask where each voxel value indicates partition ID (0=background)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">binary_fill_holes</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">cKDTree</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shells</span><span class="p">)</span><span class="si">}</span><span class="s2"> shells to partition mask...&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Create cell regions from masks</span>
+        <span class="k">if</span> <span class="n">pm_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ne_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pm_binary</span> <span class="o">=</span> <span class="n">pm_mask</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">ne_binary</span> <span class="o">=</span> <span class="n">ne_mask</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            
+            <span class="n">cell_interior</span> <span class="o">=</span> <span class="n">binary_fill_holes</span><span class="p">(</span><span class="n">pm_binary</span><span class="p">)</span>
+            <span class="n">nuclear_interior</span> <span class="o">=</span> <span class="n">binary_fill_holes</span><span class="p">(</span><span class="n">ne_binary</span><span class="p">)</span>
+            <span class="n">cytoplasm_region</span> <span class="o">=</span> <span class="n">cell_interior</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">nuclear_interior</span>
+            
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cytoplasm region voxels: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cytoplasm_region</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: No masks provided, using full volume&quot;</span><span class="p">)</span>
+            <span class="n">cytoplasm_region</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        
+        <span class="c1"># Filter out empty shells and build KDTrees for non-empty shells</span>
+        <span class="n">valid_shells</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">shell_trees</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">shell_indices</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shells</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shell</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">valid_shells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shell</span><span class="p">)</span>
+                <span class="n">shell_trees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cKDTree</span><span class="p">(</span><span class="n">shell</span><span class="p">))</span>
+                <span class="n">shell_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Partition IDs start from 1</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shell </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shell</span><span class="p">)</span><span class="si">}</span><span class="s2"> points -&gt; Partition </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_shells</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: Need at least 2 valid shells for partitioning&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Built KDTrees for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_shells</span><span class="p">)</span><span class="si">}</span><span class="s2"> valid shells&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Get cytoplasm coordinates</span>
+        <span class="n">cytoplasm_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cytoplasm_region</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cytoplasm_coords</span><span class="p">)</span><span class="si">}</span><span class="s2"> cytoplasm voxels...&quot;</span><span class="p">)</span>
+        
+        <span class="n">partition_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        
+        <span class="c1"># Process in batches for memory efficiency</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">50000</span>
+        <span class="n">n_batches</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cytoplasm_coords</span><span class="p">)</span> <span class="o">+</span> <span class="n">batch_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">batch_size</span>
+        
+        <span class="k">for</span> <span class="n">batch_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_batches</span><span class="p">):</span>
+            <span class="n">start_idx</span> <span class="o">=</span> <span class="n">batch_idx</span> <span class="o">*</span> <span class="n">batch_size</span>
+            <span class="n">end_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cytoplasm_coords</span><span class="p">))</span>
+            <span class="n">batch_coords</span> <span class="o">=</span> <span class="n">cytoplasm_coords</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span><span class="n">end_idx</span><span class="p">]</span>
+            
+            <span class="c1"># Find distances to all shells for the batch</span>
+            <span class="n">batch_distances</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">tree</span> <span class="ow">in</span> <span class="n">shell_trees</span><span class="p">:</span>
+                <span class="n">distances</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">batch_coords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">batch_distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+            
+            <span class="n">batch_distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">batch_distances</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># Shape: (batch_size, n_shells)</span>
+            
+            <span class="c1"># Assign partitions based on corrected logic</span>
+            <span class="n">batch_partition_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_coords</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coord_distances</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">batch_distances</span><span class="p">):</span>
+                <span class="c1"># Find the closest shell</span>
+                <span class="n">closest_shell_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">coord_distances</span><span class="p">)</span>
+                <span class="n">closest_shell_id</span> <span class="o">=</span> <span class="n">shell_indices</span><span class="p">[</span><span class="n">closest_shell_idx</span><span class="p">]</span>
+                
+                <span class="c1"># Check if closest shell is innermost (shell 1) or outermost (shell n)</span>
+                <span class="k">if</span> <span class="n">closest_shell_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># Closest to innermost shell -&gt; directly assign to partition 1</span>
+                    <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">closest_shell_id</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shell_indices</span><span class="p">):</span>
+                    <span class="c1"># Closest to outermost shell -&gt; directly assign to outermost partition</span>
+                    <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">shell_indices</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Point is closest to a middle shell -&gt; need interpolation between shells</span>
+                    <span class="n">sorted_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">coord_distances</span><span class="p">)</span>
+                    <span class="n">closest_shell_idx</span> <span class="o">=</span> <span class="n">sorted_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">second_closest_shell_idx</span> <span class="o">=</span> <span class="n">sorted_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">closest_shell_idx</span>
+                    
+                    <span class="n">closest_dist</span> <span class="o">=</span> <span class="n">coord_distances</span><span class="p">[</span><span class="n">closest_shell_idx</span><span class="p">]</span>
+                    <span class="n">second_closest_dist</span> <span class="o">=</span> <span class="n">coord_distances</span><span class="p">[</span><span class="n">second_closest_shell_idx</span><span class="p">]</span>
+                    
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_indices</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="c1"># Only one shell available, assign to its partition</span>
+                        <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">shell_indices</span><span class="p">[</span><span class="n">closest_shell_idx</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Multiple shells: determine which partition region this voxel belongs to</span>
+                        <span class="n">shell_id_1</span> <span class="o">=</span> <span class="n">shell_indices</span><span class="p">[</span><span class="n">closest_shell_idx</span><span class="p">]</span>
+                        <span class="n">shell_id_2</span> <span class="o">=</span> <span class="n">shell_indices</span><span class="p">[</span><span class="n">second_closest_shell_idx</span><span class="p">]</span>
+                        
+                        <span class="c1"># Determine partition based on relative position between shells</span>
+                        <span class="n">total_dist</span> <span class="o">=</span> <span class="n">closest_dist</span> <span class="o">+</span> <span class="n">second_closest_dist</span>
+                        <span class="k">if</span> <span class="n">total_dist</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="c1"># Relative position: closer to which shell</span>
+                            <span class="n">relative_pos</span> <span class="o">=</span> <span class="n">second_closest_dist</span> <span class="o">/</span> <span class="n">total_dist</span>
+                            
+                            <span class="c1"># If significantly closer to first shell, assign to its partition</span>
+                            <span class="k">if</span> <span class="n">relative_pos</span> <span class="o">&gt;</span> <span class="mf">0.6</span><span class="p">:</span>  <span class="c1"># &gt;60% means much closer to first shell</span>
+                                <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">shell_id_1</span>
+                            <span class="c1"># If significantly closer to second shell, assign to its partition  </span>
+                            <span class="k">elif</span> <span class="n">relative_pos</span> <span class="o">&lt;</span> <span class="mf">0.4</span><span class="p">:</span>  <span class="c1"># &lt;40% means much closer to second shell</span>
+                                <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">shell_id_2</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="c1"># In between -&gt; assign to the partition between these shells</span>
+                                <span class="c1"># Use the smaller shell ID (closer to nucleus)</span>
+                                <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">shell_id_1</span><span class="p">,</span> <span class="n">shell_id_2</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># Fallback: use closest shell&#39;s partition</span>
+                            <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">shell_indices</span><span class="p">[</span><span class="n">closest_shell_idx</span><span class="p">]</span>
+            
+            <span class="c1"># Assign batch results to partition mask</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coord</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">batch_coords</span><span class="p">):</span>
+                <span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">coord</span>
+                <span class="n">partition_mask</span><span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">20</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed batch </span><span class="si">{</span><span class="n">batch_idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_batches</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Post-processing: Fill gaps and smooth boundaries</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Post-processing partition mask...&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Fill small gaps within partitions</span>
+        <span class="k">for</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">shell_indices</span><span class="p">:</span>
+            <span class="n">partition_region</span> <span class="o">=</span> <span class="n">partition_mask</span> <span class="o">==</span> <span class="n">partition_id</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">partition_region</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Small morphological closing to fill gaps</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">binary_closing</span>
+                <span class="n">filled_region</span> <span class="o">=</span> <span class="n">binary_closing</span><span class="p">(</span><span class="n">partition_region</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">partition_mask</span><span class="p">[</span><span class="n">filled_region</span> <span class="o">&amp;</span> <span class="n">cytoplasm_region</span><span class="p">]</span> <span class="o">=</span> <span class="n">partition_id</span>
+        
+        <span class="c1"># Verify partition results</span>
+        <span class="n">unique_partitions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">partition_mask</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final partition distribution:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">unique_partitions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">partition_id</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">partition_mask</span> <span class="o">==</span> <span class="n">partition_id</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition </span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> voxels&quot;</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully created </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_partitions</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2"> pure pair-based partitions&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">partition_mask</span>
+
+<div class="viewcode-block" id="Partitioning.create_nepm_radial_partitions_with_edt">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions_with_edt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_nepm_radial_partitions_with_edt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pm_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ne_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Optimized version of radial partition generation</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ne_edge : numpy.ndarray</span>
+<span class="sd">            Nuclear envelope boundary coordinates array, shape (N, 3)</span>
+<span class="sd">        pm_edge : numpy.ndarray</span>
+<span class="sd">            Plasma membrane boundary coordinates array, shape (M, 3)</span>
+<span class="sd">        shape : tuple</span>
+<span class="sd">            Shape of original image volume (Z, Y, X)</span>
+<span class="sd">        n_slices : int, optional</span>
+<span class="sd">            Number of radial partitions, defaults to self.n_slices</span>
+<span class="sd">        pm_mask : numpy.ndarray, optional</span>
+<span class="sd">            Original plasma membrane mask for improved accuracy</span>
+<span class="sd">        ne_mask : numpy.ndarray, optional</span>
+<span class="sd">            Original nuclear envelope mask for improved accuracy</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            3D partition mask array where each voxel value indicates partition ID (0=background)</span>
+<span class="sd">            </span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Uses local EDT-guided pair matching for better handling of irregular cell shapes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n_slices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_slices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span>
+            
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating </span><span class="si">{</span><span class="n">n_slices</span><span class="si">}</span><span class="s2"> radial partitions using optimized algorithms...&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Calculate cell center</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ne_edge</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="c1"># Generate optimized NE-PM pairs</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_ne_pm_pairs</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">save_txt</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span><span class="si">}</span><span class="s2"> NE-PM pairs&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Set correct n_slices</span>
+        <span class="n">original_n_slices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span> <span class="o">=</span> <span class="n">n_slices</span> <span class="o">-</span> <span class="mi">1</span>
+        
+        <span class="c1"># Use optimized shell generation</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="n">shells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shell_partition_optimized</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">cell_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shell_partition</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">cell_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shells</span><span class="p">)</span><span class="si">}</span><span class="s2"> shells for </span><span class="si">{</span><span class="n">n_slices</span><span class="si">}</span><span class="s2"> partitions&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Restore original n_slices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span> <span class="o">=</span> <span class="n">original_n_slices</span>
+        
+        <span class="c1"># Use optimized partition mask conversion</span>
+        <span class="n">partition_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_shells_to_partition_mask_optimized</span><span class="p">(</span><span class="n">shells</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">partition_mask</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_convert_shells_to_partition_mask_optimized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shells</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">pm_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ne_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Optimized version of partition mask conversion with corrected shell assignment logic</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">binary_fill_holes</span><span class="p">,</span> <span class="n">distance_transform_edt</span><span class="p">,</span> <span class="n">binary_erosion</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">cKDTree</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shells</span><span class="p">)</span><span class="si">}</span><span class="s2"> shells to partition mask using corrected assignment logic...&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Create cytoplasm region mask</span>
+        <span class="k">if</span> <span class="n">pm_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ne_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pm_binary</span> <span class="o">=</span> <span class="n">pm_mask</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">ne_binary</span> <span class="o">=</span> <span class="n">ne_mask</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            
+            <span class="n">cell_interior</span> <span class="o">=</span> <span class="n">binary_fill_holes</span><span class="p">(</span><span class="n">pm_binary</span><span class="p">)</span>
+            <span class="n">nuclear_interior</span> <span class="o">=</span> <span class="n">binary_fill_holes</span><span class="p">(</span><span class="n">ne_binary</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">cell_interior</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nuclear_interior</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cytoplasm_region</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">cell_interior</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">nuclear_interior</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
+                
+                <span class="n">pm_eroded</span> <span class="o">=</span> <span class="n">binary_erosion</span><span class="p">(</span><span class="n">pm_binary</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">pm_boundary</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pm_binary</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pm_eroded</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
+                
+                <span class="n">ne_eroded</span> <span class="o">=</span> <span class="n">binary_erosion</span><span class="p">(</span><span class="n">ne_binary</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">ne_boundary</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ne_binary</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ne_eroded</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
+                
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cytoplasm region voxels: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cytoplasm_region</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: Failed to create interior regions&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: Original masks are required for optimized method&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        
+        <span class="c1"># Get cytoplasm coordinates</span>
+        <span class="n">cytoplasm_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cytoplasm_region</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cytoplasm_coords</span><span class="p">)</span><span class="si">}</span><span class="s2"> cytoplasm voxels...&quot;</span><span class="p">)</span>
+        
+        <span class="n">n_partitions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">shells</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">partition_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">n_partitions</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: Need at least 2 valid shells for partitioning&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">partition_mask</span>
+        
+        <span class="c1"># Build KDTrees for boundary detection</span>
+        <span class="n">ne_boundary_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ne_boundary</span><span class="p">))</span>
+        <span class="n">pm_boundary_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pm_boundary</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ne_boundary_coords</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">pm_boundary_coords</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ne_tree</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">ne_boundary_coords</span><span class="p">)</span>
+            <span class="n">pm_tree</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">pm_boundary_coords</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Built boundary KDTrees for direct assignment&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Cannot build boundary trees, falling back to shell-based method&quot;</span><span class="p">)</span>
+            <span class="n">ne_tree</span> <span class="o">=</span> <span class="n">pm_tree</span> <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="c1"># Process in batches for memory efficiency</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">50000</span>
+        <span class="n">n_batches</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cytoplasm_coords</span><span class="p">)</span> <span class="o">+</span> <span class="n">batch_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">batch_size</span>
+        
+        <span class="c1"># Define distance thresholds for direct assignment</span>
+        <span class="n">direct_assignment_threshold</span> <span class="o">=</span> <span class="mf">3.0</span>  <span class="c1"># pixels</span>
+        
+        <span class="k">for</span> <span class="n">batch_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_batches</span><span class="p">):</span>
+            <span class="n">start_idx</span> <span class="o">=</span> <span class="n">batch_idx</span> <span class="o">*</span> <span class="n">batch_size</span>
+            <span class="n">end_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cytoplasm_coords</span><span class="p">))</span>
+            <span class="n">batch_coords</span> <span class="o">=</span> <span class="n">cytoplasm_coords</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span><span class="n">end_idx</span><span class="p">]</span>
+            
+            <span class="n">batch_partition_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_coords</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">direct_assignment_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_coords</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            
+            <span class="c1"># Step 1: Direct assignment for points very close to boundaries</span>
+            <span class="k">if</span> <span class="n">ne_tree</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pm_tree</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Distance to nuclear boundary</span>
+                <span class="n">ne_distances</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ne_tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">batch_coords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># Distance to plasma membrane boundary  </span>
+                <span class="n">pm_distances</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pm_tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">batch_coords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                
+                <span class="c1"># Direct assignment to innermost shell (shell 1) for points very close to nucleus</span>
+                <span class="n">inner_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">ne_distances</span> <span class="o">&lt;=</span> <span class="n">direct_assignment_threshold</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ne_distances</span> <span class="o">&lt;</span> <span class="n">pm_distances</span><span class="p">)</span>
+                <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">inner_mask</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">direct_assignment_mask</span><span class="p">[</span><span class="n">inner_mask</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                
+                <span class="c1"># Direct assignment to outermost shell for points very close to PM</span>
+                <span class="n">outer_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">pm_distances</span> <span class="o">&lt;=</span> <span class="n">direct_assignment_threshold</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">pm_distances</span> <span class="o">&lt;</span> <span class="n">ne_distances</span><span class="p">)</span>
+                <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">outer_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_partitions</span>
+                <span class="n">direct_assignment_mask</span><span class="p">[</span><span class="n">outer_mask</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Batch </span><span class="si">{</span><span class="n">batch_idx</span><span class="si">}</span><span class="s2">: Direct assignment - </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">inner_mask</span><span class="p">)</span><span class="si">}</span><span class="s2"> to inner, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">outer_mask</span><span class="p">)</span><span class="si">}</span><span class="s2"> to outer&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Step 2: Shell-based assignment for remaining points</span>
+            <span class="n">remaining_mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">direct_assignment_mask</span>
+            <span class="n">remaining_coords</span> <span class="o">=</span> <span class="n">batch_coords</span><span class="p">[</span><span class="n">remaining_mask</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_coords</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Find distances to all shells for remaining points</span>
+                <span class="n">shell_distances</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">valid_shell_indices</span> <span class="o">=</span> <span class="p">[]</span>
+                
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shells</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shell</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">shell_tree</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">shell</span><span class="p">)</span>
+                        <span class="n">distances</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">shell_tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">remaining_coords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="n">shell_distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+                        <span class="n">valid_shell_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Partition IDs start from 1</span>
+                
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shell_distances</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">shell_distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shell_distances</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># Shape: (n_remaining, n_shells)</span>
+                    
+                    <span class="c1"># For each remaining point, find the closest shell</span>
+                    <span class="n">closest_shell_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">shell_distances</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    
+                    <span class="c1"># Assign to closest shell&#39;s partition</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">closest_shell_indices</span><span class="p">):</span>
+                        <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">remaining_mask</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">valid_shell_indices</span><span class="p">[</span><span class="n">shell_idx</span><span class="p">]</span>
+            
+            <span class="c1"># Assign batch results to partition mask</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coord</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">batch_coords</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">coord</span>
+                    <span class="n">partition_mask</span><span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch_partition_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">20</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed batch </span><span class="si">{</span><span class="n">batch_idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_batches</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Post-processing: Ensure proper shell ordering and fill gaps</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Post-processing partition mask...&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Verify and correct partition ordering</span>
+        <span class="n">unique_partitions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">partition_mask</span><span class="p">)</span>
+        <span class="n">valid_partitions</span> <span class="o">=</span> <span class="n">unique_partitions</span><span class="p">[</span><span class="n">unique_partitions</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Partition distribution after corrected assignment:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">valid_partitions</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">partition_mask</span> <span class="o">==</span> <span class="n">partition_id</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition </span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> voxels&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Fill small gaps within partitions</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">binary_closing</span>
+        <span class="k">for</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">valid_partitions</span><span class="p">:</span>
+            <span class="n">partition_region</span> <span class="o">=</span> <span class="n">partition_mask</span> <span class="o">==</span> <span class="n">partition_id</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">partition_region</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">filled_region</span> <span class="o">=</span> <span class="n">binary_closing</span><span class="p">(</span><span class="n">partition_region</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">combined_region</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">filled_region</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">cytoplasm_region</span>
+                <span class="n">partition_mask</span><span class="p">[</span><span class="n">combined_region</span><span class="p">]</span> <span class="o">=</span> <span class="n">partition_id</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully created </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_partitions</span><span class="p">)</span><span class="si">}</span><span class="s2"> corrected partitions&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">partition_mask</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parallel_shell_processing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs_chunk</span><span class="p">,</span> <span class="n">n_slices</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parallel processing worker function for shell generation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">shell_points</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_slices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        
+        <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_chunk</span><span class="p">:</span>
+            <span class="n">ne_pt</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">pm_pt</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+            
+            <span class="c1"># Generate subdivision points</span>
+            <span class="n">slice_pts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points_along_vector</span><span class="p">(</span><span class="n">ne_pt</span><span class="p">,</span> <span class="n">pm_pt</span><span class="p">,</span> <span class="n">n_slices</span><span class="p">)</span>
+            
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">slice_pts</span><span class="p">):</span>
+                <span class="n">shell_points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">shell_points</span>
+
+<div class="viewcode-block" id="Partitioning.shell_partition_optimized">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.shell_partition_optimized">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shell_partition_optimized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">cell_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Optimized version of shell partition generation with parallel processing support</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> shells from </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span><span class="si">}</span><span class="s2"> pairs ...&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Initialize shell_points for all code paths</span>
+        <span class="n">shell_points</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        
+        <span class="c1"># Use parallel processing if available and data is large</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using parallel processing for shell generation...&quot;</span><span class="p">)</span>
+                
+                <span class="c1"># Chunk processing</span>
+                <span class="n">n_cores</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Limit cores to avoid over-parallelization</span>
+                <span class="n">chunk_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span> <span class="o">//</span> <span class="n">n_cores</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">pairs_chunks</span> <span class="o">=</span> <span class="p">[</span><span class="n">pairs</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">chunk_size</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">chunk_size</span><span class="p">)]</span>
+                
+                <span class="c1"># Parallel processing</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_cores</span><span class="p">)(</span>
+                    <span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parallel_shell_processing</span><span class="p">)(</span><span class="n">chunk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span><span class="p">)</span> 
+                    <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">pairs_chunks</span>
+                <span class="p">)</span>
+                
+                <span class="c1"># Merge results</span>
+                <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell_pts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+                                <span class="n">shell_points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">shell_pts</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Data size too small for parallel processing&quot;</span><span class="p">)</span>
+                
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using sequential processing for shell generation...&quot;</span><span class="p">)</span>
+            <span class="c1"># Original sequential processing logic</span>
+            <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+                <span class="n">ne_pt</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">pm_pt</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+                <span class="n">slice_pts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points_along_vector</span><span class="p">(</span><span class="n">ne_pt</span><span class="p">,</span> <span class="n">pm_pt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span><span class="p">)</span>
+                
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">slice_pts</span><span class="p">):</span>
+                    <span class="n">shell_points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
+
+        <span class="c1"># Cleanup and deduplication</span>
+        <span class="n">cleaned_shells</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shell_points</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">cleaned_shells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]))</span>
+                <span class="k">continue</span>
+                
+            <span class="n">shell_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shell</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">cell_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Vectorized point validation</span>
+                <span class="n">shell_int</span> <span class="o">=</span> <span class="n">shell_arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+                <span class="n">valid_mask</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">cell_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">cell_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">shell_int</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">cell_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">valid_mask</span><span class="p">):</span>
+                    <span class="n">valid_shell_int</span> <span class="o">=</span> <span class="n">shell_int</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
+                    <span class="n">mask_values</span> <span class="o">=</span> <span class="n">cell_mask</span><span class="p">[</span><span class="n">valid_shell_int</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">valid_shell_int</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">valid_shell_int</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]]</span>
+                    <span class="n">final_mask</span> <span class="o">=</span> <span class="n">mask_values</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="n">shell_arr</span> <span class="o">=</span> <span class="n">shell_arr</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">][</span><span class="n">final_mask</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">shell_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            
+            <span class="n">cleaned_shells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shell_arr</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shell </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shell_arr</span><span class="p">)</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cleaned_shells</span><span class="p">)</span><span class="si">}</span><span class="s2"> optimized shells total&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cleaned_shells</span></div>
+
+
+<div class="viewcode-block" id="Partitioning.extract_partition_coordinates">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.extract_partition_coordinates">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_partition_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">partition_mask</span><span class="p">,</span> <span class="n">sampling_density</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract coordinate points from continuous partition mask for saving in XVG format</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        partition_mask : numpy.ndarray</span>
+<span class="sd">            3D partition mask array</span>
+<span class="sd">        sampling_density : float, default=0.1</span>
+<span class="sd">            Sampling density, 0.1 means sampling 10% of points</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of numpy.ndarray</span>
+<span class="sd">            List of coordinate points for each partition</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">unique_partitions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">partition_mask</span><span class="p">)</span>
+        <span class="n">shell_coords</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">unique_partitions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">partition_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># Skip background</span>
+                <span class="k">continue</span>
+                
+            <span class="c1"># Get all coordinates of current partition</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">partition_mask</span> <span class="o">==</span> <span class="n">partition_id</span><span class="p">))</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Sample according to sampling density</span>
+                <span class="n">n_samples</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">*</span> <span class="n">sampling_density</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">n_samples</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">):</span>
+                    <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">sampled_coords</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sampled_coords</span> <span class="o">=</span> <span class="n">coords</span>
+                
+                <span class="n">shell_coords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sampled_coords</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition </span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span><span class="si">}</span><span class="s2"> total points, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sampled_coords</span><span class="p">)</span><span class="si">}</span><span class="s2"> sampled&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">shell_coords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]))</span>
+        
+        <span class="k">return</span> <span class="n">shell_coords</span></div>
+
+
+<div class="viewcode-block" id="Partitioning.save_partition_coords_to_xvg">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.save_partition_coords_to_xvg">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_partition_coords_to_xvg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">partition_coords</span><span class="p">,</span> <span class="n">dataid</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save partition coordinates to XVG format file</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        partition_coords : list of numpy.ndarray</span>
+<span class="sd">            List of partition coordinates</span>
+<span class="sd">        dataid : str</span>
+<span class="sd">            Data identifier</span>
+<span class="sd">        output_dir : str</span>
+<span class="sd">            Output directory</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Output directory path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xvg_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">xvg_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># Save combined XVG file</span>
+        <span class="n">combined_xvg_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">xvg_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dataid</span><span class="si">}</span><span class="s1">_partition_coords.xvg&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">combined_xvg_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># XVG header</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# XVG file generated by iPA - Partition Coordinates</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# All partition coordinates from data ID </span><span class="si">{</span><span class="n">dataid</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# Contains 3D coordinates (z, y, x) and partition index</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;@    title </span><span class="se">\&quot;</span><span class="s2">Partition Coordinates</span><span class="se">\&quot;\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;@    xaxis  label </span><span class="se">\&quot;</span><span class="s2">Z</span><span class="se">\&quot;\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;@    yaxis  label </span><span class="se">\&quot;</span><span class="s2">Y</span><span class="se">\&quot;\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;@TYPE xy</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Define legends for each partition</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partition_coords</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;@    s</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> legend </span><span class="se">\&quot;</span><span class="s2">Partition </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="se">\&quot;\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Write data points</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partition_coords</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coords</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># 2D points</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> 0.000 </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># 3D points</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected point dimension: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">point</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[INFO] Saved partition coordinates as XVG to </span><span class="si">{</span><span class="n">combined_xvg_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">xvg_dir</span></div>
+
+
+<div class="viewcode-block" id="Partitioning.create_nepm_radial_partitions">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_nepm_radial_partitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pm_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ne_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create radial partitions using pure NE-PM pair information without EDT guidance</span>
+<span class="sd">        </span>
+<span class="sd">        This method generates radial partitions based solely on the shell points created from</span>
+<span class="sd">        NE-PM pairs, without using Euclidean Distance Transform for edge refinement.</span>
+<span class="sd">        It&#39;s more straightforward and computationally efficient than the EDT-guided version.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ne_edge : numpy.ndarray</span>
+<span class="sd">            Nuclear envelope boundary coordinates array, shape (N, 3)</span>
+<span class="sd">        pm_edge : numpy.ndarray</span>
+<span class="sd">            Plasma membrane boundary coordinates array, shape (M, 3)</span>
+<span class="sd">        shape : tuple</span>
+<span class="sd">            Shape of original image volume (Z, Y, X)</span>
+<span class="sd">        n_slices : int, optional</span>
+<span class="sd">            Number of radial partitions, defaults to self.n_slices</span>
+<span class="sd">        pm_mask : numpy.ndarray, optional</span>
+<span class="sd">            Original plasma membrane mask for defining cell boundaries</span>
+<span class="sd">        ne_mask : numpy.ndarray, optional</span>
+<span class="sd">            Original nuclear envelope mask for defining nuclear boundaries</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            3D partition mask array where each voxel value indicates partition ID (0=background)</span>
+<span class="sd">            </span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This pure pair-based method is recommended when:</span>
+<span class="sd">        - You want faster computation without EDT overhead</span>
+<span class="sd">        - The cell shape is relatively regular</span>
+<span class="sd">        - You prefer simpler, more interpretable partitioning logic</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; partition_mask = partitioner.create_nepm_radial_partitions(</span>
+<span class="sd">        ...     ne_coords, pm_coords, (100, 200, 200), n_slices=8</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Created partitions with shape: {partition_mask.shape}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n_slices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_slices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span>
+            
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating </span><span class="si">{</span><span class="n">n_slices</span><span class="si">}</span><span class="s2"> radial partitions using pure NE-PM pair method...&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Calculate cell center</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ne_edge</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="c1"># Generate NE-PM pairs</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_ne_pm_pairs</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">save_txt</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span><span class="si">}</span><span class="s2"> NE-PM pairs&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Store original n_slices and set for shell generation</span>
+        <span class="n">original_n_slices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span> <span class="o">=</span> <span class="n">n_slices</span> <span class="o">-</span> <span class="mi">1</span>
+        
+        <span class="c1"># Generate shells from pairs</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="n">shells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shell_partition_optimized</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">cell_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shell_partition</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">cell_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shells</span><span class="p">)</span><span class="si">}</span><span class="s2"> shells for </span><span class="si">{</span><span class="n">n_slices</span><span class="si">}</span><span class="s2"> partitions&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Restore original n_slices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_slices</span> <span class="o">=</span> <span class="n">original_n_slices</span>
+        
+        <span class="c1"># Convert shells to partition mask using pure pair method</span>
+        <span class="n">partition_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_shells_to_partition_mask_pure_pairs</span><span class="p">(</span><span class="n">shells</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">partition_mask</span></div>
+
+
+    <span class="c1"># Keep backward compatibility alias</span>
+<div class="viewcode-block" id="Partitioning.create_shell_based_partitions">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.create_shell_based_partitions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_shell_based_partitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pm_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ne_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deprecated: Use create_nepm_radial_partitions_with_edt instead.</span>
+<span class="sd">        </span>
+<span class="sd">        This method is kept for backward compatibility.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: create_shell_based_partitions is deprecated. Use create_nepm_radial_partitions_with_edt instead.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_nepm_radial_partitions_with_edt</span><span class="p">(</span><span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">n_slices</span><span class="p">,</span> <span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span></div>
+
+    
+    <span class="c1"># Alias for pure pairs method (for clarity)</span>
+<div class="viewcode-block" id="Partitioning.create_nepm_radial_partitions_pure_pairs">
+<a class="viewcode-back" href="../../../../rest_files/processing/partitioning.html#ipa.processing.partitioning.Partitioning.create_nepm_radial_partitions_pure_pairs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_nepm_radial_partitions_pure_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pm_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ne_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alias for create_nepm_radial_partitions().</span>
+<span class="sd">        </span>
+<span class="sd">        This method name explicitly indicates it uses the pure NE-PM pair approach</span>
+<span class="sd">        without EDT guidance. It&#39;s provided for clarity and backward compatibility.</span>
+<span class="sd">        </span>
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        create_nepm_radial_partitions : The main implementation</span>
+<span class="sd">        create_nepm_radial_partitions_with_edt : EDT-guided alternative</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_nepm_radial_partitions</span><span class="p">(</span><span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">n_slices</span><span class="p">,</span> <span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

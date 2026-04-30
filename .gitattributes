@@ -1,2 +1,8 @@
+# Model files
 vesicle_mask0.63_processed.pth filter=lfs diff=lfs merge=lfs -text
 *.pth filter=lfs diff=lfs merge=lfs -text
+
+# Image data files (MRC, TIFF, TIF)
+*.mrc filter=lfs diff=lfs merge=lfs -text
+*.tiff filter=lfs diff=lfs merge=lfs -text
+*.tif filter=lfs diff=lfs merge=lfs -text

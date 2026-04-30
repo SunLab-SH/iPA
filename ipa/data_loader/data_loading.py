@@ -19,7 +19,10 @@ via the aicsimageio library.
 """
 
 import os
+import json
 import warnings
+import gzip
+import tempfile
 from typing import Union, Tuple, Dict, Optional, Any
 import numpy as np
 
@@ -67,6 +70,22 @@ class UniversalDataLoader:
     
     def __init__(self):
         self._last_metadata = {}
+        self._index = self._load_index()
+
+    @staticmethod
+    def _load_index():
+        """Load the dataset index for simplified data access."""
+        try:
+            # Try to find index in the project's data root
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
+            index_path = os.path.join(project_root, 'data', 'dataset_index.json')
+            if os.path.exists(index_path):
+                with open(index_path, 'r') as f:
+                    return json.load(f)
+        except Exception:
+            pass
+        return {}
     
     @staticmethod
     def load_data(filepath: str, 
@@ -76,7 +95,8 @@ class UniversalDataLoader:
         Load data from various microscopy file formats.
         
         Args:
-            filepath: Path to the data file
+            filepath: Path to the data file (supports absolute paths, relative paths, 
+                      or indexed keys like 'sxt/784_5/raw')
             channel: Channel number for multi-channel data (0-indexed)
             normalize: Whether to normalize values to [0,1] range
             
@@ -88,6 +108,21 @@ class UniversalDataLoader:
     
     def _load_with_metadata(self, filepath: str, channel: Optional[int], normalize: bool) -> np.ndarray:
         """Internal method that loads data and stores metadata."""
+        # Check if filepath is an indexed key
+        if '/' in filepath and not os.path.exists(filepath):
+            parts = filepath.split('/')
+            current = self._index
+            try:
+                for part in parts:
+                    current = current[part]
+                if isinstance(current, str):
+                    # Resolve relative path from project root
+                    script_dir = os.path.dirname(os.path.abspath(__file__))
+                    project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
+                    filepath = os.path.join(project_root, 'data', current)
+            except (KeyError, TypeError):
+                pass  # Fall back to treating as normal path
+
         if not os.path.exists(filepath):
             raise FileNotFoundError(f"File not found: {filepath}")
         
@@ -128,10 +163,47 @@ class UniversalDataLoader:
         """Get metadata from the last loaded file."""
         return self._last_metadata.copy()
     
-    def _load_mrc(self, filepath: str) -> np.ndarray:
-        """Load MRC format file (cryo-EM/tomography data)."""
+    @staticmethod
+    def _is_gzip_file(filepath: str) -> bool:
+        """Check if a file is gzip compressed by reading magic bytes."""
         try:
-            with mrcfile.open(filepath, permissive=True) as mrc:
+            with open(filepath, 'rb') as f:
+                magic = f.read(2)
+                return magic == b'\x1f\x8b'
+        except Exception:
+            return False
+    
+    @staticmethod
+    def _decompress_gzip(filepath: str) -> str:
+        """Decompress a gzip file to a temporary file and return the temp path."""
+        temp_fd, temp_path = tempfile.mkstemp(suffix=os.path.splitext(filepath)[1])
+        try:
+            with gzip.open(filepath, 'rb') as f_in:
+                with os.fdopen(temp_fd, 'wb') as f_out:
+                    import shutil
+                    shutil.copyfileobj(f_in, f_out)
+            return temp_path
+        except Exception:
+            os.close(temp_fd)
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+            raise
+    
+    def _load_mrc(self, filepath: str) -> np.ndarray:
+        """Load MRC format file (cryo-EM/tomography data).
+        
+        Automatically detects and decompresses gzip-compressed MRC files.
+        """
+        temp_file = None
+        try:
+            # Check if file is gzip compressed
+            if self._is_gzip_file(filepath):
+                temp_file = self._decompress_gzip(filepath)
+                load_path = temp_file
+            else:
+                load_path = filepath
+            
+            with mrcfile.open(load_path, permissive=True) as mrc:
                 data = mrc.data
                 if data is None:
                     raise ValueError("MRC file contains no data")
@@ -141,11 +213,19 @@ class UniversalDataLoader:
                     'shape': data.shape,
                     'dtype': str(data.dtype),
                     'voxel_size': getattr(mrc, 'voxel_size', None),
-                    'header': str(mrc.header) if hasattr(mrc, 'header') and mrc.header is not None else {}
+                    'header': str(mrc.header) if hasattr(mrc, 'header') and mrc.header is not None else {},
+                    'compressed': temp_file is not None
                 }
             return data
         except Exception as e:
             raise IOError(f"Failed to load MRC file {filepath}: {str(e)}")
+        finally:
+            # Clean up temporary file
+            if temp_file and os.path.exists(temp_file):
+                try:
+                    os.remove(temp_file)
+                except Exception:
+                    pass
     
     def _load_tiff(self, filepath: str, channel: Optional[int] = None) -> np.ndarray:
         """Load TIFF format file with optional channel selection."""

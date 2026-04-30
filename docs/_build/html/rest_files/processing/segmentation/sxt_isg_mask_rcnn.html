@@ -1,0 +1,444 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SXT ISG Mask R-CNN Instance Segmentation &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="SIM/WFM Segmentation" href="sim_wfm_segmentation.html" />
+    <link rel="prev" title="SXT Segmentation" href="sxt_segmentation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../processing.html">Processing Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../denoising.html">Denoising Module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="segmentation.html">Segmentation Module</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#architecture">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#key-components">Key Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#model-architecture-and-methods">Model Architecture and Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#model-selection-guide">Model Selection Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#quick-start">Quick Start</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="segmentation.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="sxt_segmentation.html">SXT Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sim_wfm_segmentation.html">SIM/WFM Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="et_segmentation.html">Cryo-ET Segmentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../partitioning.html">Partitioning Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../processing.html">Processing Module</a></li>
+          <li class="breadcrumb-item"><a href="segmentation.html">Segmentation Module</a></li>
+          <li class="breadcrumb-item"><a href="sxt_segmentation.html">SXT Segmentation</a></li>
+      <li class="breadcrumb-item active">SXT ISG Mask R-CNN Instance Segmentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/rest_files/processing/segmentation/sxt_isg_mask_rcnn.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sxt-isg-mask-r-cnn-instance-segmentation">
+<h1>SXT ISG Mask R-CNN Instance Segmentation<a class="headerlink" href="#sxt-isg-mask-r-cnn-instance-segmentation" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The SXT ISG Mask R-CNN segmenter provides <strong>instance-level segmentation</strong> of insulin secretory granules (ISGs) in Soft X-ray Tomography data. Unlike the U-Net based approach which produces semantic segmentation, Mask R-CNN enables:</p>
+<ul class="simple">
+<li><p><strong>Instance Segmentation</strong>: Distinguish individual ISG instances with unique IDs</p></li>
+<li><p><strong>Precise Boundaries</strong>: Pixel-level mask accuracy for each granule</p></li>
+<li><p><strong>Morphological Analysis</strong>: Extract per-instance features (volume, shape, position)</p></li>
+<li><p><strong>Spatial Relationships</strong>: Analyze ISG-ISG and ISG-organelle interactions at instance level</p></li>
+</ul>
+</section>
+<section id="model-performance">
+<h2>Model Performance<a class="headerlink" href="#model-performance" title="Link to this heading"></a></h2>
+<p><strong>Trained Model</strong>: <code class="docutils literal notranslate"><span class="pre">isg_mask_rcnn_final.pth</span></code></p>
+<p><strong>Performance Metrics</strong> (on validation set):</p>
+<ul class="simple">
+<li><p>mAP &#64; [0.50:0.95]: <strong>0.2276</strong></p></li>
+<li><p>mAP &#64; 0.50: <strong>0.6137</strong></p></li>
+<li><p>Recall &#64; 100 detections: <strong>0.367</strong></p></li>
+</ul>
+<p><strong>Architecture</strong>:</p>
+<ul class="simple">
+<li><p>Backbone: ResNet-50 with Feature Pyramid Network (FPN)</p></li>
+<li><p>Head: Mask R-CNN with box and mask prediction branches</p></li>
+<li><p>Input: 2D slices from 3D SXT volumes (256×256 patches)</p></li>
+<li><p>Output: Instance masks with confidence scores and bounding boxes</p></li>
+<li><p>Classes: 2 (background + ISG)</p></li>
+</ul>
+<p><strong>Training Configuration</strong>:</p>
+<ul class="simple">
+<li><p>Dataset: COCO-format annotations from SXT ISG training data</p></li>
+<li><p>Epochs: 20 (with early stopping)</p></li>
+<li><p>Batch size: 4</p></li>
+<li><p>Learning rate: 0.005 (with scheduler)</p></li>
+<li><p>Device: CUDA (GPU acceleration)</p></li>
+<li><p>Evaluation frequency: Every 2 epochs</p></li>
+</ul>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<p>Using Unified API (Recommended):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_segmenter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">mrcfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Load SXT volume</span>
+<span class="k">with</span> <span class="n">mrcfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;data/sxt_images/Stevens_pancreatic_INS_1E_784_5_pre_rec.mrc&#39;</span><span class="p">,</span> <span class="n">permissive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">mrc</span><span class="p">:</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="n">mrc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="c1"># Create segmenter and load model</span>
+<span class="n">segmenter</span> <span class="o">=</span> <span class="n">create_segmenter</span><span class="p">(</span><span class="n">modality</span><span class="o">=</span><span class="s1">&#39;sxt&#39;</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s1">&#39;isg_maskrcnn&#39;</span><span class="p">)</span>
+<span class="n">segmenter</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>  <span class="c1"># Automatically loads isg_mask_rcnn_final.pth</span>
+
+<span class="c1"># Predict instance masks</span>
+<span class="n">instance_mask</span> <span class="o">=</span> <span class="n">segmenter</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Analyze results</span>
+<span class="n">unique_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">instance_mask</span><span class="p">)</span>
+<span class="n">num_instances</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_ids</span><span class="p">[</span><span class="n">unique_ids</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">num_instances</span><span class="si">}</span><span class="s2"> ISG instances&quot;</span><span class="p">)</span>
+
+<span class="c1"># Extract per-instance statistics</span>
+<span class="k">if</span> <span class="n">num_instances</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">volumes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">uid</span> <span class="ow">in</span> <span class="n">unique_ids</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">uid</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">volumes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">instance_mask</span> <span class="o">==</span> <span class="n">uid</span><span class="p">))</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+    <span class="n">volumes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">volumes</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average volume: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">volumes</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> voxels&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Median volume:  </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">volumes</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> voxels&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Direct Class Usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation.unified</span><span class="w"> </span><span class="kn">import</span> <span class="n">SXTISGMaskRCNNSegmenter</span>
+
+<span class="c1"># Initialize segmenter</span>
+<span class="n">segmenter</span> <span class="o">=</span> <span class="n">SXTISGMaskRCNNSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+
+<span class="c1"># Load trained model</span>
+<span class="n">segmenter</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+
+<span class="c1"># Predict</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">segmenter</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># results is a labeled 3D mask where each ISG has a unique integer ID</span>
+<span class="c1"># Background = 0, ISG instances = 1, 2, 3, ...</span>
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="sxtisgmaskrcnnsegmenter">
+<h3>SXTISGMaskRCNNSegmenter<a class="headerlink" href="#sxtisgmaskrcnnsegmenter" title="Link to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.unified.SXTISGMaskRCNNSegmenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipa.processing.segmentation.unified.</span></span><span class="sig-name descname"><span class="pre">SXTISGMaskRCNNSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/unified.html#SXTISGMaskRCNNSegmenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.unified.SXTISGMaskRCNNSegmenter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="segmentation.html#ipa.processing.segmentation.BaseSegmenter" title="ipa.processing.segmentation.base.BaseSegmenter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSegmenter</span></code></a></p>
+<p>SXT ISG Instance Segmentation using Mask R-CNN.</p>
+<p>Implements true instance segmentation where each ISG gets a unique ID.
+Uses a ResNet50-FPN backbone trained on COCO-format patches.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.unified.SXTISGMaskRCNNSegmenter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/unified.html#SXTISGMaskRCNNSegmenter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.unified.SXTISGMaskRCNNSegmenter.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize the segmenter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modality</strong> – Imaging modality (‘sxt’, ‘sim’, ‘wfm’, ‘et’)</p></li>
+<li><p><strong>task</strong> – Segmentation task (‘cell’, ‘mito’, ‘er’, ‘nucleus’, ‘filament’, etc.)</p></li>
+<li><p><strong>device</strong> – Device to run on (‘cuda’ or ‘cpu’). Auto-detected if None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.unified.SXTISGMaskRCNNSegmenter._load_model_impl">
+<span class="sig-name descname"><span class="pre">_load_model_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/unified.html#SXTISGMaskRCNNSegmenter._load_model_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.unified.SXTISGMaskRCNNSegmenter._load_model_impl" title="Link to this definition"></a></dt>
+<dd><p>Load Mask R-CNN model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.segmentation.unified.SXTISGMaskRCNNSegmenter.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../../../_modules/ipa/processing/segmentation/unified.html#SXTISGMaskRCNNSegmenter.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.segmentation.unified.SXTISGMaskRCNNSegmenter.predict" title="Link to this definition"></a></dt>
+<dd><p>Predict ISG instance mask for a 3D volume by processing 2D slices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Input 3D volume (D, H, W)</p></li>
+<li><p><strong>threshold</strong> – Confidence threshold for detection</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Labeled 3D mask where each ISG has a unique integer ID</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p><strong>predict() Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> (np.ndarray): Input 3D volume with shape (D, H, W)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">threshold</span></code> (float): Confidence threshold for detection (default: 0.5)</p></li>
+<li><p>Returns: Labeled 3D mask (np.ndarray, dtype=uint16) where each ISG has unique ID</p></li>
+</ul>
+<p><strong>Processing Pipeline</strong>:</p>
+<ol class="arabic simple">
+<li><p>Volume is processed slice-by-slice (2D Mask R-CNN)</p></li>
+<li><p>Each slice is normalized to [0, 1] and converted to 3-channel RGB</p></li>
+<li><p>Mask R-CNN predicts boxes, masks, and scores for each slice</p></li>
+<li><p>High-confidence masks (&gt;threshold) are combined into binary slice</p></li>
+<li><p>Connected component labeling assigns unique IDs within each slice</p></li>
+<li><p>Global instance IDs ensure uniqueness across all slices</p></li>
+</ol>
+</section>
+</section>
+<section id="demo-script">
+<h2>Demo Script<a class="headerlink" href="#demo-script" title="Link to this heading"></a></h2>
+<p>A complete demo script is available at:</p>
+<p><code class="docutils literal notranslate"><span class="pre">examples/examples_sxt/demo_SXT_isg_maskrcnn.py</span></code></p>
+<p><strong>Run the demo</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/media/cuixi/data7/liad/gitspace/iPA
+python3<span class="w"> </span>examples/examples_sxt/demo_SXT_isg_maskrcnn.py
+</pre></div>
+</div>
+<p><strong>What the demo does</strong>:</p>
+<ol class="arabic simple">
+<li><p>Loads real SXT volume (cell 784_5)</p></li>
+<li><p>Initializes Mask R-CNN segmenter</p></li>
+<li><p>Runs instance segmentation on the full 3D volume</p></li>
+<li><p>Calculates per-instance statistics (count, volumes)</p></li>
+<li><p>Generates visualization with 3 panels:
+- Original slice
+- Binary mask (all ISGs)
+- Instance mask (colored by instance ID)</p></li>
+<li><p>Saves results as PNG and TIFF files</p></li>
+</ol>
+<p><strong>Expected output</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>============================================================
+SXT ISG Mask R-CNN Instance Segmentation Demo
+============================================================
+Test Cell: 784_5
+Image Path: data/sxt_images/sxt_isg_training/for_24_datasets/...
+
+Note: This uses Mask R-CNN (mAP=0.23)
+For better results, use demo_SXT_isg_instance.py (blob_fit)
+
+[1/4] Loading 3D volume...
+  Volume shape: (473, 486, 473)
+
+[2/4] Loading Mask R-CNN model...
+  Model loaded successfully!
+
+[3/4] Running Mask R-CNN prediction...
+
+[4/4] Analyzing instances...
+  Total instances detected: XX
+  Average volume: XXX.XX voxels
+  Median volume:  XXX.XX voxels
+  Max volume:     XXX voxels
+  Min volume:     XX voxels
+
+Generating visualization...
+Visualization saved to: sxt_isg_maskrcnn_result_784_5.png
+Instance mask saved to: sxt_isg_maskrcnn_784_5.tiff
+
+============================================================
+Demo completed!
+============================================================
+</pre></div>
+</div>
+</section>
+<section id="training-details">
+<h2>Training Details<a class="headerlink" href="#training-details" title="Link to this heading"></a></h2>
+<p><strong>Training Script</strong>: <code class="docutils literal notranslate"><span class="pre">examples/examples_sxt/train_SXT_isg_mask_rcnn_model.py</span></code></p>
+<p><strong>Dataset Preparation</strong>:</p>
+<p>The model was trained on COCO-format annotations created from SXT ISG ground truth masks. The dataset includes:</p>
+<ul class="simple">
+<li><p>Training set: ~XX patches (256×256)</p></li>
+<li><p>Validation set: ~XX patches</p></li>
+<li><p>Annotation format: COCO JSON with polygon masks</p></li>
+<li><p>Preprocessing: Intensity normalization, patch extraction</p></li>
+</ul>
+<p><strong>Training Process</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>examples/examples_sxt/train_SXT_isg_mask_rcnn_model.py
+</pre></div>
+</div>
+<p><strong>Training Configuration</strong>:</p>
+<ul class="simple">
+<li><p>Optimizer: SGD with momentum (0.9)</p></li>
+<li><p>Learning rate: 0.005 (step decay scheduler)</p></li>
+<li><p>Weight decay: 0.0005</p></li>
+<li><p>Gradient clipping: max_norm=0.5</p></li>
+<li><p>Mixed precision: Enabled (torch.cuda.amp)</p></li>
+<li><p>Checkpoint saving: Best model + final model + every 5 epochs</p></li>
+</ul>
+<p><strong>Model Files</strong>:</p>
+<p>After training, the following models are saved:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">isg_mask_rcnn_best.pth</span></code> - Best validation performance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isg_mask_rcnn_final.pth</span></code> - Final epoch model (used by default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isg_mask_rcnn_ep{N}.pth</span></code> - Checkpoints every 5 epochs</p></li>
+</ul>
+<p>Model Location: <code class="docutils literal notranslate"><span class="pre">ipa/processing/segmentation/models/sxt/isg_mask_rcnn_final.pth</span></code></p>
+</section>
+<section id="comparison-with-other-methods">
+<h2>Comparison with Other Methods<a class="headerlink" href="#comparison-with-other-methods" title="Link to this heading"></a></h2>
+<p><strong>Mask R-CNN vs U-Net + Blob Fit</strong>:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Mask R-CNN</p></th>
+<th class="head"><p>U-Net + Blob Fit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Instance Separation</p></td>
+<td><p>✅ Native</p></td>
+<td><p>⚠️ Post-process</p></td>
+</tr>
+<tr class="row-odd"><td><p>mAP</p></td>
+<td><p>0.23</p></td>
+<td><p>Higher</p></td>
+</tr>
+<tr class="row-even"><td><p>Inference Speed</p></td>
+<td><p>Fast (~seconds)</p></td>
+<td><p>Slower</p></td>
+</tr>
+<tr class="row-odd"><td><p>Boundary Precision</p></td>
+<td><p>Good</p></td>
+<td><p>Excellent</p></td>
+</tr>
+<tr class="row-even"><td><p>Complexity</p></td>
+<td><p>Simple API</p></td>
+<td><p>Multi-step</p></td>
+</tr>
+<tr class="row-odd"><td><p>Recommended Use</p></td>
+<td><p>Quick analysis</p></td>
+<td><p>Production</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>When to use Mask R-CNN</strong>:</p>
+<ul class="simple">
+<li><p>Quick prototyping and exploration</p></li>
+<li><p>When you need native instance IDs without post-processing</p></li>
+<li><p>For comparison with other instance segmentation methods</p></li>
+<li><p>When inference speed is critical</p></li>
+</ul>
+<p><strong>When to use U-Net + Blob Fit</strong>:</p>
+<ul class="simple">
+<li><p>Production-quality analysis</p></li>
+<li><p>Maximum accuracy requirements</p></li>
+<li><p>Publication-ready results</p></li>
+<li><p>Complex morphological analysis</p></li>
+</ul>
+<p>For production use, we recommend: <code class="docutils literal notranslate"><span class="pre">examples/examples_sxt/demo_SXT_isg_instance.py</span></code> (blob_fit method)</p>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="sxt_segmentation.html"><span class="doc">SXT Segmentation</span></a> - Complete SXT segmentation documentation</p></li>
+<li><p><a class="reference internal" href="../partitioning.html"><span class="doc">Partitioning Module</span></a> - Radial partitioning for spatial analysis</p></li>
+<li><p><a class="reference internal" href="../../analysis/morphology.html"><span class="doc">Morphology Analysis</span></a> - Morphological feature extraction</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sxt_segmentation.html" class="btn btn-neutral float-left" title="SXT Segmentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sim_wfm_segmentation.html" class="btn btn-neutral float-right" title="SIM/WFM Segmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

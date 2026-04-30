@@ -1,0 +1,471 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Denoising Module &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Segmentation Module" href="segmentation/segmentation.html" />
+    <link rel="prev" title="Processing Module" href="processing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="processing.html">Processing Module</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Denoising Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#n2v-class-noise2void">N2V Class (Noise2Void)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ipa.processing.denoising.N2V"><code class="docutils literal notranslate"><span class="pre">N2V</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#n2v-methods">N2V Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#n2n-class-noise2noise">N2N Class (Noise2Noise)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ipa.processing.denoising.N2N"><code class="docutils literal notranslate"><span class="pre">N2N</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#n2n-vs-n2v">N2N vs N2V</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#visualization-and-quality-assessment">Visualization and Quality Assessment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#visualizing-denoising-results">Visualizing Denoising Results</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-tips">Performance Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation/segmentation.html">Segmentation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partitioning.html">Partitioning Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="processing.html">Processing Module</a></li>
+      <li class="breadcrumb-item active">Denoising Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/rest_files/processing/denoising.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="denoising-module">
+<h1>Denoising Module<a class="headerlink" href="#denoising-module" title="Link to this heading"></a></h1>
+<p>The denoising module implements self-supervised deep learning algorithms for noise reduction in microscopy images, including Noise2Void (N2V) and Noise2Noise (N2N). These methods enable effective denoising without requiring clean reference images.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Self-supervised denoising is crucial for improving image quality in low signal-to-noise ratio conditions common in cryo-ET, SXT, and other microscopy modalities. iPA provides two state-of-the-art approaches:</p>
+<ul class="simple">
+<li><p><strong>Noise2Void (N2V)</strong>: Trains on single noisy images using blind-spot networks</p></li>
+<li><p><strong>Noise2Noise (N2N)</strong>: Trains on pairs of noisy images of the same sample</p></li>
+</ul>
+<p>Both methods are implemented as PyTorch-based classes with consistent APIs for training, prediction, and model management.</p>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Self-supervised Learning</strong>: No clean reference images required</p></li>
+<li><p><strong>3D Processing</strong>: Optimized for volumetric microscopy data</p></li>
+<li><p><strong>Tiled Prediction</strong>: Handle large volumes through intelligent tiling</p></li>
+<li><p><strong>Pre-trained Models</strong>: Ready-to-use models for common applications</p></li>
+<li><p><strong>GPU Acceleration</strong>: Fast training and inference on CUDA devices</p></li>
+</ul>
+</section>
+</section>
+<section id="n2v-class-noise2void">
+<h2>N2V Class (Noise2Void)<a class="headerlink" href="#n2v-class-noise2void" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipa.processing.denoising.N2V">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipa.processing.denoising.</span></span><span class="sig-name descname"><span class="pre">N2V</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/denoising/n2v.html#N2V"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.denoising.N2V" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDenoiser</span></code></p>
+<p>Noise2Void denoiser.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.denoising</span><span class="w"> </span><span class="kn">import</span> <span class="n">N2V</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create denoiser</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2v</span> <span class="o">=</span> <span class="n">N2V</span><span class="p">(</span><span class="n">n_filters</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train on noisy data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2v</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">noisy_data</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Predict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">denoised</span> <span class="o">=</span> <span class="n">n2v</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">noisy_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Save/Load model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2v</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="s1">&#39;n2v_model.pth&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2v</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;n2v_model.pth&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.denoising.N2V.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.195</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(64,</span> <span class="pre">64)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/denoising/n2v.html#N2V.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.denoising.N2V.train" title="Link to this definition"></a></dt>
+<dd><p>Train the N2V model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> – Training data, shape (D, H, W) or (D, H, W, C)</p></li>
+<li><p><strong>val_data</strong> – Optional validation data</p></li>
+<li><p><strong>epochs</strong> – Number of training epochs (default: 50)</p></li>
+<li><p><strong>batch_size</strong> – Batch size (default: 4)</p></li>
+<li><p><strong>lr</strong> – Learning rate (default: 1e-3)</p></li>
+<li><p><strong>mask_ratio</strong> – Ratio of pixels to mask (default: 0.195)</p></li>
+<li><p><strong>patch_size</strong> – Patch size for training (default: (64, 64))</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.denoising.N2V.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../../_modules/ipa/processing/denoising/n2v.html#N2V.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.denoising.N2V.predict" title="Link to this definition"></a></dt>
+<dd><p>Predict denoised output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Noisy input data, shape (D, H, W) or (D, H, W, C)</p></li>
+<li><p><strong>batch_size</strong> – Batch size for prediction (default: 4)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Denoised data, same shape as input</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<section id="n2v-methods">
+<h3>N2V Methods<a class="headerlink" href="#n2v-methods" title="Link to this heading"></a></h3>
+<p>The N2V class provides the following key methods:</p>
+<p><strong>Training</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">train(train_data,</span> <span class="pre">val_data,</span> <span class="pre">epochs,</span> <span class="pre">batch_size,</span> <span class="pre">lr)</span></code> - Train on noisy data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save_model(path)</span></code> - Save trained model to file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load_model(path)</span></code> - Load pre-trained model from file</p></li>
+</ul>
+<p><strong>Prediction</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">predict(image,</span> <span class="pre">n_tiles)</span></code> - Denoise a single image/volume</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">predict_batch(images,</span> <span class="pre">n_tiles)</span></code> - Denoise multiple images</p></li>
+</ul>
+<p><strong>Example: Training and Prediction</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.denoising</span><span class="w"> </span><span class="kn">import</span> <span class="n">N2V</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Initialize N2V denoiser</span>
+<span class="n">n2v</span> <span class="o">=</span> <span class="n">N2V</span><span class="p">(</span>
+    <span class="n">n_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">n_filters</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span>
+<span class="p">)</span>
+
+<span class="c1"># Prepare training data (noisy volumes)</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">load_training_volumes</span><span class="p">()</span>  <span class="c1"># Your loading function</span>
+<span class="n">val_data</span> <span class="o">=</span> <span class="n">load_validation_volumes</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training data shape: </span><span class="si">{</span><span class="n">train_data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation data shape: </span><span class="si">{</span><span class="n">val_data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Train the model</span>
+<span class="n">n2v</span><span class="o">.</span><span class="n">train</span><span class="p">(</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
+    <span class="n">val_data</span><span class="o">=</span><span class="n">val_data</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span>
+<span class="p">)</span>
+
+<span class="c1"># Save trained model</span>
+<span class="n">n2v</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="s1">&#39;models/n2v_sxt.pth&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model saved successfully!&quot;</span><span class="p">)</span>
+
+<span class="c1"># Predict on new data</span>
+<span class="n">noisy_volume</span> <span class="o">=</span> <span class="n">load_noisy_volume</span><span class="p">()</span>  <span class="c1"># Your loading function</span>
+<span class="n">denoised_volume</span> <span class="o">=</span> <span class="n">n2v</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
+    <span class="n">noisy_volume</span><span class="p">,</span>
+    <span class="n">n_tiles</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># Adjust based on GPU memory</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Denoised volume shape: </span><span class="si">{</span><span class="n">denoised_volume</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original range: [</span><span class="si">{</span><span class="n">noisy_volume</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">noisy_volume</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Denoised range: [</span><span class="si">{</span><span class="n">denoised_volume</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">denoised_volume</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example: Using Pre-trained Model</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.denoising</span><span class="w"> </span><span class="kn">import</span> <span class="n">N2V</span>
+
+<span class="c1"># Load pre-trained model</span>
+<span class="n">n2v</span> <span class="o">=</span> <span class="n">N2V</span><span class="p">(</span><span class="n">n_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_filters</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="n">n2v</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;models/n2v_sxt.pth&#39;</span><span class="p">)</span>
+
+<span class="c1"># Denoise SXT volume</span>
+<span class="n">sxt_volume</span> <span class="o">=</span> <span class="n">load_sxt_data</span><span class="p">()</span>  <span class="c1"># Shape: (Z, Y, X)</span>
+<span class="n">denoised</span> <span class="o">=</span> <span class="n">n2v</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sxt_volume</span><span class="p">,</span> <span class="n">n_tiles</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># Save result</span>
+<span class="n">save_denoised_volume</span><span class="p">(</span><span class="n">denoised</span><span class="p">,</span> <span class="s1">&#39;denoised_sxt.mrc&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="n2n-class-noise2noise">
+<h2>N2N Class (Noise2Noise)<a class="headerlink" href="#n2n-class-noise2noise" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipa.processing.denoising.N2N">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipa.processing.denoising.</span></span><span class="sig-name descname"><span class="pre">N2N</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/denoising/n2n.html#N2N"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.denoising.N2N" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDenoiser</span></code></p>
+<p>Noise2Noise denoiser.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.denoising</span><span class="w"> </span><span class="kn">import</span> <span class="n">N2N</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create denoiser</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2n</span> <span class="o">=</span> <span class="n">N2N</span><span class="p">(</span><span class="n">n_filters</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train on pairs of noisy images</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2n</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">noisy_data_1</span><span class="p">,</span> <span class="n">noisy_data_2</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Predict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">denoised</span> <span class="o">=</span> <span class="n">n2n</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">noisy_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Save/Load model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2n</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="s1">&#39;n2n_model.pth&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2n</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;n2n_model.pth&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.denoising.N2N.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noisy_data_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisy_data_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_data_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_data_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(64,</span> <span class="pre">64)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'l1'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/processing/denoising/n2n.html#N2N.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.denoising.N2N.train" title="Link to this definition"></a></dt>
+<dd><p>Train the N2N model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>noisy_data_1</strong> – First set of noisy images</p></li>
+<li><p><strong>noisy_data_2</strong> – Second set of noisy images (paired with data_1)</p></li>
+<li><p><strong>val_data_1</strong> – Optional validation data (first set)</p></li>
+<li><p><strong>val_data_2</strong> – Optional validation data (second set)</p></li>
+<li><p><strong>epochs</strong> – Number of training epochs (default: 50)</p></li>
+<li><p><strong>batch_size</strong> – Batch size (default: 4)</p></li>
+<li><p><strong>lr</strong> – Learning rate (default: 1e-3)</p></li>
+<li><p><strong>patch_size</strong> – Patch size for training (default: (64, 64))</p></li>
+<li><p><strong>loss_type</strong> – Loss function type, ‘l1’ or ‘mse’ (default: ‘l1’)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.processing.denoising.N2N.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../../_modules/ipa/processing/denoising/n2n.html#N2N.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.processing.denoising.N2N.predict" title="Link to this definition"></a></dt>
+<dd><p>Predict denoised output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Noisy input data, shape (D, H, W) or (D, H, W, C)</p></li>
+<li><p><strong>batch_size</strong> – Batch size for prediction (default: 4)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Denoised data, same shape as input</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<section id="n2n-vs-n2v">
+<h3>N2N vs N2V<a class="headerlink" href="#n2n-vs-n2v" title="Link to this heading"></a></h3>
+<p><strong>When to use N2N</strong>:</p>
+<ul class="simple">
+<li><p>You have pairs of noisy images of the same sample</p></li>
+<li><p>Higher quality results are needed</p></li>
+<li><p>Training time is not a constraint</p></li>
+</ul>
+<p><strong>When to use N2V</strong>:</p>
+<ul class="simple">
+<li><p>Only single noisy images are available</p></li>
+<li><p>Faster training is preferred</p></li>
+<li><p>Good enough quality for downstream analysis</p></li>
+</ul>
+<p><strong>Example: N2N Training</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.denoising</span><span class="w"> </span><span class="kn">import</span> <span class="n">N2N</span>
+
+<span class="c1"># Initialize N2N denoiser</span>
+<span class="n">n2n</span> <span class="o">=</span> <span class="n">N2N</span><span class="p">(</span><span class="n">n_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_filters</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+
+<span class="c1"># Prepare paired noisy data</span>
+<span class="c1"># Each pair: (noisy_image_1, noisy_image_2) of the same sample</span>
+<span class="n">train_pairs</span> <span class="o">=</span> <span class="n">load_noisy_pairs</span><span class="p">()</span>  <span class="c1"># List of (img1, img2) tuples</span>
+
+<span class="c1"># Train</span>
+<span class="n">n2n</span><span class="o">.</span><span class="n">train</span><span class="p">(</span>
+    <span class="n">train_pairs</span><span class="o">=</span><span class="n">train_pairs</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span>
+<span class="p">)</span>
+
+<span class="c1"># Save and predict</span>
+<span class="n">n2n</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="s1">&#39;models/n2n_cryoet.pth&#39;</span><span class="p">)</span>
+<span class="n">denoised</span> <span class="o">=</span> <span class="n">n2n</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">noisy_volume</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="visualization-and-quality-assessment">
+<h2>Visualization and Quality Assessment<a class="headerlink" href="#visualization-and-quality-assessment" title="Link to this heading"></a></h2>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../../_images/denoise01.png"><img alt="Denoising example showing original and denoised images" src="../../_images/denoise01.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Figure</strong>: Example of N2V denoising on SXT data. Left: Original noisy volume; Right: Denoised result.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<section id="visualizing-denoising-results">
+<h3>Visualizing Denoising Results<a class="headerlink" href="#visualizing-denoising-results" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.denoising</span><span class="w"> </span><span class="kn">import</span> <span class="n">N2V</span>
+
+<span class="c1"># Load and denoise</span>
+<span class="n">n2v</span> <span class="o">=</span> <span class="n">N2V</span><span class="p">(</span><span class="n">n_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_filters</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="n">n2v</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;models/n2v_sxt.pth&#39;</span><span class="p">)</span>
+
+<span class="n">noisy_volume</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">()</span>  <span class="c1"># Your loading function</span>
+<span class="n">denoised_volume</span> <span class="o">=</span> <span class="n">n2v</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">noisy_volume</span><span class="p">,</span> <span class="n">n_tiles</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># Visualize middle slice</span>
+<span class="n">slice_idx</span> <span class="o">=</span> <span class="n">noisy_volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Original</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">noisy_volume</span><span class="p">[</span><span class="n">slice_idx</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;magma&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Original (Noisy)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="c1"># Denoised</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">denoised_volume</span><span class="p">[</span><span class="n">slice_idx</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;magma&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Denoised&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="c1"># Difference</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">noisy_volume</span><span class="p">[</span><span class="n">slice_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">denoised_volume</span><span class="p">[</span><span class="n">slice_idx</span><span class="p">])</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Difference&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.046</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;denoising_comparison.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Print statistics</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original - Mean: </span><span class="si">{</span><span class="n">noisy_volume</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, Std: </span><span class="si">{</span><span class="n">noisy_volume</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Denoised - Mean: </span><span class="si">{</span><span class="n">denoised_volume</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, Std: </span><span class="si">{</span><span class="n">denoised_volume</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SNR Improvement: </span><span class="si">{</span><span class="p">(</span><span class="n">denoised_volume</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">noisy_volume</span><span class="o">.</span><span class="n">std</span><span class="p">())</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-tips">
+<h2>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h2>
+<p><strong>Memory Optimization:</strong></p>
+<ul class="simple">
+<li><p>Use appropriate <code class="docutils literal notranslate"><span class="pre">n_tiles</span></code> parameter for large images</p></li>
+<li><p>Typical values: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">2,</span> <span class="pre">2)</span></code> for small volumes, <code class="docutils literal notranslate"><span class="pre">(2,</span> <span class="pre">4,</span> <span class="pre">4)</span></code> for large volumes</p></li>
+<li><p>Higher tiling reduces memory usage but may increase processing time</p></li>
+</ul>
+<p><strong>Model Selection:</strong></p>
+<ul class="simple">
+<li><p><strong>N2V</strong>: Best for single noisy images, faster training</p></li>
+<li><p><strong>N2N</strong>: Best for paired noisy images, potentially higher quality</p></li>
+<li><p>Both models support custom architectures via <code class="docutils literal notranslate"><span class="pre">n_filters</span></code> and <code class="docutils literal notranslate"><span class="pre">n_channels</span></code> parameters</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="processing.html" class="btn btn-neutral float-left" title="Processing Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="segmentation/segmentation.html" class="btn btn-neutral float-right" title="Segmentation Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

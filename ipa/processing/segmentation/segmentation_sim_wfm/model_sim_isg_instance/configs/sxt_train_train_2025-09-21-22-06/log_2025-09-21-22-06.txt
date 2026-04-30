@@ -1,2 +1,0 @@
-2025-09-21 22:06:42,178 - upsnet - INFO - Created logger with output path: d:/Gitspace/ipa_full/iPA/ipa/processing/segmentation/segmentation_sxt/model_sxt_isg_instance\configs\sxt_train_train_2025-09-21-22-06
-2025-09-21 22:06:42,180 - upsnet - INFO - Log file: d:/Gitspace/ipa_full/iPA/ipa/processing/segmentation/segmentation_sxt/model_sxt_isg_instance\configs\sxt_train_train_2025-09-21-22-06\log_2025-09-21-22-06.txt

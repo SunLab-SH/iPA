@@ -1,0 +1,112 @@
+SXT ISG Mask R-CNN Segmentation
+================================
+
+.. warning::
+   **Status: Training in Progress**
+   
+   The SXT ISG Mask R-CNN model is currently being trained. This documentation serves as a placeholder for the upcoming instance segmentation capability.
+
+Overview
+--------
+
+The SXT ISG Mask R-CNN segmenter will provide instance-level segmentation of insulin secretory granules (ISGs) in Soft X-ray Tomography data. Unlike the U-Net based approach which produces semantic segmentation, Mask R-CNN enables:
+
+* **Instance Segmentation**: Distinguish individual ISG instances
+* **Precise Boundaries**: Pixel-level mask accuracy for each granule
+* **Morphological Analysis**: Extract per-instance features (volume, shape, position)
+* **Spatial Relationships**: Analyze ISG-ISG and ISG-organelle interactions
+
+Expected API
+------------
+
+Once training is complete, the segmenter will follow the unified API pattern:
+
+.. code-block:: python
+
+    from ipa.processing.segmentation import SXTISGMaskRCNNSegmenter
+    from ipa.data_loader import UniversalDataLoader
+    
+    # Load SXT volume
+    volume = UniversalDataLoader.load_data('sxt_isg_sample.mrc')
+    
+    # Initialize segmenter
+    segmenter = SXTISGMaskRCNNSegmenter(device='cuda')
+    
+    # Load trained model
+    segmenter.load_model()  # Will load isg_mask_rcnn_final.pth
+    
+    # Predict instance masks
+    results = segmenter.predict(volume)
+    
+    # Access results
+    instance_masks = results['instance_masks']  # List of binary masks
+    labels = results['labels']  # Instance IDs
+    scores = results['scores']  # Confidence scores
+    boxes = results['boxes']  # Bounding boxes
+    
+    print(f"Detected {len(instance_masks)} ISG instances")
+
+Training Status
+---------------
+
+**Current Stage**: Model training in progress
+
+**Training Script**: ``examples/examples_sxt/train_SXT_isg_mask_rcnn_model.py``
+
+**Expected Completion**: TBD
+
+**Model Architecture**:
+- Backbone: ResNet-50 FPN
+- Head: Mask R-CNN with box and mask prediction branches
+- Input: 3D SXT volumes (slice-by-slice or volumetric)
+- Output: Instance masks with confidence scores
+
+**Training Data**:
+- Format: NPZ files with paired images and annotations
+- Location: ``sxt_isg_training_demo/``
+- Samples: Train and validation splits
+
+Post-Training Steps
+-------------------
+
+Once training completes:
+
+1. ✅ Validate model on test set
+2. ✅ Update model path in ``unified.py`` (``DEFAULT_SXT_ISG_MASKRCNN_MODEL``)
+3. ✅ Implement ``_load_model_impl()`` in ``SXTISGMaskRCNNSegmenter`` class
+4. ✅ Implement ``predict()`` method with proper postprocessing
+5. ✅ Add comprehensive documentation here
+6. ✅ Create demo script: ``demo_SXT_isg_instance_segmentation.py``
+7. ✅ Update this document with final API and examples
+
+Alternative: U-Net Based ISG Segmentation
+------------------------------------------
+
+While Mask R-CNN training is in progress, you can use the existing U-Net based ISG segmenter:
+
+.. code-block:: python
+
+    from ipa.processing.segmentation import SXTISGSegmenter
+    
+    segmenter = SXTISGSegmenter(device='cuda')
+    segmenter.load_model()  # Loads isg_unet_best.pth
+    results = segmenter.predict(volume)
+    
+    isg_mask = results['isg_mask']  # Semantic segmentation
+
+For instance-level analysis, you can apply watershed or connected component labeling to the U-Net output:
+
+.. code-block:: python
+
+    from scipy.ndimage import label
+    
+    # Convert semantic mask to instances
+    labeled_mask, num_instances = label(isg_mask > 0)
+    print(f"Found {num_instances} ISG instances")
+
+See Also
+--------
+
+* :doc:`sxt_segmentation` - Complete SXT segmentation documentation
+* :doc:`../partitioning` - Radial partitioning for spatial analysis
+* :doc:`../../analysis/morphology` - Morphological feature extraction

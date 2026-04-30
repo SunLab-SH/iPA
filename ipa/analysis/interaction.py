@@ -12,15 +12,71 @@ from scipy.spatial.distance import cdist
 import scipy.ndimage
 import json
 
+# Standard package imports replacing sys.path.append
+from .common.parser import arg
+from .common import preprocess, distances_generator, outplot
 
-# Add path to import necessary modules
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir)
+def calculate_contact_rdf(contact_coords, partition_mask, n_shells=8):
+    """
+    Calculate the Radial Distribution Function (RDF) of organelle contacts.
+    
+    Parameters
+    ----------
+    contact_coords : list of tuples
+        List of (z, y, x) coordinates for contact points.
+    partition_mask : np.ndarray
+        3D mask where values 1-n_shells represent radial shells.
+    n_shells : int
+        Number of radial shells.
+        
+    Returns
+    -------
+    dict
+        Dictionary containing contact counts per shell and normalized RDF.
+    """
+    contact_counts = np.zeros(n_shells)
+    total_voxels_per_shell = np.zeros(n_shells)
+    
+    for i in range(1, n_shells + 1):
+        total_voxels_per_shell[i-1] = np.sum(partition_mask == i)
+        
+    for coord in contact_coords:
+        z, y, x = int(coord[0]), int(coord[1]), int(coord[2])
+        if 0 <= z < partition_mask.shape[0] and 0 <= y < partition_mask.shape[1] and 0 <= x < partition_mask.shape[2]:
+            shell_id = partition_mask[z, y, x]
+            if 1 <= shell_id <= n_shells:
+                contact_counts[shell_id - 1] += 1
+                
+    # Normalize by shell volume to get density
+    densities = np.divide(contact_counts, total_voxels_per_shell, out=np.zeros_like(contact_counts), where=total_voxels_per_shell!=0)
+    avg_density = np.sum(contact_counts) / np.sum(total_voxels_per_shell)
+    
+    rdf = np.divide(densities, avg_density, out=np.zeros_like(densities), where=avg_density!=0)
+    
+    return {
+        'contact_counts': contact_counts,
+        'shell_volumes': total_voxels_per_shell,
+        'rdf': rdf
+    }
 
-
-from common.parser import arg
-from common.preprocess import *
-from common import preprocess, distances_generator, outplot
+def calculate_contact_probability(contact_counts, total_organelles_per_shell):
+    """
+    Calculate the probability that an organelle participates in a contact within each shell.
+    
+    Parameters
+    ----------
+    contact_counts : np.ndarray
+        Number of contacts in each shell.
+    total_organelles_per_shell : np.ndarray
+        Total number of organelles in each shell.
+        
+    Returns
+    -------
+    np.ndarray
+        Probability of contact per shell.
+    """
+    probs = np.divide(contact_counts, total_organelles_per_shell, out=np.zeros_like(contact_counts, dtype=float), where=total_organelles_per_shell!=0)
+    return probs
 # print("Successfully imported original modules")
 
 
@@ -133,13 +189,11 @@ def actin_to_vesicle_analysis(data_id: str, mask_file: str, json_file: str, conf
     if config.get('visualization', False) and distances:
         print("Generating visualization...")
 
-
         # Use original outplot.actin_to_vesicle_dist_hist function
         dist_df = pd.DataFrame({'Distance': distances})
         outplot.actin_to_vesicle_dist_hist(dist_df['Distance'].to_numpy(), data_id, len(actin_data), len(distances))
         
-        plot_file = os.path.join(os.path.dirname(mask_file), f"{data_id}_actin_to_vesicle_analysis.png")
-        plt.show()
+        plot_file = os.path.join(config.get('output_dir', os.path.dirname(mask_file)), f"{data_id}_actin_to_vesicle_analysis.png")
         plt.savefig(plot_file, dpi=300, bbox_inches='tight')
         plt.close()
         results['plot_file'] = plot_file

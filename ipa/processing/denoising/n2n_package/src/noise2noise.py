@@ -50,7 +50,7 @@ class Noise2Noise(object):
 
             # Learning rate adjustment
             self.scheduler = lr_scheduler.ReduceLROnPlateau(self.optim,
-                patience=self.p.nb_epochs/4, factor=0.5, verbose=True)
+                patience=self.p.nb_epochs/4, factor=0.5)
 
             # Loss function
             if self.p.loss == 'hdr':

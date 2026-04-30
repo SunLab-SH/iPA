@@ -1,0 +1,544 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Loader Module &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Log Module" href="log.html" />
+    <link rel="prev" title="Integrated Processing and Analysis Toolkit (iPA)" href="../../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Loader Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-file-formats">Supported File Formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#core-formats-always-available">Core Formats (Always Available)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optional-formats-require-additional-packages">Optional Formats (Require Additional Packages)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#universaldataloader-class">UniversalDataLoader Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ipa.data_loader.UniversalDataLoader"><code class="docutils literal notranslate"><span class="pre">UniversalDataLoader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ipa.data_loader.UniversalDataLoader.load_data"><code class="docutils literal notranslate"><span class="pre">UniversalDataLoader.load_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ipa.data_loader.UniversalDataLoader.get_last_metadata"><code class="docutils literal notranslate"><span class="pre">UniversalDataLoader.get_last_metadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ipa.data_loader.UniversalDataLoader.get_supported_formats"><code class="docutils literal notranslate"><span class="pre">UniversalDataLoader.get_supported_formats()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ipa.data_loader.UniversalDataLoader.batch_load"><code class="docutils literal notranslate"><span class="pre">UniversalDataLoader.batch_load()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#core-methods">Core Methods</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#load-data">load_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#batch-load">batch_load</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-workflow-examples">Complete Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-data-loading">Basic Data Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-channel-data-handling">Multi-channel Data Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#batch-processing-pipeline">Batch Processing Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integration-with-partitioning-workflow">Integration with Partitioning Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#logging-system">Logging System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="log.html">Log Module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Data Loader Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/rest_files/data_loader/data_loader.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-loader-module">
+<h1>Data Loader Module<a class="headerlink" href="#data-loader-module" title="Link to this heading"></a></h1>
+<p>The data loader module provides comprehensive support for loading multiple microscopy file formats commonly used in cellular imaging analysis. It offers a unified interface for handling various commercial and open-source imaging formats with automatic format detection and optional dependency management.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">UniversalDataLoader</span></code> class serves as the primary entry point for all data loading operations in iPA. It automatically detects file formats based on extensions and routes to appropriate loaders, providing a consistent API regardless of the input format.</p>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Unified Interface</strong>: Single method for loading all supported formats</p></li>
+<li><p><strong>Automatic Format Detection</strong>: Intelligent format identification based on file extension</p></li>
+<li><p><strong>Multi-channel Support</strong>: Selective channel loading for multi-dimensional data</p></li>
+<li><p><strong>Optional Normalization</strong>: Built-in intensity normalization</p></li>
+<li><p><strong>Graceful Degradation</strong>: Clear warnings for missing optional dependencies</p></li>
+<li><p><strong>Batch Processing</strong>: Efficient loading of multiple files</p></li>
+</ul>
+</section>
+</section>
+<section id="supported-file-formats">
+<h2>Supported File Formats<a class="headerlink" href="#supported-file-formats" title="Link to this heading"></a></h2>
+<section id="core-formats-always-available">
+<h3>Core Formats (Always Available)<a class="headerlink" href="#core-formats-always-available" title="Link to this heading"></a></h3>
+<p>These formats are supported by default with no additional dependencies:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Extension</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Library</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>.mrc</p></td>
+<td><p>Medical Research Council format</p></td>
+<td><p>mrcfile</p></td>
+</tr>
+<tr class="row-odd"><td><p>.tif/.tiff</p></td>
+<td><p>Tagged Image File Format</p></td>
+<td><p>tifffile</p></td>
+</tr>
+<tr class="row-even"><td><p>.npz</p></td>
+<td><p>Compressed NumPy array format</p></td>
+<td><p>numpy</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="optional-formats-require-additional-packages">
+<h3>Optional Formats (Require Additional Packages)<a class="headerlink" href="#optional-formats-require-additional-packages" title="Link to this heading"></a></h3>
+<p>These formats require installing optional dependencies:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Extension</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Package</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>.lif</p></td>
+<td><p>Leica Image Format</p></td>
+<td><p>readlif</p></td>
+</tr>
+<tr class="row-odd"><td><p>.czi</p></td>
+<td><p>Carl Zeiss Image format</p></td>
+<td><p>czifile</p></td>
+</tr>
+<tr class="row-even"><td><p>.nd2</p></td>
+<td><p>Nikon ND2 format</p></td>
+<td><p>nd2reader</p></td>
+</tr>
+</tbody>
+</table>
+<p>To install optional dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>readlif<span class="w">      </span><span class="c1"># For Leica .lif files</span>
+pip<span class="w"> </span>install<span class="w"> </span>czifile<span class="w">      </span><span class="c1"># For Zeiss .czi files</span>
+pip<span class="w"> </span>install<span class="w"> </span>nd2reader<span class="w">    </span><span class="c1"># For Nikon .nd2 files</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="universaldataloader-class">
+<h2>UniversalDataLoader Class<a class="headerlink" href="#universaldataloader-class" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipa.data_loader.UniversalDataLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipa.data_loader.</span></span><span class="sig-name descname"><span class="pre">UniversalDataLoader</span></span><a class="reference internal" href="../../_modules/ipa/data_loader/data_loading.html#UniversalDataLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.data_loader.UniversalDataLoader" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Universal data loader for multiple microscopy file formats.</p>
+<p>Supports .mrc, .tif/.tiff, .lif, .czi, .nd2 and other formats
+with automatic format detection and optional dependency handling.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.data_loader.UniversalDataLoader.load_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../../_modules/ipa/data_loader/data_loading.html#UniversalDataLoader.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.data_loader.UniversalDataLoader.load_data" title="Link to this definition"></a></dt>
+<dd><p>Load data from various microscopy file formats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – Path to the data file (supports absolute paths, relative paths,
+or indexed keys like ‘sxt/784_5/raw’)</p></li>
+<li><p><strong>channel</strong> – Channel number for multi-channel data (0-indexed)</p></li>
+<li><p><strong>normalize</strong> – Whether to normalize values to [0,1] range</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Data array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.data_loader.UniversalDataLoader.get_last_metadata">
+<span class="sig-name descname"><span class="pre">get_last_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/data_loader/data_loading.html#UniversalDataLoader.get_last_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.data_loader.UniversalDataLoader.get_last_metadata" title="Link to this definition"></a></dt>
+<dd><p>Get metadata from the last loaded file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.data_loader.UniversalDataLoader.get_supported_formats">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_formats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/ipa/data_loader/data_loading.html#UniversalDataLoader.get_supported_formats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.data_loader.UniversalDataLoader.get_supported_formats" title="Link to this definition"></a></dt>
+<dd><p>Get supported file formats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary mapping file extensions to descriptions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipa.data_loader.UniversalDataLoader.batch_load">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batch_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/ipa/data_loader/data_loading.html#UniversalDataLoader.batch_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.data_loader.UniversalDataLoader.batch_load" title="Link to this definition"></a></dt>
+<dd><p>Load multiple files in batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_list</strong> – List of file paths to load</p></li>
+<li><p><strong>channel</strong> – Channel selection for all files</p></li>
+<li><p><strong>normalize</strong> – Whether to normalize all data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary mapping filenames to data arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<section id="core-methods">
+<h3>Core Methods<a class="headerlink" href="#core-methods" title="Link to this heading"></a></h3>
+<section id="load-data">
+<h4>load_data<a class="headerlink" href="#load-data" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">UniversalDataLoader.</span></span><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../../_modules/ipa/data_loader/data_loading.html#UniversalDataLoader.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>Load data from various microscopy file formats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – Path to the data file (supports absolute paths, relative paths,
+or indexed keys like ‘sxt/784_5/raw’)</p></li>
+<li><p><strong>channel</strong> – Channel number for multi-channel data (0-indexed)</p></li>
+<li><p><strong>normalize</strong> – Whether to normalize values to [0,1] range</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Data array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Loads microscopy data from a file with automatic format detection.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">file_path</span></code> (str): Path to the image file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">channel</span></code> (int, optional): Channel index for multi-channel data. Default: None (loads all channels)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">normalize</span></code> (bool, optional): Whether to normalize intensity to [0, 1]. Default: False</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">return_metadata</span></code> (bool, optional): Whether to return metadata dictionary. Default: False</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">return_metadata=False</span></code>: <code class="docutils literal notranslate"><span class="pre">data</span></code> (np.ndarray) - Loaded image data</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">return_metadata=True</span></code>: Tuple of <code class="docutils literal notranslate"><span class="pre">(data,</span> <span class="pre">metadata)</span></code> where metadata is a dict containing:
+- <code class="docutils literal notranslate"><span class="pre">format</span></code> (str): Detected file format
+- <code class="docutils literal notranslate"><span class="pre">shape</span></code> (tuple): Data shape
+- <code class="docutils literal notranslate"><span class="pre">dtype</span></code> (str): Data type
+- <code class="docutils literal notranslate"><span class="pre">channels</span></code> (int): Number of channels (if applicable)</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Simple loading</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;sample.mrc&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, Dtype: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Load specific channel with normalization</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span>
+    <span class="s1">&#39;multichannel.tif&#39;</span><span class="p">,</span>
+    <span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Load with metadata</span>
+<span class="n">data</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span>
+    <span class="s1">&#39;experiment.czi&#39;</span><span class="p">,</span>
+    <span class="n">return_metadata</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Format: </span><span class="si">{</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape: </span><span class="si">{</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Channels: </span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;channels&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="batch-load">
+<h4>batch_load<a class="headerlink" href="#batch-load" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">UniversalDataLoader.</span></span><span class="sig-name descname"><span class="pre">batch_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/ipa/data_loader/data_loading.html#UniversalDataLoader.batch_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd><p>Load multiple files in batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_list</strong> – List of file paths to load</p></li>
+<li><p><strong>channel</strong> – Channel selection for all files</p></li>
+<li><p><strong>normalize</strong> – Whether to normalize all data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary mapping filenames to data arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Loads multiple files efficiently with consistent parameters.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">file_list</span></code> (list): List of file paths to load</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">channel</span></code> (int, optional): Channel index. Default: None</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">normalize</span></code> (bool, optional): Whether to normalize. Default: False</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">results</span></code> (dict): Dictionary mapping filenames to loaded data arrays
+- Key: filename (str)
+- Value: np.ndarray or None (if loading failed)</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Batch load multiple files</span>
+<span class="n">file_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;exp_01.mrc&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;exp_02.mrc&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;exp_03.mrc&#39;</span>
+<span class="p">]</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">batch_load</span><span class="p">(</span>
+    <span class="n">file_list</span><span class="p">,</span>
+    <span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Process results</span>
+<span class="k">for</span> <span class="n">filename</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="complete-workflow-examples">
+<h2>Complete Workflow Examples<a class="headerlink" href="#complete-workflow-examples" title="Link to this heading"></a></h2>
+<section id="basic-data-loading">
+<h3>Basic Data Loading<a class="headerlink" href="#basic-data-loading" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load MRC file (cryo-ET data)</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;tomogram.mrc&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded volume: </span><span class="si">{</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Load TIFF with normalization (SIM/WFM data)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span>
+    <span class="s1">&#39;sim_image.tif&#39;</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Normalized image range: [</span><span class="si">{</span><span class="n">image</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">image</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="multi-channel-data-handling">
+<h3>Multi-channel Data Handling<a class="headerlink" href="#multi-channel-data-handling" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load multi-channel ND2 file</span>
+<span class="c1"># Channel 0: Nuclei (DAPI)</span>
+<span class="n">nuclei</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span>
+    <span class="s1">&#39;cells.nd2&#39;</span><span class="p">,</span>
+    <span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Channel 1: Actin (Phalloidin)</span>
+<span class="n">actin</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span>
+    <span class="s1">&#39;cells.nd2&#39;</span><span class="p">,</span>
+    <span class="n">channel</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Channel 2: ISGs (Insulin)</span>
+<span class="n">isgs</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span>
+    <span class="s1">&#39;cells.nd2&#39;</span><span class="p">,</span>
+    <span class="n">channel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nuclei shape: </span><span class="si">{</span><span class="n">nuclei</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Actin shape: </span><span class="si">{</span><span class="n">actin</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ISGs shape: </span><span class="si">{</span><span class="n">isgs</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="batch-processing-pipeline">
+<h3>Batch Processing Pipeline<a class="headerlink" href="#batch-processing-pipeline" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">glob</span><span class="w"> </span><span class="kn">import</span> <span class="n">glob</span>
+
+<span class="c1"># Find all MRC files in directory</span>
+<span class="n">mrc_files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="s1">&#39;data/*.mrc&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mrc_files</span><span class="p">)</span><span class="si">}</span><span class="s2"> MRC files&quot;</span><span class="p">)</span>
+
+<span class="c1"># Batch load all files</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">batch_load</span><span class="p">(</span>
+    <span class="n">mrc_files</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Process loaded data</span>
+<span class="k">for</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: shape=</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;mean=</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, std=</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load: </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-with-partitioning-workflow">
+<h3>Integration with Partitioning Workflow<a class="headerlink" href="#integration-with-partitioning-workflow" title="Link to this heading"></a></h3>
+<p>This example shows how data loading integrates with the partitioning module:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">Partitioning</span>
+
+<span class="c1"># Step 1: Load masks</span>
+<span class="n">pm_mask</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;plasma_membrane.mrc&#39;</span><span class="p">)</span>
+<span class="n">ne_mask</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;nuclear_envelope.mrc&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PM mask shape: </span><span class="si">{</span><span class="n">pm_mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NE mask shape: </span><span class="si">{</span><span class="n">ne_mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 2: Create partitions</span>
+<span class="n">partitioner</span> <span class="o">=</span> <span class="n">Partitioning</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;results/&quot;</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">center</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">extract_ne_pm_edges</span><span class="p">(</span><span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span>
+
+<span class="n">partition_mask</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">create_nepm_radial_partitions</span><span class="p">(</span>
+    <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span>
+    <span class="n">shape</span><span class="o">=</span><span class="n">pm_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">pm_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">,</span>
+    <span class="n">ne_mask</span><span class="o">=</span><span class="n">ne_mask</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">partition_mask</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2"> partitions&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="logging-system">
+<h2>Logging System<a class="headerlink" href="#logging-system" title="Link to this heading"></a></h2>
+<p>The data_loader module includes a comprehensive logging system for tracking analysis workflows:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="log.html">Log Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="log.html#ipa.data_loader.log_analysis"><code class="docutils literal notranslate"><span class="pre">log_analysis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html#ipa.data_loader.QuickLogger"><code class="docutils literal notranslate"><span class="pre">QuickLogger</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html#quicklogger-manual-step-logging">QuickLogger - Manual Step Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html#log-analysis-automatic-function-logging">&#64;log_analysis - Automatic Function Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html#example-from-sxt-demo">Example from SXT Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html#log-file-output">Log File Output</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../index.html" class="btn btn-neutral float-left" title="Integrated Processing and Analysis Toolkit (iPA)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="log.html" class="btn btn-neutral float-right" title="Log Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

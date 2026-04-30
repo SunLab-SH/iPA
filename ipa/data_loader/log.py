@@ -3,8 +3,9 @@ import functools
 from datetime import datetime
 from pathlib import Path
 import inspect
+import sys
 
-def setup_simple_logger(func_name, log_dir="logs"):
+def setup_simple_logger(func_name, log_dir="logs", console_output=False):
     """
     Quick setup for logger with timestamped file output.
     
@@ -15,6 +16,7 @@ def setup_simple_logger(func_name, log_dir="logs"):
     Args:
         func_name (str): Name of the function or analysis, used in log filename
         log_dir (str or Path): Directory to store log files. Defaults to "logs"
+        console_output (bool): Whether to also print logs to console. Defaults to False.
     
     Returns:
         logging.Logger: Configured logger instance with file handler
@@ -33,13 +35,21 @@ def setup_simple_logger(func_name, log_dir="logs"):
     logger = logging.getLogger(f"{func_name}_{timestamp}")
     logger.setLevel(logging.INFO)
     
-    # Clear existing handlers
+    # Clear existing handlers to avoid duplicates if called multiple times
     logger.handlers.clear()
     
-    handler = logging.FileHandler(log_file, encoding='utf-8')
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    # File Handler
+    file_handler = logging.FileHandler(log_file, encoding='utf-8')
+    file_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(file_formatter)
+    logger.addHandler(file_handler)
+    
+    # Console Handler (Optional)
+    if console_output:
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_formatter = logging.Formatter('%(levelname)s: %(message)s')
+        console_handler.setFormatter(console_formatter)
+        logger.addHandler(console_handler)
     
     return logger
 
@@ -112,14 +122,15 @@ class QuickLogger:
     Args:
         name (str): Logger name, used in log filename. Defaults to "analysis"
         log_dir (str or Path): Directory to store log files. Defaults to "logs"
+        console_output (bool): Whether to print logs to console. Defaults to True.
         
     Attributes:
         logger (logging.Logger): Internal logger instance
         
 
     """
-    def __init__(self, name="analysis", log_dir="logs"):
-        self.logger = setup_simple_logger(name, log_dir)
+    def __init__(self, name="analysis", log_dir="logs", console_output=True):
+        self.logger = setup_simple_logger(name, log_dir, console_output=console_output)
     
     def step(self, message):
         """

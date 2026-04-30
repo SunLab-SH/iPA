@@ -7,20 +7,23 @@ import os
 import sys
 from argparse import Namespace
 
+# Define base path relative to this file for portability
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 from .datasets import load_dataset
 from .noise2noise import Noise2Noise
 
 
 def create_default_params(**kwargs):
-    """Create default parameter configuration"""
+    """Create default parameter configuration using relative paths"""
     
     default_params = {
-        # Data parameters
-        'train_dir': './data/train',
-        'valid_dir': './data/valid',
-        'data_dir': './data/test',
-        'ckpt_save_path': './ckpts',
-        'load_ckpt': './ckpts/best_model.pt',
+        # Data parameters (relative to project root or current working directory)
+        'train_dir': os.path.join(BASE_DIR, '..', '..', '..', 'data', 'denoised', 'train'),
+        'valid_dir': os.path.join(BASE_DIR, '..', '..', '..', 'data', 'denoised', 'valid'),
+        'data_dir': os.path.join(BASE_DIR, '..', '..', '..', 'data', 'denoised', 'test'),
+        'ckpt_save_path': os.path.join(BASE_DIR, '..', 'models', 'n2n'),
+        'load_ckpt': os.path.join(BASE_DIR, '..', 'models', 'n2n', 'best_model.pt'),
         'ckpt_overwrite': False,
         'report_interval': 100,
         'train_size': None,

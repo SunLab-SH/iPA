@@ -1,17 +1,17 @@
+# Data (download from Zenodo)
 data/*
 !data/.gitkeep
-results/*
-logs/*
-outputs/*
-documentations/*
 
-# Model weights and checkpoints
-*.pth
-*.pt
-*.ckpt
-ipa/processing/*/models/
-ipa/processing/denoising/models/
-ipa/processing/segmentation/ipa/
+# History and Development Files
+history/
+data_history/
+documentations/
+
+# Models (managed via Git LFS)
+# *.pth files are tracked by LFS, but we ignore any loose model folders just in case
+ipa/processing/*/models/*.pth
+ipa/processing/denoising/models/*.pth
+ipa/processing/segmentation/models/*.pth
 
 # Python cache
 __pycache__/
@@ -33,3 +33,21 @@ Thumbs.db
 *.log
 *.tmp
 .ipynb_checkpoints/
+
+# Development scripts
+test_*.py
+debug_*.py
+compress_*.py
+fast_*.py
+run_*.ps1
+run_*.sh
+
+# Temporary outputs
+cryoet_filament_output/
+sxt_isg_real_output/
+sim_er_training_demo/
+sxt_*_training_demo/
+test_dir/
+
+# Data and model URLs configuration (contains private URLs)
+data_urls.json

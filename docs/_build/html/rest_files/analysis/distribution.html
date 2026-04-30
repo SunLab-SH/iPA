@@ -1,0 +1,940 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Distribution Analysis &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Interaction Analysis" href="interaction.html" />
+    <link rel="prev" title="Morphology Analysis" href="morphology.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="analysis.html">Analysis Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#supported-analyses">Supported Analyses</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="analysis.html#sub-modules">Sub-modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="morphology.html">Morphology Analysis</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Distribution Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-functions">Core Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-rdf-workflow-example">Complete RDF Workflow Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="interaction.html">Interaction Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamics.html">Dynamics Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="analysis.html">Analysis Module</a></li>
+      <li class="breadcrumb-item active">Distribution Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/rest_files/analysis/distribution.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="distribution-analysis">
+<h1>Distribution Analysis<a class="headerlink" href="#distribution-analysis" title="Link to this heading"></a></h1>
+<p>The distribution module quantifies the spatial arrangement of organelles within the radially partitioned cytoplasm using Radial Distribution Functions (RDF) and related metrics. This is a key innovation in iPA that enables standardized comparison across cells and imaging modalities.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Radial Distribution Function (RDF) is defined as:</p>
+<div class="math notranslate nohighlight">
+\[RDF(r) = \frac{\rho(r)}{\bar{\rho}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\rho(r)\)</span> is the organelle density in shell at radial position r, and <span class="math notranslate nohighlight">\(\bar{\rho}\)</span> is the mean density across all shells.</p>
+<p><strong>Interpretation</strong>:</p>
+<ul class="simple">
+<li><p>RDF &gt; 1: Enrichment (organelles cluster in this region)</p></li>
+<li><p>RDF = 1: Random/uniform distribution</p></li>
+<li><p>RDF &lt; 1: Depletion (organelles avoid this region)</p></li>
+</ul>
+<p>This normalized metric eliminates biases from cell size variations and enables direct comparison of organelle localization patterns across different experimental conditions and imaging modalities.</p>
+</section>
+<section id="core-functions">
+<h2>Core Functions<a class="headerlink" href="#core-functions" title="Link to this heading"></a></h2>
+<section id="radial-distribution-function-rdf">
+<h3>Radial Distribution Function (RDF)<a class="headerlink" href="#radial-distribution-function-rdf" title="Link to this heading"></a></h3>
+<section id="calculate-rdf-from-xvg">
+<h4>calculate_rdf_from_xvg<a class="headerlink" href="#calculate-rdf-from-xvg" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.calculate_rdf_from_xvg">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_rdf_from_xvg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">organelle_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partition_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radial_positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/arrangement.html#calculate_rdf_from_xvg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.calculate_rdf_from_xvg" title="Link to this definition"></a></dt>
+<dd><p>Calculate RDF directly from XVG partition data and organelle mask</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organelle_mask</strong> (<em>numpy.ndarray</em>) – 3D organelle mask array</p></li>
+<li><p><strong>partition_coords</strong> (<em>dict</em>) – Dictionary with partition coordinates from XVG</p></li>
+<li><p><strong>radial_positions</strong> (<em>dict</em>) – Dictionary mapping coordinates to radial positions</p></li>
+<li><p><strong>bins</strong> (<em>int</em><em>, </em><em>default=8</em>) – Number of radial bins</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing RDF results</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Calculates RDF from partition coordinates and organelle mask. This is the primary function for quantifying organelle spatial distribution.</p>
+<p><strong>Algorithm</strong>:</p>
+<ol class="arabic simple">
+<li><p>Map organelle voxels to their corresponding radial shells</p></li>
+<li><p>Calculate organelle density in each shell (count / shell volume)</p></li>
+<li><p>Normalize by mean density across all shells</p></li>
+<li><p>Return RDF values and supporting statistics</p></li>
+</ol>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">organelle_mask</span></code> (np.ndarray): Binary mask of the organelle (same shape as partition mask)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">partition_coords</span></code> (dict): Dictionary mapping partition ID (int) to coordinate arrays (from <code class="docutils literal notranslate"><span class="pre">extract_partition_coordinates()</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">radial_positions</span></code> (dict): Dictionary mapping voxel coordinates (tuple) to normalized radial positions (0=NE, 1=PM)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bins</span></code> (int, optional): Number of radial bins. Default: 8</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rdf_results</span></code> (dict): Dictionary containing:
+- <code class="docutils literal notranslate"><span class="pre">radii</span></code> (np.ndarray): Radial positions (0-1, where 0=NE, 1=PM)
+- <code class="docutils literal notranslate"><span class="pre">rdf</span></code> (np.ndarray): RDF values for each bin
+- <code class="docutils literal notranslate"><span class="pre">counts</span></code> (np.ndarray): Raw organelle counts per bin
+- <code class="docutils literal notranslate"><span class="pre">densities</span></code> (np.ndarray): Normalized densities per bin
+- <code class="docutils literal notranslate"><span class="pre">shell_volumes</span></code> (np.ndarray): Volume of each shell</p></li>
+</ul>
+<p><strong>Biological Significance</strong>:</p>
+<p>RDF analysis reveals how organelles are distributed relative to cellular landmarks (NE and PM). For example, in pancreatic β-cells, ISGs show enrichment near the PM under low glucose (docking) and redistribution toward the NE under high glucose (new biogenesis).</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_rdf_from_xvg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">Partitioning</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Step 1: Create partitions</span>
+<span class="n">partitioner</span> <span class="o">=</span> <span class="n">Partitioning</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;results/&quot;</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">center</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">extract_ne_pm_edges</span><span class="p">(</span><span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span>
+<span class="n">partition_mask</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">create_nepm_radial_partitions</span><span class="p">(</span>
+    <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span>
+    <span class="n">shape</span><span class="o">=</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">pm_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">,</span>
+    <span class="n">ne_mask</span><span class="o">=</span><span class="n">ne_mask</span>
+<span class="p">)</span>
+
+<span class="c1"># Step 2: Prepare inputs</span>
+<span class="n">partition_coords</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">radial_positions</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">partition_mask</span> <span class="o">==</span> <span class="n">i</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">partition_coords</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span>
+    <span class="n">norm_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="mf">8.0</span>  <span class="c1"># Center of shell</span>
+    <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">coords</span><span class="p">:</span>
+        <span class="n">radial_positions</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">coord</span><span class="p">)]</span> <span class="o">=</span> <span class="n">norm_pos</span>
+
+<span class="c1"># Step 3: Calculate RDF for ISG</span>
+<span class="n">rdf_results</span> <span class="o">=</span> <span class="n">calculate_rdf_from_xvg</span><span class="p">(</span>
+    <span class="n">isg_mask</span><span class="p">,</span>
+    <span class="n">partition_coords</span><span class="p">,</span>
+    <span class="n">radial_positions</span><span class="p">,</span>
+    <span class="n">bins</span><span class="o">=</span><span class="mi">8</span>
+<span class="p">)</span>
+
+<span class="c1"># Step 4: Visualize</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf_results</span><span class="p">[</span><span class="s1">&#39;radii&#39;</span><span class="p">],</span> <span class="n">rdf_results</span><span class="p">[</span><span class="s1">&#39;rdf&#39;</span><span class="p">],</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ISG&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Random&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Radial Position (0=NE, 1=PM)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;RDF&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;ISG Radial Distribution&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;isg_rdf.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="load-partition-coords-from-xvg">
+<h4>load_partition_coords_from_xvg<a class="headerlink" href="#load-partition-coords-from-xvg" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.load_partition_coords_from_xvg">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">load_partition_coords_from_xvg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xvg_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/arrangement.html#load_partition_coords_from_xvg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.load_partition_coords_from_xvg" title="Link to this definition"></a></dt>
+<dd><p>Load partition coordinate data from XVG file</p>
+</dd></dl>
+
+<p>Loads partition coordinates and radial positions from XVG format files generated by the partitioning module.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xvg_file</span></code> (str): Path to XVG coordinate file</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">partition_coords</span></code> (dict): Dictionary mapping partition ID to coordinate arrays</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">radial_positions</span></code> (dict): Dictionary mapping coordinates to radial positions</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_partition_coords_from_xvg</span>
+
+<span class="n">partition_coords</span><span class="p">,</span> <span class="n">radial_positions</span> <span class="o">=</span> <span class="n">load_partition_coords_from_xvg</span><span class="p">(</span>
+    <span class="s2">&quot;results/partitions/sample_01_partition_coords.xvg&quot;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">partition_coords</span><span class="p">)</span><span class="si">}</span><span class="s2"> partitions&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="n">partition_coords</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Partition </span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="save-radial-rdf-results">
+<h4>save_radial_rdf_results<a class="headerlink" href="#save-radial-rdf-results" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.save_radial_rdf_results">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">save_radial_rdf_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rdf_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/arrangement.html#save_radial_rdf_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.save_radial_rdf_results" title="Link to this definition"></a></dt>
+<dd><p>Save radial RDF results to files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rdf_results</strong> (<em>dict</em>) – RDF results</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em>) – Output directory</p></li>
+<li><p><strong>dataid</strong> (<em>str</em>) – Data identifier</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Saves RDF results to CSV and JSON formats for downstream analysis and visualization.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rdf_results</span></code> (dict): RDF results from <code class="docutils literal notranslate"><span class="pre">calculate_rdf_from_xvg()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output_dir</span></code> (str): Output directory path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data_id</span></code> (str): Dataset identifier for filename</p></li>
+</ul>
+<p><strong>Output Files</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">{data_id}_rdf.csv</span></code>: Tabular data with radii, RDF, counts, densities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{data_id}_rdf.json</span></code>: Complete results including metadata</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_radial_rdf_results</span>
+
+<span class="n">save_radial_rdf_results</span><span class="p">(</span>
+    <span class="n">rdf_results</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;results/rdf/&quot;</span><span class="p">,</span>
+    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span>
+<span class="p">)</span>
+<span class="c1"># Creates: results/rdf/sample_01_rdf.csv and .json</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="spatial-arrangement-analysis">
+<h3>Spatial Arrangement Analysis<a class="headerlink" href="#spatial-arrangement-analysis" title="Link to this heading"></a></h3>
+<p>Beyond RDF, the distribution module provides additional tools for analyzing organelle spatial organization.</p>
+<section id="analyze-docked-granules">
+<h4>analyze_docked_granules<a class="headerlink" href="#analyze-docked-granules" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.analyze_docked_granules">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">analyze_docked_granules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_isg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mem_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isg_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_visualization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/arrangement.html#analyze_docked_granules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.analyze_docked_granules" title="Link to this definition"></a></dt>
+<dd><p>Analyze the localization relationship between ISG granules and plasma membrane using matrix data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img_isg</strong> – numpy ndarray, ISG segmentation 3D matrix</p></li>
+<li><p><strong>mem_mask</strong> – numpy ndarray, PM mask 3D matrix</p></li>
+<li><p><strong>isg_data</strong> – numpy ndarray, granule center coordinates and volume information (CSV loading result)</p></li>
+<li><p><strong>show_visualization</strong> – bool, whether to display visualization images of partial slices</p></li>
+<li><p><strong>distance_threshold</strong> – float, optional. If provided, use this fixed distance (in pixels/nm)
+to define docked pool instead of dynamic vesicle radius. Matches manuscript requirement for fixed thresholds (e.g., 300 nm).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict, containing total granule count, docked granule count and ratio</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Classifies organelles (e.g., ISGs) into docked (readily releasable pool, RRP) and reserve pools based on distance to plasma membrane.</p>
+<p><strong>Biological Context</strong>:</p>
+<p>In pancreatic β-cells, ISGs are functionally divided into:
+- <strong>Docked ISGs (RRP)</strong>: Located within ~300 nm of PM, ready for immediate secretion
+- <strong>Reserve pool</strong>: Remaining ISGs in cytoplasm</p>
+<p>This classification is critical for understanding glucose-stimulated insulin secretion (GSIS).</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">img_isg</span></code> (np.ndarray): ISG mask or labeled instances</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mem_mask</span></code> (np.ndarray): Plasma membrane binary mask</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isg_data</span></code> (np.ndarray): ISG feature data (from <code class="docutils literal notranslate"><span class="pre">extract_isg_features()</span></code>) or center coordinates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">distance_threshold</span></code> (float, optional): Distance threshold for docking (pixels). Default: 5 (~300 nm for SIM)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">show_visualization</span></code> (bool, optional): Whether to generate visualization. Default: False</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">results</span></code> (dict): Dictionary containing:
+- <code class="docutils literal notranslate"><span class="pre">total_granules</span></code> (int): Total number of granules
+- <code class="docutils literal notranslate"><span class="pre">docked_granules</span></code> (int): Number of docked granules
+- <code class="docutils literal notranslate"><span class="pre">docked_ratio</span></code> (float): Docking ratio (0-1)
+- <code class="docutils literal notranslate"><span class="pre">distances</span></code> (np.ndarray): Array of distances from each ISG to PM</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">analyze_docked_granules</span><span class="p">,</span> <span class="n">extract_isg_features</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">measure</span>
+
+<span class="c1"># Extract ISG centers</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_isg_centers</span><span class="p">(</span><span class="n">isg_mask</span><span class="p">):</span>
+    <span class="n">labeled</span> <span class="o">=</span> <span class="n">measure</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">isg_mask</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">regions</span> <span class="o">=</span> <span class="n">measure</span><span class="o">.</span><span class="n">regionprops</span><span class="p">(</span><span class="n">labeled</span><span class="p">)</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">centroid</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">regions</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">area</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">centers</span>
+
+<span class="n">isg_mask</span> <span class="o">=</span> <span class="n">load_isg_mask</span><span class="p">()</span>  <span class="c1"># Your loading function</span>
+<span class="n">pm_mask</span> <span class="o">=</span> <span class="n">load_pm_mask</span><span class="p">()</span>
+
+<span class="n">isg_centers</span> <span class="o">=</span> <span class="n">extract_isg_centers</span><span class="p">(</span><span class="n">isg_mask</span><span class="p">)</span>
+
+<span class="c1"># Analyze docking</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">analyze_docked_granules</span><span class="p">(</span>
+    <span class="n">img_isg</span><span class="o">=</span><span class="n">isg_mask</span><span class="p">,</span>
+    <span class="n">mem_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+    <span class="n">isg_data</span><span class="o">=</span><span class="n">isg_centers</span><span class="p">,</span>
+    <span class="n">distance_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>  <span class="c1"># ~300 nm for SIM</span>
+    <span class="n">show_visualization</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total ISGs: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;total_granules&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Docked ISGs: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;docked_granules&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Docking ratio: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;docked_ratio&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="analyze-organelle-aggregation">
+<h4>analyze_organelle_aggregation<a class="headerlink" href="#analyze-organelle-aggregation" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.analyze_organelle_aggregation">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">analyze_organelle_aggregation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">centers_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dthreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/arrangement.html#analyze_organelle_aggregation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.analyze_organelle_aggregation" title="Link to this definition"></a></dt>
+<dd><p>Analyze organelle aggregation in time-lapse images.</p>
+<p>Aggregation is defined as the set of organelles that remain within a distance
+less than a certain threshold across a number of continuous frames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>centers_list</strong> (<em>list</em><em> of </em><em>np.ndarray</em>) – List of arrays containing organelle center coordinates for each frame.</p></li>
+<li><p><strong>dthreshold</strong> (<em>float</em>) – Distance threshold (in micrometers) to define an aggregation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary mapping aggregation IDs to their tracking history and volume.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Analyzes organelle aggregation in time-lapse images. Aggregation is defined as the set of organelles that remain within a distance less than a certain threshold across continuous frames.</p>
+<p><strong>Biological Context</strong>:</p>
+<p>Organelle aggregation is important for understanding cellular processes such as:
+- <strong>Granule clustering</strong>: Multiple vesicles aggregating before secretion
+- <strong>Mitochondrial networks</strong>: Mitochondria forming interconnected networks
+- <strong>Endosomal sorting</strong>: Endosomes aggregating during cargo sorting</p>
+<p><strong>Algorithm</strong>:</p>
+<ol class="arabic simple">
+<li><p>For each frame, cluster organelles based on pairwise distances</p></li>
+<li><p>Organelles within <code class="docutils literal notranslate"><span class="pre">dthreshold</span></code> are considered part of the same aggregate</p></li>
+<li><p>Track aggregates across frames (simplified matching)</p></li>
+<li><p>Return cluster assignments for each frame</p></li>
+</ol>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">centers_list</span></code> (list of np.ndarray): List of arrays containing organelle center coordinates for each frame</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dthreshold</span></code> (float): Distance threshold (in micrometers) to define an aggregation. Default: 0.6</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code>: Dictionary mapping aggregation IDs to their tracking history and volume</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">analyze_organelle_aggregation</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Simulate time-lapse organelle positions</span>
+<span class="c1"># Frame 1: 5 organelles</span>
+<span class="n">frame1_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">31</span><span class="p">],</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">],</span> <span class="p">[</span><span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="p">[</span><span class="mi">81</span><span class="p">,</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">101</span><span class="p">]])</span>
+<span class="c1"># Frame 2: 5 organelles (some moved)</span>
+<span class="n">frame2_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">10.5</span><span class="p">,</span> <span class="mf">20.5</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">11.5</span><span class="p">,</span> <span class="mf">21.5</span><span class="p">,</span> <span class="mf">31.5</span><span class="p">],</span> <span class="p">[</span><span class="mi">51</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">71</span><span class="p">],</span> <span class="p">[</span><span class="mf">80.5</span><span class="p">,</span> <span class="mf">90.5</span><span class="p">,</span> <span class="mf">100.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">81.5</span><span class="p">,</span> <span class="mf">91.5</span><span class="p">,</span> <span class="mf">101.5</span><span class="p">]])</span>
+
+<span class="n">centers_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">frame1_centers</span><span class="p">,</span> <span class="n">frame2_centers</span><span class="p">]</span>
+
+<span class="c1"># Analyze aggregation with 0.6 μm threshold</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">analyze_organelle_aggregation</span><span class="p">(</span>
+    <span class="n">centers_list</span><span class="p">,</span>
+    <span class="n">dthreshold</span><span class="o">=</span><span class="mf">0.6</span>
+<span class="p">)</span>
+
+<span class="c1"># Check clusters per frame</span>
+<span class="k">for</span> <span class="n">frame_idx</span><span class="p">,</span> <span class="n">clusters</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;clusters&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Frame </span><span class="si">{</span><span class="n">frame_idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="n">clusters</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">]))</span><span class="si">}</span><span class="s2"> aggregates&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="calculate-distributional-similarity">
+<h4>calculate_distributional_similarity<a class="headerlink" href="#calculate-distributional-similarity" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.calculate_distributional_similarity">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_distributional_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rdf1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdf2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/arrangement.html#calculate_distributional_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.calculate_distributional_similarity" title="Link to this definition"></a></dt>
+<dd><p>Calculate Pearson correlation between two RDF distributions to measure distributional similarity.</p>
+<p>This function compares organelle distributions between two cell images from different
+modalities (e.g., SIM vs SXT) using Pearson correlation coefficient.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rdf1</strong> (<em>np.ndarray</em>) – RDF values from modality 1 (e.g., SIM)</p></li>
+<li><p><strong>rdf2</strong> (<em>np.ndarray</em>) – RDF values from modality 2 (e.g., SXT)</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Significance level for p-value. Default: 0.05</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing:
+- ‘pearson_r’ (float): Pearson correlation coefficient (-1 to 1)
+- ‘p_value’ (float): Statistical significance
+- ‘significant’ (bool): Whether correlation is significant (p &lt; alpha)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_distributional_similarity</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim_rdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sxt_rdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">calculate_distributional_similarity</span><span class="p">(</span><span class="n">sim_rdf</span><span class="p">,</span> <span class="n">sxt_rdf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pearson r: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;pearson_r&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;P-value: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;p_value&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Significant: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;significant&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p>Calculates Pearson correlation between two RDF distributions to measure distributional similarity across imaging modalities (e.g., SIM vs SXT).</p>
+<p><strong>Biological Context</strong>:</p>
+<p>Distributional similarity analysis enables comparison of organelle spatial patterns between different imaging techniques. For example, comparing ISG distributions from SIM (which labels both immature and mature ISGs) versus SXT (which only detects dense-core mature ISGs) reveals differences in ISG maturation states.</p>
+<p><strong>Algorithm</strong>:</p>
+<ol class="arabic simple">
+<li><p>Take two RDF arrays from different modalities</p></li>
+<li><p>Calculate Pearson correlation coefficient using <code class="docutils literal notranslate"><span class="pre">scipy.stats.pearsonr</span></code></p></li>
+<li><p>Return correlation coefficient (r), p-value, and significance test</p></li>
+</ol>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rdf1</span></code> (np.ndarray): RDF values from modality 1 (e.g., SIM)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rdf2</span></code> (np.ndarray): RDF values from modality 2 (e.g., SXT)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alpha</span></code> (float, optional): Significance level for p-value. Default: 0.05</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code>: Dictionary containing:
+- <code class="docutils literal notranslate"><span class="pre">pearson_r</span></code> (float): Pearson correlation coefficient (-1 to 1)
+- <code class="docutils literal notranslate"><span class="pre">p_value</span></code> (float): Statistical significance
+- <code class="docutils literal notranslate"><span class="pre">significant</span></code> (bool): Whether correlation is significant (p &lt; alpha)</p></li>
+</ul>
+<p><strong>Interpretation</strong>:</p>
+<ul class="simple">
+<li><p><strong>r &gt; 0.8</strong>: Strong positive correlation (similar distributions)</p></li>
+<li><p><strong>0.5 &lt; r &lt; 0.8</strong>: Moderate correlation</p></li>
+<li><p><strong>r &lt; 0.5</strong>: Weak or no correlation (different distributions)</p></li>
+<li><p><strong>p &lt; 0.05</strong>: Statistically significant correlation</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_distributional_similarity</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># RDF from SIM data (8 radial shells)</span>
+<span class="n">sim_rdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
+
+<span class="c1"># RDF from SXT data (same 8 shells)</span>
+<span class="n">sxt_rdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+
+<span class="c1"># Calculate similarity</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">calculate_distributional_similarity</span><span class="p">(</span><span class="n">sim_rdf</span><span class="p">,</span> <span class="n">sxt_rdf</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pearson r: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;pearson_r&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;P-value: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;p_value&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Significant: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;significant&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># Pearson r: 0.91</span>
+<span class="c1"># P-value: 0.0012</span>
+<span class="c1"># Significant: True</span>
+</pre></div>
+</div>
+</section>
+<section id="analyze-anchored-organelle-angles">
+<h4>analyze_anchored_organelle_angles<a class="headerlink" href="#analyze-anchored-organelle-angles" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.analyze_anchored_organelle_angles">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">analyze_anchored_organelle_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filament_coords_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_threshold_nm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voxel_size_nm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/arrangement.html#analyze_anchored_organelle_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.analyze_anchored_organelle_angles" title="Link to this definition"></a></dt>
+<dd><p>Analyze angles of anchored tubular organelles (e.g., F-actin) relative to PM.</p>
+<p>Anchored organelles are defined by their distance to the PM. For such organelles,
+the angle is calculated between pairs of nearest tubular organelles anchored to the PM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filament_coords_dict</strong> (<em>dict</em>) – Dictionary of filament coordinates {filament_id: [[x,y,z], …]}</p></li>
+<li><p><strong>pm_mask</strong> (<em>np.ndarray</em>) – Plasma membrane binary mask</p></li>
+<li><p><strong>distance_threshold_nm</strong> (<em>float</em><em>, </em><em>optional</em>) – Distance threshold (nm) to define anchored organelles. Default: 120</p></li>
+<li><p><strong>voxel_size_nm</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Voxel dimensions (nm). Default: (1, 1, 1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing:
+- ‘anchored_count’ (int): Number of anchored filaments
+- ‘angles’ (list): List of angles between anchored filament pairs (degrees)
+- ‘mean_angle’ (float): Mean angle
+- ‘std_angle’ (float): Standard deviation of angles</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">analyze_anchored_organelle_angles</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create sample filament data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filaments</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;filament_1&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">31</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">32</span><span class="p">]],</span>
+<span class="gp">... </span>    <span class="s1">&#39;filament_2&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">35</span><span class="p">],</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">36</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">37</span><span class="p">]]</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pm_mask</span> <span class="o">=</span> <span class="n">create_pm_mask</span><span class="p">()</span>  <span class="c1"># Your PM mask</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">analyze_anchored_organelle_angles</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">filaments</span><span class="p">,</span> <span class="n">pm_mask</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">distance_threshold_nm</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">voxel_size_nm</span><span class="o">=</span><span class="p">(</span><span class="mf">31.3</span><span class="p">,</span> <span class="mf">31.3</span><span class="p">,</span> <span class="mf">90.9</span><span class="p">)</span>  <span class="c1"># SIM voxel size</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Anchored filaments: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;anchored_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean angle: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;mean_angle&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> degrees&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p>Analyzes angles of anchored tubular organelles (e.g., F-actin) relative to the plasma membrane.</p>
+<p><strong>Biological Context</strong>:</p>
+<p>Anchored organelles are defined by their proximity to the PM. For example, anchored F-actin filaments are those located within 120 nm of the PM. The angles between pairs of anchored filaments reveal the organization of the cortical cytoskeleton and its role in regulating cellular processes like secretion.</p>
+<p><strong>Algorithm</strong>:</p>
+<ol class="arabic simple">
+<li><p>Use KD-tree to find filaments within <code class="docutils literal notranslate"><span class="pre">distance_threshold</span></code> of PM</p></li>
+<li><p>For each anchored filament, calculate direction vector (from first to last point)</p></li>
+<li><p>Calculate angles between all pairs of anchored filaments using dot product</p></li>
+<li><p>Convert angles to 0-90° range (acute angles)</p></li>
+<li><p>Return statistics (count, mean angle, std)</p></li>
+</ol>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">filament_coords_dict</span></code> (dict): Dictionary of filament coordinates {filament_id: [[x,y,z], …]}</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pm_mask</span></code> (np.ndarray): Plasma membrane binary mask</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">distance_threshold_nm</span></code> (float, optional): Distance threshold (nm) to define anchored organelles. Default: 120</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">voxel_size_nm</span></code> (tuple, optional): Voxel dimensions (nm). Default: (1, 1, 1)</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code>: Dictionary containing:
+- <code class="docutils literal notranslate"><span class="pre">anchored_count</span></code> (int): Number of anchored filaments
+- <code class="docutils literal notranslate"><span class="pre">angles</span></code> (list): List of angles between anchored filament pairs (degrees)
+- <code class="docutils literal notranslate"><span class="pre">mean_angle</span></code> (float): Mean angle
+- <code class="docutils literal notranslate"><span class="pre">std_angle</span></code> (float): Standard deviation of angles</p></li>
+</ul>
+<p><strong>Interpretation</strong>:</p>
+<ul class="simple">
+<li><p><strong>Small mean angle</strong> (&lt; 30°): Filaments are parallel/aligned (organized network)</p></li>
+<li><p><strong>Large mean angle</strong> (&gt; 60°): Filaments are randomly oriented (disorganized)</p></li>
+<li><p><strong>High anchored_count</strong>: Extensive cortical network</p></li>
+<li><p><strong>Low anchored_count</strong>: Sparse cortical structure</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">analyze_anchored_organelle_angles</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Create sample filament data (coordinates in voxels)</span>
+<span class="n">filaments</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;filament_1&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">31</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">32</span><span class="p">]],</span>
+    <span class="s1">&#39;filament_2&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">35</span><span class="p">],</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">36</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">37</span><span class="p">]],</span>
+    <span class="s1">&#39;filament_3&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="p">[</span><span class="mi">21</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">41</span><span class="p">],</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">42</span><span class="p">]]</span>
+<span class="p">}</span>
+
+<span class="c1"># Load PM mask</span>
+<span class="n">pm_mask</span> <span class="o">=</span> <span class="n">load_plasma_membrane_mask</span><span class="p">()</span>  <span class="c1"># Your loading function</span>
+
+<span class="c1"># Analyze anchored angles (SIM voxel size: 31.3 x 31.3 x 90.9 nm)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">analyze_anchored_organelle_angles</span><span class="p">(</span>
+    <span class="n">filaments</span><span class="p">,</span>
+    <span class="n">pm_mask</span><span class="p">,</span>
+    <span class="n">distance_threshold_nm</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+    <span class="n">voxel_size_nm</span><span class="o">=</span><span class="p">(</span><span class="mf">31.3</span><span class="p">,</span> <span class="mf">31.3</span><span class="p">,</span> <span class="mf">90.9</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Anchored filaments: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;anchored_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean angle: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;mean_angle&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Std angle: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;std_angle&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All angles: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;angles&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="reconstruct-4d-mask">
+<h4>reconstruct_4d_mask<a class="headerlink" href="#reconstruct-4d-mask" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.reconstruct_4d_mask">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">reconstruct_4d_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_image_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescalex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescaley</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/arrangement.html#reconstruct_4d_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.reconstruct_4d_mask" title="Link to this definition"></a></dt>
+<dd><p>Reconstructs a 4D binary mask array with a temporal dimension from 3D spatial point data.</p>
+<p>This function generates a 4D (time, X, Y, Z) mask array based on vesicle/particle coordinates across multiple time points.
+The coordinates from the input DataFrame are mapped and rescaled to fit into the target image shape, and each particle is visualized as a small cubic region in the 3D volume per time frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – DataFrame containing at least the columns ‘Time’, ‘Position X’, ‘Position Y’, ‘Position Z’.
+Each row should represent a single particle/vesicle at a given time and 3D position.</p></li>
+<li><p><strong>new_image_shape</strong> (<em>tuple</em><em> of </em><em>int</em>) – The target image dimensions as (X, Y, Z), defining the desired output resolution for the spatial axes.</p></li>
+<li><p><strong>rescalex</strong> (<em>float</em>) – Manual rescaling factor applied to the X axis, used to match physical/image boundary correspondence.</p></li>
+<li><p><strong>rescaley</strong> (<em>float</em>) – Manual rescaling factor applied to the Y axis, used to match physical/image boundary correspondence.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>img</strong> (<em>numpy.ndarray</em>) – A 4D numpy array of shape (T, X, Y, Z) where each particle/vesicle is assigned a unique label (id) at each time point T in the binary mask.</p></li>
+<li><p><strong>ves_coords</strong> (<em>list</em>) – List of lists of original (X, Y, Z) coordinates for the vesicles at each time point, ordered by frame.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Reconstructs 4D mask data (x, y, z, time) from coordinate information for time-lapse analysis.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> (pd.DataFrame): Coordinate data with columns for x, y, z, time</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resolution</span></code> (tuple): Image resolution (width, height, depth)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rescale_x</span></code> (float, optional): X-axis rescaling factor. Default: 1.0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rescale_y</span></code> (float, optional): Y-axis rescaling factor. Default: 1.0</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">reconstructed_image</span></code> (np.ndarray): 4D reconstructed image (Z, Y, X, T)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ves_coords</span></code> (list): Vesicle coordinate list per timepoint</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">reconstruct_4d_mask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Load coordinate data from WFM tracking</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;vesicle_positions.csv&quot;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Reconstruct 4D data</span>
+<span class="n">img_reconstructed</span><span class="p">,</span> <span class="n">ves_coords</span> <span class="o">=</span> <span class="n">reconstruct_4d_mask</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">resolution</span><span class="o">=</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+    <span class="n">rescale_x</span><span class="o">=</span><span class="mf">2.1</span><span class="p">,</span>
+    <span class="n">rescale_y</span><span class="o">=</span><span class="mf">1.7</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reconstructed shape: </span><span class="si">{</span><span class="n">img_reconstructed</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="analyze-vesicle-clusters">
+<h4>analyze_vesicle_clusters<a class="headerlink" href="#analyze-vesicle-clusters" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.analyze_vesicle_clusters">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">analyze_vesicle_clusters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_ch2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_imaris</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ves_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/arrangement.html#analyze_vesicle_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.analyze_vesicle_clusters" title="Link to this definition"></a></dt>
+<dd><p>Main vesicle clustering analysis function</p>
+<section id="parameters">
+<h5>Parameters:<a class="headerlink" href="#parameters" title="Link to this heading"></a></h5>
+<dl class="simple">
+<dt>name<span class="classifier">str</span></dt><dd><p>Sample name</p>
+</dd>
+<dt>img_ch2<span class="classifier">numpy.ndarray</span></dt><dd><p>Original fluorescence image data</p>
+</dd>
+<dt>img_imaris<span class="classifier">numpy.ndarray</span></dt><dd><p>Reconstructed Imaris image data</p>
+</dd>
+<dt>ves_coords<span class="classifier">list</span></dt><dd><p>List of vesicle coordinates for each time point</p>
+</dd>
+<dt>config_params<span class="classifier">dict, optional</span></dt><dd><p>Configuration parameters dictionary</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h5>Returns:<a class="headerlink" href="#returns" title="Link to this heading"></a></h5>
+<dl class="simple">
+<dt>results<span class="classifier">dict</span></dt><dd><p>Analysis results dictionary containing processed image data and clustering information</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<p>Analyzes vesicle clustering patterns and spatial organization in time-lapse data.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sample_name</span></code> (str): Sample identifier</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">img_ch2</span></code> (np.ndarray): Channel 2 image data (e.g., F-actin)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">img_reconstructed</span></code> (np.ndarray): Reconstructed 4D image from <code class="docutils literal notranslate"><span class="pre">reconstruct_4d_mask()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ves_coords</span></code> (list): Vesicle coordinate list</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">results</span></code> (dict): Dictionary containing cluster analysis results including:
+- Cluster sizes
+- Cluster persistence across frames
+- Spatial distribution statistics</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">analyze_vesicle_clusters</span><span class="p">,</span> <span class="n">reconstruct_4d_mask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Load and reconstruct</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;vesicle_positions.csv&quot;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">img_reconstructed</span><span class="p">,</span> <span class="n">ves_coords</span> <span class="o">=</span> <span class="n">reconstruct_4d_mask</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<span class="c1"># Analyze clusters</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">analyze_vesicle_clusters</span><span class="p">(</span>
+    <span class="n">sample_name</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span><span class="p">,</span>
+    <span class="n">img_ch2</span><span class="o">=</span><span class="n">actin_channel</span><span class="p">,</span>
+    <span class="n">img_reconstructed</span><span class="o">=</span><span class="n">img_reconstructed</span><span class="p">,</span>
+    <span class="n">ves_coords</span><span class="o">=</span><span class="n">ves_coords</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of clusters: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;clusters&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean cluster size: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;mean_cluster_size&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="enhanced-distribution-methods">
+<h3>Enhanced Distribution Methods<a class="headerlink" href="#enhanced-distribution-methods" title="Link to this heading"></a></h3>
+<section id="actinangle2dist-enhanced">
+<h4>actinangle2dist_enhanced<a class="headerlink" href="#actinangle2dist-enhanced" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.actinangle2dist_enhanced">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">actinangle2dist_enhanced</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filament_coord_extend_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imgsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voxel_size_xyz</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/arrangement.html#actinangle2dist_enhanced"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.actinangle2dist_enhanced" title="Link to this definition"></a></dt>
+<dd><p>Enhanced actin angle to distance calculation function</p>
+<p>Calculates shortest distances and corresponding angle relationships between
+actin filaments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filament_coord_extend_dict</strong> (<em>Dict</em>) – Actin filament coordinate dictionary</p></li>
+<li><p><strong>imgsize</strong> (<em>Tuple</em>) – Image dimensions</p></li>
+<li><p><strong>voxel_size_xyz</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – Voxel size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(distance list, angle list)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[List[float], List[float]]</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Angle range: 0-180 degrees</p></li>
+<li><p>Distance units consistent with input coordinate units</p></li>
+<li><p>Automatically handles boundary cases and outliers</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<p>Enhanced analysis of actin filament angle-distance distributions. This function calculates the relationship between actin filament orientation and their distance to reference structures.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data_id</span></code> (str): Dataset identifier</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">actin_file</span></code> (str): Actin coordinates file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config</span></code> (dict): Configuration dictionary</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">results</span></code> (dict): Enhanced distribution metrics</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="complete-rdf-workflow-example">
+<h2>Complete RDF Workflow Example<a class="headerlink" href="#complete-rdf-workflow-example" title="Link to this heading"></a></h2>
+<p>This example demonstrates a complete RDF analysis workflow from partitioning to visualization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">Partitioning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">calculate_rdf_from_xvg</span><span class="p">,</span>
+    <span class="n">load_partition_coords_from_xvg</span><span class="p">,</span>
+    <span class="n">save_radial_rdf_results</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.partitioning</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_radial_rdf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Step 1: Create partitions (if not already done)</span>
+<span class="n">partitioner</span> <span class="o">=</span> <span class="n">Partitioning</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;results/&quot;</span><span class="p">,</span> <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">center</span><span class="p">,</span> <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">extract_ne_pm_edges</span><span class="p">(</span><span class="n">pm_mask</span><span class="p">,</span> <span class="n">ne_mask</span><span class="p">)</span>
+<span class="n">partition_mask</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">create_nepm_radial_partitions</span><span class="p">(</span>
+    <span class="n">ne_edge</span><span class="p">,</span> <span class="n">pm_edge</span><span class="p">,</span>
+    <span class="n">shape</span><span class="o">=</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="n">n_slices</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">pm_mask</span><span class="o">=</span><span class="n">pm_mask</span><span class="p">,</span>
+    <span class="n">ne_mask</span><span class="o">=</span><span class="n">ne_mask</span>
+<span class="p">)</span>
+
+<span class="c1"># Step 2: Extract coordinates</span>
+<span class="n">partition_coords</span> <span class="o">=</span> <span class="n">partitioner</span><span class="o">.</span><span class="n">extract_partition_coordinates</span><span class="p">(</span>
+    <span class="n">partition_mask</span><span class="p">,</span>
+    <span class="n">sampling_density</span><span class="o">=</span><span class="mf">0.05</span>
+<span class="p">)</span>
+
+<span class="c1"># Prepare radial positions</span>
+<span class="n">radial_positions</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">partition_coords</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">norm_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="mf">8.0</span>
+    <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">coords</span><span class="p">:</span>
+        <span class="n">radial_positions</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">coord</span><span class="p">)]</span> <span class="o">=</span> <span class="n">norm_pos</span>
+
+<span class="c1"># Save partition coordinates</span>
+<span class="n">partitioner</span><span class="o">.</span><span class="n">save_partition_coords_to_xvg</span><span class="p">(</span>
+    <span class="n">partition_coords</span><span class="p">,</span>
+    <span class="n">dataid</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;results/partitions/&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Step 3: Calculate RDF for multiple organelles</span>
+<span class="n">organelles</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;ISG&#39;</span><span class="p">:</span> <span class="n">isg_mask</span><span class="p">,</span>
+    <span class="s1">&#39;Mito&#39;</span><span class="p">:</span> <span class="n">mito_mask</span><span class="p">,</span>
+    <span class="s1">&#39;Actin&#39;</span><span class="p">:</span> <span class="n">actin_mask</span>
+<span class="p">}</span>
+
+<span class="n">rdf_all</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">organelles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">rdf_results</span> <span class="o">=</span> <span class="n">calculate_rdf_from_xvg</span><span class="p">(</span>
+        <span class="n">mask</span><span class="p">,</span>
+        <span class="n">partition_coords</span><span class="p">,</span>
+        <span class="n">radial_positions</span><span class="p">,</span>
+        <span class="n">bins</span><span class="o">=</span><span class="mi">8</span>
+    <span class="p">)</span>
+    <span class="n">rdf_all</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">rdf_results</span>
+
+    <span class="c1"># Save results</span>
+    <span class="n">save_radial_rdf_results</span><span class="p">(</span>
+        <span class="n">rdf_results</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;results/rdf/&quot;</span><span class="p">,</span>
+        <span class="n">data_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;sample_01_</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+<span class="c1"># Step 4: Visualize comparison</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">rdf_results</span> <span class="ow">in</span> <span class="n">rdf_all</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf_results</span><span class="p">[</span><span class="s1">&#39;radii&#39;</span><span class="p">],</span> <span class="n">rdf_results</span><span class="p">[</span><span class="s1">&#39;rdf&#39;</span><span class="p">],</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Random&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Radial Position (0=NE, 1=PM)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;RDF&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Organelle Radial Distributions&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;results/rdf/organelle_comparison.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;RDF analysis complete!&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">rdf_results</span> <span class="ow">in</span> <span class="n">rdf_all</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: mean RDF = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rdf_results</span><span class="p">[</span><span class="s1">&#39;rdf&#39;</span><span class="p">])</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="morphology.html" class="btn btn-neutral float-left" title="Morphology Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="interaction.html" class="btn btn-neutral float-right" title="Interaction Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

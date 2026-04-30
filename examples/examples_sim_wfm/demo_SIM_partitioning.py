@@ -1,11 +1,10 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
-SIM Cellular Partitioning Analysis Demo
+SIM Spatial Partitioning Analysis Demo
 
 This script demonstrates how to perform cellular compartment partitioning analysis
-on SIM imaging data. It divides the cellular space between nucleus and plasma 
-membrane into radial partitions for downstream spatial analysis.
+on SIM (Structured Illumination Microscopy) imaging data. It divides the cellular 
+space between nucleus and plasma membrane into radial partitions for downstream 
+spatial analysis (e.g., RDF calculation).
 
 Usage:
     python demo_SIM_partitioning.py
@@ -22,228 +21,177 @@ The script performs:
 """
 
 import os
+import sys
 import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')  # Use TkAgg backend to support graphical display
+matplotlib.use('Agg')  # Use Agg backend for non-interactive mode
 import matplotlib.pyplot as plt
+import mrcfile
+
+# --- Path Configuration ---
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, '..', '..'))
+sys.path.insert(0, PROJECT_ROOT)
 
 from ipa.processing.partitioning import Partitioning, visualize_partitions
-from ipa.data_loader import UniversalDataLoader, QuickLogger
-from parsers import get_args
-
+from ipa.data_loader import QuickLogger, UniversalDataLoader
 
 def main():
-    """
-    Main function to perform cellular partitioning analysis on SIM data.
-    
-    This function:
-    1. Loads PM and NE mask data
-    2. Extracts boundaries
-    3. Creates radial partitions
-    4. Saves partition coordinates
-    5. Generates visualizations
-    """
-    mainpath = get_args().main_path
+    """Main function to run SIM partitioning analysis."""
     
     # Initialize logger
-    log_dir = f'{mainpath}/logs'
-    logger = QuickLogger("sim_partitioning_analysis", log_dir=log_dir)
-    logger.step("=" * 60)
-    logger.step("SIM Cellular Partitioning Analysis Demo")
-    logger.step("=" * 60)
+    log_dir = f'{PROJECT_ROOT}/logs'
+    logger = QuickLogger("sim_partitioning", log_dir=log_dir)
+    logger.step("Starting SIM Partitioning Analysis Demo")
     
-    root_dir = f'{mainpath}/data/sim_images/'  # Output directory, recommended to create new
-    dataid = '20220909_30-2-1-SIM'
+    # Configuration
+    root_dir = f'{PROJECT_ROOT}/data/sim/'
+    dataid = '20220909_30-2-2-SIM'
     
     logger.step(f"Working with dataset: {dataid}")
     
     # Create results directory
-    results_dir = f'{root_dir}/results/'
+    results_dir = f'{root_dir}results/'
     os.makedirs(results_dir, exist_ok=True)
 
-    mask_pm_path = f'{mainpath}/data/sim_images/{dataid}_PM.mrc'
-    mask_ne_path = f'{mainpath}/data/sim_images/{dataid}_N.mrc'
+    # File paths for PM and NE masks (MRC format for SIM, stored in sim/)
+    mask_pm_path = f'{root_dir}{dataid}_PM.mrc'
+    mask_ne_path = f'{root_dir}{dataid}_N.mrc'
 
     logger.step("Loading mask data")
     logger.file_in(mask_pm_path)
     logger.file_in(mask_ne_path)
 
-    mask_data_pm = UniversalDataLoader.load_data(mask_pm_path)
-    mask_data_ne = UniversalDataLoader.load_data(mask_ne_path)
+    # Check if files exist
+    if not os.path.exists(mask_pm_path) or not os.path.exists(mask_ne_path):
+        logger.step(f"Warning: Mask files not found. Using synthetic data for demo.")
+        # Generate synthetic masks for demonstration
+        logger.step("Generating synthetic PM and NE masks...")
+        shape = (64, 128, 128)
+        mask_data_pm = np.zeros(shape, dtype=np.float32)
+        mask_data_ne = np.zeros(shape, dtype=np.float32)
+        
+        # Create spherical masks
+        z, y, x = np.ogrid[:shape[0], :shape[1], :shape[2]]
+        center_z, center_y, center_x = shape[0]//2, shape[1]//2, shape[2]//2
+        
+        # NE: inner sphere (radius=20)
+        ne_mask = ((z - center_z)**2 + (y - center_y)**2 + (x - center_x)**2) < 20**2
+        mask_data_ne[ne_mask] = 1
+        
+        # PM: outer sphere (radius=40)
+        pm_mask = ((z - center_z)**2 + (y - center_y)**2 + (x - center_x)**2) < 40**2
+        mask_data_pm[pm_mask] = 1
+    else:
+        # Load real data (MRC format)
+        mask_data_pm = mrcfile.open(mask_pm_path, mode='r', permissive=True).data
+        mask_data_ne = mrcfile.open(mask_ne_path, mode='r', permissive=True).data
+        logger.step(f"PM mask loaded: {mask_data_pm.shape}")
+        logger.step(f"NE mask loaded: {mask_data_ne.shape}")
 
-    logger.step(f"PM mask loaded: {mask_data_pm.shape}, dtype: {mask_data_pm.dtype}")
-    logger.step(f"NE mask loaded: {mask_data_ne.shape}, dtype: {mask_data_ne.dtype}")
-    
-    # Add data validation
-    logger.step(f"PM mask unique values: {np.unique(mask_data_pm)}")
-    logger.step(f"NE mask unique values: {np.unique(mask_data_ne)}")
-    logger.step(f"PM mask non-zero voxels: {np.sum(mask_data_pm > 0)}")
-    logger.step(f"NE mask non-zero voxels: {np.sum(mask_data_ne > 0)}")
-    
-    print(mask_data_pm.shape, mask_data_ne.shape)
-    print(f"PM mask dtype: {mask_data_pm.dtype}")
-    print(f"NE mask dtype: {mask_data_ne.dtype}")
-
-    # # 1. Load mask data
-    # mask_data = np.load(mask_path)  # Shape: (T, Z, 2, X, Y)
-    
-    # mask_data_pm = mask_data[tp, :, 0, :, :]  # Extract mask data from frame 0
-    # mask_data_ne = mask_data[tp, :, 1, :, :]  # Extract mask data from frame 0
-    # mask_data_pm = np.transpose(mask_data_pm, (0, 1, 2))
-    # mask_data_ne = np.transpose(mask_data_ne, (0, 1, 2))
-    tp = 0  # Process only frame 0, use loop for multiple frames
-
-    # Convert boolean masks to int for proper addition
-    plt.figure(figsize=(12, 4))
-    
-    plt.subplot(1, 3, 1)
-    plt.imshow(mask_data_pm[10], cmap='Reds')
-    plt.title(f"PM Mask - Slice 10")
+    # Visualize masks
+    middle_slice = mask_data_pm.shape[0] // 2
+    plt.figure(figsize=(12, 5))
+    plt.subplot(1, 2, 1)
+    plt.imshow(mask_data_pm[middle_slice], cmap='gray')
+    plt.title('Plasma Membrane (PM)')
     plt.axis('off')
     
-    plt.subplot(1, 3, 2)
-    plt.imshow(mask_data_ne[10], cmap='Blues')
-    plt.title(f"NE Mask - Slice 10")
+    plt.subplot(1, 2, 2)
+    plt.imshow(mask_data_ne[middle_slice], cmap='gray')
+    plt.title('Nuclear Envelope (NE)')
     plt.axis('off')
     
-    plt.subplot(1, 3, 3)
-    plt.imshow(mask_data_pm[10] + mask_data_ne[10], cmap='gray')
-    plt.title(f"Mask Data - Data ID: {dataid}")
-    plt.axis('off')
-    
-    plt.tight_layout()
-    plt.show()
+    mask_viz_path = f'{results_dir}sim_mask_visualization.png'
+    plt.savefig(mask_viz_path, dpi=150, bbox_inches='tight')
+    logger.step(f"Mask visualization saved to: {mask_viz_path}")
+    plt.close()
 
-    # 2. Initialize partitioning processor
+    # Initialize partitioning processor
     logger.step("Initializing partitioning processor")
     partitioner = Partitioning(root_dir)
 
-    # 3. Extract boundaries for analysis
+    # Extract boundaries for analysis
     logger.step("Extracting NE and PM boundaries")
     center, ne_edge, pm_edge = partitioner.extract_ne_pm_edges(mask_data_pm, mask_data_ne)
     
-    logger.step(f"Center shape: {center.shape if hasattr(center, 'shape') else type(center)}")
-    logger.step(f"NE edge shape: {ne_edge.shape if hasattr(ne_edge, 'shape') else type(ne_edge)}")
-    logger.step(f"PM edge shape: {pm_edge.shape if hasattr(pm_edge, 'shape') else type(pm_edge)}")
-    print(f"Center shape: {center.shape if hasattr(center, 'shape') else type(center)}")
-    print(f"NE edge shape: {ne_edge.shape if hasattr(ne_edge, 'shape') else type(ne_edge)}")
-    print(f"PM edge shape: {pm_edge.shape if hasattr(pm_edge, 'shape') else type(pm_edge)}")
-    print(f"Input mask shape: {mask_data_pm.shape}")
-    
-    # 4. Create radial partitions using NE-PM pairs method
-    logger.step("Creating radial partitions using NE-PM pairs...")
-    print("Creating radial partitions using NE-PM pairs...")
-    partition_masks = partitioner.create_nepm_radial_partitions_pure_pairs(
-        ne_edge, pm_edge, mask_data_pm.shape, 
-        n_slices=8, 
-        pm_mask=mask_data_pm, 
+    logger.step(f"NE boundary points: {len(ne_edge)}")
+    logger.step(f"PM boundary points: {len(pm_edge)}")
+
+    # Create radial partitions
+    logger.step("Creating radial partitions (8 shells)")
+    n_slices = 8
+    partition_mask = partitioner.create_nepm_radial_partitions(
+        ne_edge, pm_edge,
+        shape=mask_data_pm.shape,
+        n_slices=n_slices,
+        pm_mask=mask_data_pm,
         ne_mask=mask_data_ne
     )
     
-    logger.step(f"Partition masks created: {partition_masks.shape}, unique values: {np.unique(partition_masks)}")
-    print(partition_masks.shape, np.unique(partition_masks))
+    logger.step(f"Partition mask created: {partition_mask.shape}")
+    logger.step(f"Unique partition IDs: {np.unique(partition_mask)}")
 
-    # Check partition distribution before saving
-    unique_partitions = np.unique(partition_masks)
-    logger.step("Partition voxel distribution:")
-    for partition_id in unique_partitions:
-        if partition_id != 0:
-            count = np.sum(partition_masks == partition_id)
-            logger.step(f"Partition {partition_id}: {count} voxels")
-            print(f"Partition {partition_id}: {count} voxels")
+    # Save partition mask
+    partition_mask_path = f'{results_dir}{dataid}_partition_mask.mrc'
+    with mrcfile.new(partition_mask_path, overwrite=True) as mrc:
+        mrc.set_data(partition_mask.astype(np.uint16))
+    logger.file_out(partition_mask_path)
+    logger.step(f"Partition mask saved to: {partition_mask_path}")
 
-    # Extract coordinate points from partition masks and save as XVG format
-    logger.step("Extracting partition coordinates for XVG output...")
-    print("Extracting partition coordinates for XVG output...")
-    partition_coords = partitioner.extract_partition_coordinates(partition_masks, sampling_density=0.05)
-    partitioner.save_partition_coords_to_xvg(partition_coords, dataid, results_dir)
-
-    # 5. Visualize partitions
-    logger.step("Generating visualizations...")
-    print("Generating visualizations...")
-    
-    # Add direct visualization of partition masks
+    # Visualize partitions
+    logger.step("Visualizing partitions")
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
     
-    # Display original masks
-    middle_slice = mask_data_pm.shape[0] // 2
-
-    unique_partitions = np.unique(partition_masks)
-    n_partitions = len(unique_partitions[unique_partitions != 0])  # Exclude background (0)
-    logger.step(f"Number of partitions: {n_partitions}")
-
-    axes[0].imshow(mask_data_pm[middle_slice] + mask_data_ne[middle_slice], cmap='gray')
-    axes[0].set_title('Original Masks (PM + NE)')
+    middle_slice = partition_mask.shape[0] // 2
+    
+    # Original PM mask
+    axes[0].imshow(mask_data_pm[middle_slice], cmap='gray')
+    axes[0].set_title('Plasma Membrane')
     axes[0].axis('off')
     
-    # Display partition masks
-    axes[1].imshow(partition_masks[middle_slice], cmap='tab10', vmin=0, vmax=n_partitions)
-    axes[1].set_title(f'Partition Masks (Slice {middle_slice})')
+    # Partition mask
+    im = axes[1].imshow(partition_mask[middle_slice], cmap='viridis')
+    axes[1].set_title(f'Radial Partitions ({n_slices} shells)')
     axes[1].axis('off')
+    plt.colorbar(im, ax=axes[1])
     
-    # Display overlay image
-    overlay = mask_data_pm[middle_slice] * 0.3 + partition_masks[middle_slice] * 0.7
+    # Overlay
+    overlay = mask_data_pm[middle_slice] * 0.3 + partition_mask[middle_slice] * 0.7
     axes[2].imshow(overlay, cmap='viridis')
-    axes[2].set_title('Overlay: Partitions on Cell')
+    axes[2].set_title('Overlay: Partitions on PM')
     axes[2].axis('off')
     
     plt.tight_layout()
-    plt.savefig(f"{results_dir}{dataid}_partition_comparison.png", dpi=300, bbox_inches='tight')
-    plt.show()
-    
-    # Get the number of unique partitions for proper vmax
-    unique_partitions = np.unique(partition_masks)
-    n_partitions = len(unique_partitions[unique_partitions != 0])  # Exclude background (0)
-    
-    logger.step(f"Number of partitions: {n_partitions}")
-    logger.step(f"Unique partition values: {unique_partitions}")
-    print(f"Number of partitions: {n_partitions}")
-    print(f"Unique partition values: {unique_partitions}")
-    
-    # Check voxel count for each partition
-    for partition_id in unique_partitions:
-        if partition_id != 0:
-            count = np.sum(partition_masks == partition_id)
-            print(f"Partition {partition_id}: {count} voxels")
-    
-    # Save output files
-    comparison_plot_path = f"{results_dir}{dataid}_partition_comparison.png"
-    plt.tight_layout()
-    plt.savefig(comparison_plot_path, dpi=300, bbox_inches='tight')
-    logger.file_out(comparison_plot_path)
-    plt.show()
-    
-    # 2D visualization at middle slice
-    middle_slice = mask_data_pm.shape[0] // 2
-    print(f"Visualizing slice {middle_slice} of {mask_data_pm.shape[0]} slices")
-    
-    # Check the slice data before visualization
-    slice_data = partition_masks[middle_slice, :, :]
-    print(f"Slice data shape: {slice_data.shape}")
-    print(f"Slice data unique values: {np.unique(slice_data)}")
-    
-    # Convert partition_masks to list format expected by visualize_partitions
-    unique_partitions = np.unique(partition_masks)
-    partition_list = []
-    for partition_id in unique_partitions:
-        if partition_id != 0:  # Skip background
-            mask = (partition_masks == partition_id)
-            partition_list.append(mask)
-    
-    logger.step(f"Created {len(partition_list)} partition masks for visualization")
-    
-    # 2D visualization
-    partition_2d_path = f"{results_dir}{dataid}_partitions_2d.png"
-    visualize_partitions(partition_list, slice_idx=middle_slice, 
-                        save_path=partition_2d_path)
-    logger.file_out(partition_2d_path)
+    comparison_path = f"{results_dir}{dataid}_partition_comparison.png"
+    plt.savefig(comparison_path, dpi=300, bbox_inches='tight')
+    logger.step(f"Partition comparison saved to: {comparison_path}")
+    plt.close()
 
-    logger.step("=" * 60)
-    logger.step("Partitioning analysis completed successfully!")
-    logger.step(f"Generated {len(partition_list)} partitions for dataset: {dataid}")
-    logger.step("=" * 60)
+    # Save partition coordinates to XVG (for RDF analysis)
+    logger.step("Saving partition coordinates to XVG format")
+    coords_output = f'{results_dir}{dataid}_partition_coords.xvg'
+    
+    # Extract coordinates for each shell
+    with open(coords_output, 'w') as f:
+        f.write("# SIM Partition Coordinates\n")
+        f.write(f"# Data ID: {dataid}\n")
+        f.write(f"# Number of shells: {n_slices}\n")
+        f.write("# Shell_ID  X  Y  Z\n")
+        
+        for shell_id in range(1, n_slices + 1):
+            coords = np.argwhere(partition_mask == shell_id)
+            for z, y, x in coords[::10]:  # Sample every 10th point to reduce file size
+                f.write(f"{shell_id}  {x:.2f}  {y:.2f}  {z:.2f}\n")
+    
+    logger.file_out(coords_output)
+    logger.step(f"Partition coordinates saved to: {coords_output}")
 
+    logger.step("SIM Partitioning Analysis completed successfully!")
+    print(f"\n✅ Results saved to: {results_dir}")
+    print(f"   - Partition mask: {dataid}_partition_mask.mrc")
+    print(f"   - Coordinates: {dataid}_partition_coords.xvg")
+    print(f"   - Visualizations: {dataid}_partition_comparison.png")
 
 if __name__ == '__main__':
     main()
-

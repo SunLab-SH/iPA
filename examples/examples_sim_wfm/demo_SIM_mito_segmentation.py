@@ -55,7 +55,7 @@ def parse_args():
     
     # Optional arguments
     p.add_argument("--input_image", type=str, default=None,
-                   help="Path to input SIM image (default: {main_path}/data/sim_images/20220909_30-2-1-SIM_raw_Actin.tif)")
+                   help="Path to input SIM image (default: {main_path}/data/sim/20220909_30-2-1-SIM_raw_Actin.tif)")
     p.add_argument("--output_dir", type=str, default=None,
                    help="Output directory (default: {main_path}/outputs/mito_segmentation)")
     p.add_argument("--seed", type=int, default=42,
@@ -148,7 +148,7 @@ def main():
     set_seed(args.seed)
     
     if args.input_image is None:
-        args.input_image = os.path.join(args.main_path, "data", "sim_images", "20220909_30-2-1-SIM_raw_Actin.tif")
+        args.input_image = os.path.join(args.main_path, "data", "sim", "20220909_30-2-1-SIM_raw_Actin.tif")
     
     if args.output_dir is None:
         args.output_dir = os.path.join(args.main_path, "outputs", "mito_segmentation")

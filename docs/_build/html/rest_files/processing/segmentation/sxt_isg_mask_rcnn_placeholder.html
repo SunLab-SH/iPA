@@ -1,0 +1,236 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SXT ISG Mask R-CNN Segmentation &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="SIM/WFM Segmentation" href="sim_wfm_segmentation.html" />
+    <link rel="prev" title="SXT Segmentation" href="sxt_segmentation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../processing.html">Processing Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../denoising.html">Denoising Module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="segmentation.html">Segmentation Module</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#architecture">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#key-components">Key Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#model-architecture-and-methods">Model Architecture and Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#model-selection-guide">Model Selection Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#quick-start">Quick Start</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="segmentation.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="sxt_segmentation.html">SXT Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sim_wfm_segmentation.html">SIM/WFM Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="et_segmentation.html">Cryo-ET Segmentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../partitioning.html">Partitioning Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../processing.html">Processing Module</a></li>
+          <li class="breadcrumb-item"><a href="segmentation.html">Segmentation Module</a></li>
+          <li class="breadcrumb-item"><a href="sxt_segmentation.html">SXT Segmentation</a></li>
+      <li class="breadcrumb-item active">SXT ISG Mask R-CNN Segmentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/rest_files/processing/segmentation/sxt_isg_mask_rcnn_placeholder.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sxt-isg-mask-r-cnn-segmentation">
+<h1>SXT ISG Mask R-CNN Segmentation<a class="headerlink" href="#sxt-isg-mask-r-cnn-segmentation" title="Link to this heading"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Status: Training in Progress</strong></p>
+<p>The SXT ISG Mask R-CNN model is currently being trained. This documentation serves as a placeholder for the upcoming instance segmentation capability.</p>
+</div>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The SXT ISG Mask R-CNN segmenter will provide instance-level segmentation of insulin secretory granules (ISGs) in Soft X-ray Tomography data. Unlike the U-Net based approach which produces semantic segmentation, Mask R-CNN enables:</p>
+<ul class="simple">
+<li><p><strong>Instance Segmentation</strong>: Distinguish individual ISG instances</p></li>
+<li><p><strong>Precise Boundaries</strong>: Pixel-level mask accuracy for each granule</p></li>
+<li><p><strong>Morphological Analysis</strong>: Extract per-instance features (volume, shape, position)</p></li>
+<li><p><strong>Spatial Relationships</strong>: Analyze ISG-ISG and ISG-organelle interactions</p></li>
+</ul>
+</section>
+<section id="expected-api">
+<h2>Expected API<a class="headerlink" href="#expected-api" title="Link to this heading"></a></h2>
+<p>Once training is complete, the segmenter will follow the unified API pattern:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">SXTISGMaskRCNNSegmenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load SXT volume</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;sxt_isg_sample.mrc&#39;</span><span class="p">)</span>
+
+<span class="c1"># Initialize segmenter</span>
+<span class="n">segmenter</span> <span class="o">=</span> <span class="n">SXTISGMaskRCNNSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+
+<span class="c1"># Load trained model</span>
+<span class="n">segmenter</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>  <span class="c1"># Will load isg_mask_rcnn_final.pth</span>
+
+<span class="c1"># Predict instance masks</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">segmenter</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+<span class="c1"># Access results</span>
+<span class="n">instance_masks</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;instance_masks&#39;</span><span class="p">]</span>  <span class="c1"># List of binary masks</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span>  <span class="c1"># Instance IDs</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>  <span class="c1"># Confidence scores</span>
+<span class="n">boxes</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>  <span class="c1"># Bounding boxes</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">instance_masks</span><span class="p">)</span><span class="si">}</span><span class="s2"> ISG instances&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="training-status">
+<h2>Training Status<a class="headerlink" href="#training-status" title="Link to this heading"></a></h2>
+<p><strong>Current Stage</strong>: Model training in progress</p>
+<p><strong>Training Script</strong>: <code class="docutils literal notranslate"><span class="pre">examples/examples_sxt/train_SXT_isg_mask_rcnn_model.py</span></code></p>
+<p><strong>Expected Completion</strong>: TBD</p>
+<p><strong>Model Architecture</strong>:
+- Backbone: ResNet-50 FPN
+- Head: Mask R-CNN with box and mask prediction branches
+- Input: 3D SXT volumes (slice-by-slice or volumetric)
+- Output: Instance masks with confidence scores</p>
+<p><strong>Training Data</strong>:
+- Format: NPZ files with paired images and annotations
+- Location: <code class="docutils literal notranslate"><span class="pre">sxt_isg_training_demo/</span></code>
+- Samples: Train and validation splits</p>
+</section>
+<section id="post-training-steps">
+<h2>Post-Training Steps<a class="headerlink" href="#post-training-steps" title="Link to this heading"></a></h2>
+<p>Once training completes:</p>
+<ol class="arabic simple">
+<li><p>✅ Validate model on test set</p></li>
+<li><p>✅ Update model path in <code class="docutils literal notranslate"><span class="pre">unified.py</span></code> (<code class="docutils literal notranslate"><span class="pre">DEFAULT_SXT_ISG_MASKRCNN_MODEL</span></code>)</p></li>
+<li><p>✅ Implement <code class="docutils literal notranslate"><span class="pre">_load_model_impl()</span></code> in <code class="docutils literal notranslate"><span class="pre">SXTISGMaskRCNNSegmenter</span></code> class</p></li>
+<li><p>✅ Implement <code class="docutils literal notranslate"><span class="pre">predict()</span></code> method with proper postprocessing</p></li>
+<li><p>✅ Add comprehensive documentation here</p></li>
+<li><p>✅ Create demo script: <code class="docutils literal notranslate"><span class="pre">demo_SXT_isg_instance_segmentation.py</span></code></p></li>
+<li><p>✅ Update this document with final API and examples</p></li>
+</ol>
+</section>
+<section id="alternative-u-net-based-isg-segmentation">
+<h2>Alternative: U-Net Based ISG Segmentation<a class="headerlink" href="#alternative-u-net-based-isg-segmentation" title="Link to this heading"></a></h2>
+<p>While Mask R-CNN training is in progress, you can use the existing U-Net based ISG segmenter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">SXTISGSegmenter</span>
+
+<span class="n">segmenter</span> <span class="o">=</span> <span class="n">SXTISGSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">segmenter</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>  <span class="c1"># Loads isg_unet_best.pth</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">segmenter</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+<span class="n">isg_mask</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;isg_mask&#39;</span><span class="p">]</span>  <span class="c1"># Semantic segmentation</span>
+</pre></div>
+</div>
+<p>For instance-level analysis, you can apply watershed or connected component labeling to the U-Net output:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">label</span>
+
+<span class="c1"># Convert semantic mask to instances</span>
+<span class="n">labeled_mask</span><span class="p">,</span> <span class="n">num_instances</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">isg_mask</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">num_instances</span><span class="si">}</span><span class="s2"> ISG instances&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="sxt_segmentation.html"><span class="doc">SXT Segmentation</span></a> - Complete SXT segmentation documentation</p></li>
+<li><p><a class="reference internal" href="../partitioning.html"><span class="doc">Partitioning Module</span></a> - Radial partitioning for spatial analysis</p></li>
+<li><p><a class="reference internal" href="../../analysis/morphology.html"><span class="doc">Morphology Analysis</span></a> - Morphological feature extraction</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sxt_segmentation.html" class="btn btn-neutral float-left" title="SXT Segmentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sim_wfm_segmentation.html" class="btn btn-neutral float-right" title="SIM/WFM Segmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

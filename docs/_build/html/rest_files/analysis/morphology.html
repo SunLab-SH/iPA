@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morphology Analysis &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Distribution Analysis" href="distribution.html" />
+    <link rel="prev" title="Analysis Module" href="analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processing/processing.html">Processing Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="analysis.html">Analysis Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#supported-analyses">Supported Analyses</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="analysis.html#sub-modules">Sub-modules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Morphology Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-functions">Core Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#usage-examples">Usage Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="distribution.html">Distribution Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interaction.html">Interaction Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamics.html">Dynamics Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="analysis.html">Analysis Module</a></li>
+      <li class="breadcrumb-item active">Morphology Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/rest_files/analysis/morphology.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="morphology-analysis">
+<h1>Morphology Analysis<a class="headerlink" href="#morphology-analysis" title="Link to this heading"></a></h1>
+<p>The morphology module extracts structural features from segmented organelles, including volume, surface area, length, and shape descriptors. These features are fundamental for characterizing subcellular structures across imaging modalities.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Morphological analysis quantifies the physical properties of organelles based on their 3D masks or coordinate representations. iPA categorizes organelles into three morphological classes:</p>
+<ul class="simple">
+<li><p><strong>Spherical organelles</strong>: ISGs, vesicles, lipid droplets - characterized by volume and sphericity</p></li>
+<li><p><strong>Cylindrical organelles</strong>: Mitochondria - characterized by volume and aspect ratio</p></li>
+<li><p><strong>Tubular organelles</strong>: F-actin, microtubules - characterized by total length and network topology</p></li>
+</ul>
+<p>The extracted features enable quantitative comparisons of organelle morphology under different conditions (e.g., low vs. high glucose) and across imaging modalities.</p>
+</section>
+<section id="core-functions">
+<h2>Core Functions<a class="headerlink" href="#core-functions" title="Link to this heading"></a></h2>
+<section id="extract-isg-features">
+<h3>extract_isg_features<a class="headerlink" href="#extract-isg-features" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.extract_isg_features">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">extract_isg_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">isg_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_csv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/morphology.html#extract_isg_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.extract_isg_features" title="Link to this definition"></a></dt>
+<dd><p>Use watershed algorithm to perform 3D segmentation on ISG mask, generating data in the same format as 3D analysis results.</p>
+<p>Parameters:
+- isg_mask: numpy ndarray, 3D ISG binary mask
+- min_distance: int, minimum distance for peak detection
+- min_size: int, minimum connected region size
+- save_csv: bool, whether to save CSV file
+- output_path: str, output CSV file path</p>
+<p>Returns:
+- pandas.DataFrame: DataFrame containing segmentation results
+- numpy.ndarray: 3D segmented label image</p>
+</dd></dl>
+
+<p>Extracts comprehensive morphological features from insulin secretory granule (ISG) masks using watershed-based instance segmentation.</p>
+<p><strong>Features Extracted</strong>:</p>
+<ul class="simple">
+<li><p>Volume (μm³)</p></li>
+<li><p>Surface area (μm²)</p></li>
+<li><p>Sphericity (0-1, where 1 = perfect sphere)</p></li>
+<li><p>Major/minor axis lengths (nm)</p></li>
+<li><p>Eccentricity</p></li>
+<li><p>Solidity (area / convex area)</p></li>
+<li><p>Equivalent diameter</p></li>
+</ul>
+<p><strong>Algorithm</strong>:</p>
+<ol class="arabic simple">
+<li><p>Apply distance transform to ISG mask</p></li>
+<li><p>Detect local maxima as seed points</p></li>
+<li><p>Perform watershed segmentation to separate touching ISGs</p></li>
+<li><p>Calculate morphological features for each instance</p></li>
+<li><p>Optionally save results to CSV</p></li>
+</ol>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">img_isg</span></code> (np.ndarray): 3D binary ISG mask</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min_distance</span></code> (int, optional): Minimum distance between peaks for seed detection. Default: 5</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min_size</span></code> (int, optional): Minimum connected component size (voxels). Default: 20</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save_csv</span></code> (bool, optional): Whether to save results to CSV. Default: False</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output_path</span></code> (str, optional): Output CSV file path. Required if <code class="docutils literal notranslate"><span class="pre">save_csv=True</span></code></p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">df</span></code> (pd.DataFrame): DataFrame containing morphological features for each ISG instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code> (np.ndarray): 3D labeled mask with unique instance IDs</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_isg_features</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load ISG mask from SXT data</span>
+<span class="n">isg_mask</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;isg_segmentation.mrc&quot;</span><span class="p">)</span>
+
+<span class="c1"># Extract features</span>
+<span class="n">features_df</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">extract_isg_features</span><span class="p">(</span>
+    <span class="n">isg_mask</span><span class="p">,</span>
+    <span class="n">min_distance</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">min_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">save_csv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">output_path</span><span class="o">=</span><span class="s2">&quot;results/isg_morphology.csv&quot;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">features_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> ISGs&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean volume: </span><span class="si">{</span><span class="n">features_df</span><span class="p">[</span><span class="s1">&#39;Vol (unit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> μm³&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean sphericity: </span><span class="si">{</span><span class="n">features_df</span><span class="p">[</span><span class="s1">&#39;Sphericity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="calculate-tubular-length">
+<h3>calculate_tubular_length<a class="headerlink" href="#calculate-tubular-length" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.calculate_tubular_length">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_tubular_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skeleton_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voxel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1.0,</span> <span class="pre">1.0,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_individual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ipa/analysis/morphology.html#calculate_tubular_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.calculate_tubular_length" title="Link to this definition"></a></dt>
+<dd><p>Calculate the total length of tubular organelles by summing the distances
+between adjacent skeleton voxels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>skeleton_mask</strong> (<em>np.ndarray</em>) – 3D binary mask representing the skeleton of the tubular structure.</p></li>
+<li><p><strong>voxel_size</strong> (<em>tuple</em>) – Physical size of each voxel (z, y, x) in nm or um.</p></li>
+<li><p><strong>return_individual</strong> (<em>bool</em>) – If True, also returns a list of lengths for each individual connected component.
+NOTE: This is computationally expensive for large masks as it performs BFS on coordinates.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total length if return_individual is False.
+(Total length, List of individual lengths) if return_individual is True.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Calculates the total length of tubular organelles (e.g., F-actin, microtubules) from skeleton masks by summing distances between adjacent skeleton voxels.</p>
+<p><strong>Algorithm</strong>:</p>
+<ol class="arabic simple">
+<li><p>Extract skeleton voxel coordinates from binary mask</p></li>
+<li><p>Build KDTree for efficient nearest neighbor search</p></li>
+<li><p>Find nearest neighbors for each voxel within a radius threshold</p></li>
+<li><p>Sum unique connections (divided by 2 to avoid double counting)</p></li>
+<li><p>Convert to physical units using voxel size</p></li>
+</ol>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">skeleton_mask</span></code> (np.ndarray): 3D binary skeleton mask</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">voxel_size</span></code> (tuple, optional): Physical voxel size (Z, Y, X) in nm. Default: (1.0, 1.0, 1.0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">return_individual</span></code> (bool, optional): Whether to return individual filament lengths. Default: False</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">return_individual=False</span></code>: Total length (float, in nm)</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">return_individual=True</span></code>: Tuple of (total_length, list_of_individual_lengths)</p></li>
+</ul>
+<p><strong>Biological Significance</strong>:</p>
+<p>Tubular length is a key metric for cytoskeletal networks. Changes in F-actin or microtubule length reflect cellular remodeling during processes like glucose-stimulated insulin secretion (GSIS).</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_tubular_length</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Load actin coordinates from JSON (cryo-ET data)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;actin_filled_points.json&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">actin_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># Reconstruct skeleton mask from coordinates</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">pt</span> <span class="k">for</span> <span class="n">filament</span> <span class="ow">in</span> <span class="n">actin_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">filament</span><span class="p">])</span>
+<span class="n">skeleton_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">volume_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+    <span class="n">skeleton_mask</span><span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># Calculate length (cryo-ET voxel size: 1.34 nm)</span>
+<span class="n">total_length</span><span class="p">,</span> <span class="n">individual_lengths</span> <span class="o">=</span> <span class="n">calculate_tubular_length</span><span class="p">(</span>
+    <span class="n">skeleton_mask</span><span class="p">,</span>
+    <span class="n">voxel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">),</span>
+    <span class="n">return_individual</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total F-actin length: </span><span class="si">{</span><span class="n">total_length</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> nm&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of filaments: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">individual_lengths</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean filament length: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">individual_lengths</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> nm&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="actin-to-actin-analysis">
+<h3>actin_to_actin_analysis<a class="headerlink" href="#actin-to-actin-analysis" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.actin_to_actin_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">actin_to_actin_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actin_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/morphology.html#actin_to_actin_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.actin_to_actin_analysis" title="Link to this definition"></a></dt>
+<dd><p>Calculate distance analysis between actin filaments</p>
+<p>This function analyzes spatial relationships between actin filaments, calculates
+shortest distances between filamentous structures, and generates corresponding
+statistical information and visualization results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> (<em>str</em>) – Dataset identifier for naming output files</p></li>
+<li><p><strong>mask_file</strong> (<em>str</em>) – Vesicle mask file path (.mrc format)</p></li>
+<li><p><strong>actin_file</strong> (<em>str</em>) – Actin point coordinates file path (.json format)</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration parameters dictionary containing:
+- voxel_size_xyz (List[float]): Voxel size [x, y, z] in Angstroms
+- shift_bias (List[float]): Coordinate offset [x, y, z]
+- visualization (bool): Whether to generate visualization charts
+- save_intermediate (bool): Whether to save intermediate result files
+- output_dir (str, optional): Output directory path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Analysis result dictionary containing:</dt><dd><ul class="simple">
+<li><p>data_id (str): Dataset identifier</p></li>
+<li><p>total_actin_filaments (int): Total number of actin filaments</p></li>
+<li><p>total_distances (int): Total number of calculated distances</p></li>
+<li><p>distance_stats (Dict): Distance statistics (mean, std, min/max, etc.)</p></li>
+<li><p>status (str): Analysis status (‘success’ or ‘error’)</p></li>
+<li><p>output_directory (str): Output directory path</p></li>
+<li><p>vector_file (str, optional): Vector data file path</p></li>
+<li><p>distance_file (str, optional): Distance data file path</p></li>
+<li><p>plot_file (str, optional): Visualization chart file path</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – Raised when input files do not exist</p></li>
+<li><p><strong>ImportError</strong> – Raised when required modules are not available</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Analyzes spatial relationships within actin filament networks, calculating shortest distances between filaments and generating statistical summaries.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data_id</span></code> (str): Dataset identifier for output files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mask_file</span></code> (str): Vesicle mask file path (.mrc)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">actin_file</span></code> (str): Actin coordinates file (.json)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config</span></code> (dict): Configuration dictionary with keys:
+- <code class="docutils literal notranslate"><span class="pre">voxel_size_xyz</span></code> (list): Voxel dimensions [nm]
+- <code class="docutils literal notranslate"><span class="pre">shift_bias</span></code> (list): Coordinate offset correction [nm]
+- <code class="docutils literal notranslate"><span class="pre">visualization</span></code> (bool): Enable visualization
+- <code class="docutils literal notranslate"><span class="pre">output_dir</span></code> (str): Output directory</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">results</span></code> (dict): Dictionary containing:
+- <code class="docutils literal notranslate"><span class="pre">distance_stats</span></code>: Distance statistics (mean, std, percentiles)
+- <code class="docutils literal notranslate"><span class="pre">contact_sites</span></code>: List of contact point coordinates
+- <code class="docutils literal notranslate"><span class="pre">visualization_path</span></code>: Path to saved figure (if enabled)</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">actin_to_actin_analysis</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;voxel_size_xyz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">],</span>  <span class="c1"># Cryo-ET</span>
+    <span class="s1">&#39;shift_bias&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="s1">&#39;visualization&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="s1">&#39;results/&#39;</span>
+<span class="p">}</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">actin_to_actin_analysis</span><span class="p">(</span>
+    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span><span class="p">,</span>
+    <span class="n">mask_file</span><span class="o">=</span><span class="s2">&quot;vesicle_mask.mrc&quot;</span><span class="p">,</span>
+    <span class="n">actin_file</span><span class="o">=</span><span class="s2">&quot;actin_coords.json&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean inter-filament distance: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;distance_stats&#39;</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> nm&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="actin-angle-distance-pair-enhanced-analysis">
+<h3>actin_angle_distance_pair_enhanced_analysis<a class="headerlink" href="#actin-angle-distance-pair-enhanced-analysis" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipa.analysis.actin_angle_distance_pair_enhanced_analysis">
+<span class="sig-prename descclassname"><span class="pre">ipa.analysis.</span></span><span class="sig-name descname"><span class="pre">actin_angle_distance_pair_enhanced_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actin_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vesicle_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/ipa/analysis/morphology.html#actin_angle_distance_pair_enhanced_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ipa.analysis.actin_angle_distance_pair_enhanced_analysis" title="Link to this definition"></a></dt>
+<dd><p>Enhanced Actin angle-distance pair analysis function with custom actinangle2dist implementation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_id</strong> – Data ID for the analysis</p></li>
+<li><p><strong>actin_file</strong> – Path to actin points file (.json)</p></li>
+<li><p><strong>vesicle_file</strong> – Path to vesicle mask file (.mrc)</p></li>
+<li><p><strong>config</strong> – Configuration parameters dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing analysis results</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Enhanced analysis of actin angle-distance pair relationships with advanced statistical measures. This function calculates both the distance from actin filaments to reference structures and the angular orientation relative to those structures.</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data_id</span></code> (str): Dataset identifier</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">actin_file</span></code> (str): Path to actin coordinates file (.json)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vesicle_file</span></code> (str): Path to vesicle mask file (.mrc)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config</span></code> (dict): Configuration dictionary</p></li>
+</ul>
+<p><strong>Returns</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">results</span></code> (dict): Dictionary with enhanced analysis metrics including angle-distance correlations</p></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">actin_angle_distance_pair_enhanced_analysis</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;voxel_size_xyz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">],</span>
+    <span class="s1">&#39;shift_bias&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="s1">&#39;visualization&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="s1">&#39;results/&#39;</span>
+<span class="p">}</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">actin_angle_distance_pair_enhanced_analysis</span><span class="p">(</span>
+    <span class="n">data_id</span><span class="o">=</span><span class="s2">&quot;sample_01&quot;</span><span class="p">,</span>
+    <span class="n">actin_file</span><span class="o">=</span><span class="s2">&quot;actin_coords.json&quot;</span><span class="p">,</span>
+    <span class="n">vesicle_file</span><span class="o">=</span><span class="s2">&quot;vesicle_mask.mrc&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="usage-examples">
+<h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
+<section id="complete-morphology-workflow">
+<h3>Complete Morphology Workflow<a class="headerlink" href="#complete-morphology-workflow" title="Link to this heading"></a></h3>
+<p>This example demonstrates extracting multiple morphological features from different organelle types:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_isg_features</span><span class="p">,</span> <span class="n">calculate_tubular_length</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tifffile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># 1. ISG Morphology (from SXT)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== ISG Morphology ===&quot;</span><span class="p">)</span>
+<span class="n">isg_mask</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;isg_mask.mrc&quot;</span><span class="p">)</span>
+<span class="n">isg_features</span><span class="p">,</span> <span class="n">isg_labels</span> <span class="o">=</span> <span class="n">extract_isg_features</span><span class="p">(</span>
+    <span class="n">isg_mask</span><span class="p">,</span>
+    <span class="n">min_distance</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">min_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">save_csv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">output_path</span><span class="o">=</span><span class="s2">&quot;results/isg_features.csv&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total ISGs: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">isg_features</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Volume distribution: mean=</span><span class="si">{</span><span class="n">isg_features</span><span class="p">[</span><span class="s1">&#39;Vol (unit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;std=</span><span class="si">{</span><span class="n">isg_features</span><span class="p">[</span><span class="s1">&#39;Vol (unit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. F-actin Length (from cryo-ET)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== F-actin Length ===&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;actin_points.json&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">actin_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># Reconstruct mask</span>
+<span class="n">volume_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">pt</span> <span class="k">for</span> <span class="n">filament</span> <span class="ow">in</span> <span class="n">actin_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">filament</span><span class="p">])</span>
+<span class="n">actin_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">volume_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+    <span class="n">actin_mask</span><span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">total_length</span><span class="p">,</span> <span class="n">individual_lengths</span> <span class="o">=</span> <span class="n">calculate_tubular_length</span><span class="p">(</span>
+    <span class="n">actin_mask</span><span class="p">,</span>
+    <span class="n">voxel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">),</span>
+    <span class="n">return_individual</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total length: </span><span class="si">{</span><span class="n">total_length</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> nm&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filament count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">individual_lengths</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 3. Compare across conditions</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Condition Comparison ===&quot;</span><span class="p">)</span>
+<span class="c1"># Low glucose</span>
+<span class="n">lg_features</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">extract_isg_features</span><span class="p">(</span><span class="n">lg_isg_mask</span><span class="p">)</span>
+<span class="c1"># High glucose</span>
+<span class="n">hg_features</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">extract_isg_features</span><span class="p">(</span><span class="n">hg_isg_mask</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LG mean volume: </span><span class="si">{</span><span class="n">lg_features</span><span class="p">[</span><span class="s1">&#39;Vol (unit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> μm³&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HG mean volume: </span><span class="si">{</span><span class="n">hg_features</span><span class="p">[</span><span class="s1">&#39;Vol (unit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> μm³&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="analysis.html" class="btn btn-neutral float-left" title="Analysis Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="distribution.html" class="btn btn-neutral float-right" title="Distribution Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

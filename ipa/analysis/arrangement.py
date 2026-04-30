@@ -10,7 +10,6 @@ import os
 import pickle
 import copy
 import math
-
 from scipy.spatial import cKDTree
 
 
@@ -221,10 +220,19 @@ def calculate_rdf_from_xvg(organelle_mask, partition_coords, radial_positions, b
         return None
     
     # Use KDTree for fast nearest neighbor search
-    partition_coords_array = np.array(list(radial_positions.keys()))  # partition coordinates
-    partition_rpos_array = np.array(list(radial_positions.values()))  # radial positions
+    # Ensure partition_coords_array is a 2D numpy array of shape (n_points, 3)
+    coords_list = list(radial_positions.keys())
+    if len(coords_list) > 0 and isinstance(coords_list[0], tuple):
+        partition_coords_array = np.array(coords_list)
+    else:
+        # Fallback if keys are already arrays or lists
+        partition_coords_array = np.asarray(coords_list)
+        
+    partition_rpos_array = np.array(list(radial_positions.values()))
     
     print(f'Building KDTree for {len(partition_coords_array)} partition points...')
+    if partition_coords_array.ndim != 2:
+        raise ValueError(f"partition_coords_array has wrong dimensions: {partition_coords_array.shape}")
     tree = cKDTree(partition_coords_array)
     
     # Query nearest neighbors for all organelles at once
@@ -290,6 +298,34 @@ def calculate_rdf_from_xvg(organelle_mask, partition_coords, radial_positions, b
     
     return rdf_results
 
+
+def calculate_distribution_similarity(rdf_1, rdf_2):
+    """
+    Calculate distribution similarity between two organelle distributions using Pearson correlation.
+    
+    Parameters
+    ----------
+    rdf_1 : array-like
+        Radial Distribution Function values from the first image/modality.
+    rdf_2 : array-like
+        Radial Distribution Function values from the second image/modality.
+        
+    Returns
+    -------
+    dict
+        Dictionary containing 'pearson_coefficient' and 'p_value'.
+    """
+    from scipy.stats import pearsonr
+    
+    if len(rdf_1) != len(rdf_2):
+        raise ValueError("RDF arrays must have the same length for comparison.")
+        
+    corr, p_value = pearsonr(rdf_1, rdf_2)
+    return {
+        'pearson_coefficient': corr,
+        'p_value': p_value,
+        'is_significant': p_value < 0.05
+    }
 
 def save_radial_rdf_results(rdf_results, output_dir, dataid):
     """
@@ -782,18 +818,66 @@ def analyze_vesicle_clusters(name, img_ch2, img_imaris, ves_coords, outdir = Non
 # sim
 
 
-def analyze_docked_granules(img_isg, mem_mask, isg_data, show_visualization=False):
+def analyze_organelle_aggregation(centers_list, dthreshold=0.6):
+    """
+    Analyze organelle aggregation in time-lapse images.
+    
+    Aggregation is defined as the set of organelles that remain within a distance 
+    less than a certain threshold across a number of continuous frames.
+    
+    Parameters
+    ----------
+    centers_list : list of np.ndarray
+        List of arrays containing organelle center coordinates for each frame.
+    dthreshold : float
+        Distance threshold (in micrometers) to define an aggregation.
+        
+    Returns
+    -------
+    dict
+        Dictionary mapping aggregation IDs to their tracking history and volume.
+    """
+    from scipy.spatial.distance import cdist
+    
+    # Simple clustering per frame based on distance threshold
+    clusters_per_frame = []
+    for centers in centers_list:
+        if len(centers) == 0:
+            clusters_per_frame.append([])
+            continue
+            
+        dist_matrix = cdist(centers, centers)
+        labels = np.full(len(centers), -1)
+        current_label = 0
+        
+        for i in range(len(centers)):
+            if labels[i] == -1:
+                cluster_members = [j for j in range(len(centers)) if dist_matrix[i, j] < dthreshold]
+                if len(cluster_members) > 1: # Only consider groups as aggregates
+                    for m in cluster_members:
+                        labels[m] = current_label
+                    current_label += 1
+        
+        clusters_per_frame.append(labels)
+        
+    # Track aggregates across frames (simplified matching)
+    # In a full implementation, this would use more robust tracking logic
+    return {"clusters": clusters_per_frame}
+
+def analyze_docked_granules(img_isg, mem_mask, isg_data, show_visualization=False, distance_threshold=None):
     """
     Analyze the localization relationship between ISG granules and plasma membrane using matrix data.
 
     Parameters:
-    - img_isg: numpy ndarray, ISG segmentation 3D matrix
-    - mem_mask: numpy ndarray, PM mask 3D matrix
-    - isg_data: numpy ndarray, granule center coordinates and volume information (CSV loading result)
-    - show_visualization: bool, whether to display visualization images of partial slices
+        img_isg: numpy ndarray, ISG segmentation 3D matrix
+        mem_mask: numpy ndarray, PM mask 3D matrix
+        isg_data: numpy ndarray, granule center coordinates and volume information (CSV loading result)
+        show_visualization: bool, whether to display visualization images of partial slices
+        distance_threshold: float, optional. If provided, use this fixed distance (in pixels/nm)
+            to define docked pool instead of dynamic vesicle radius. Matches manuscript requirement for fixed thresholds (e.g., 300 nm).
 
     Returns:
-    - dict, containing total granule count, docked granule count and ratio
+        dict, containing total granule count, docked granule count and ratio
     """
     isg_volume = isg_data[1:, 19]
     centers = isg_data[1:, 4:7]
@@ -806,6 +890,9 @@ def analyze_docked_granules(img_isg, mem_mask, isg_data, show_visualization=Fals
 
     # Crop PM and corresponding regions
     nonzero_coords = np.where(mem_mask != 0)
+    if len(nonzero_coords[0]) == 0:
+        return {'total_granules': 0, 'docked_granules': 0, 'docked_ratio': 0}
+        
     x0 = (nonzero_coords[2].min() // 100) * 100
     y0 = (nonzero_coords[1].min() // 100) * 100
     x1 = (nonzero_coords[2].max() // 100) * 100 + 100
@@ -844,8 +931,13 @@ def analyze_docked_granules(img_isg, mem_mask, isg_data, show_visualization=Fals
         except IndexError:
             continue
         granule_PM.append(dist)
-        ves_radius = ((3 * isg_volume_upd[i]) / (4 * math.pi)) ** (1/3)
-        docked_cutoff.append(ves_radius)
+        
+        # Use fixed threshold if provided, otherwise use dynamic radius
+        if distance_threshold is not None:
+            docked_cutoff.append(distance_threshold)
+        else:
+            ves_radius = ((3 * isg_volume_upd[i]) / (4 * math.pi)) ** (1/3)
+            docked_cutoff.append(ves_radius)
 
     n_docked = len([x for i,x in enumerate(granule_PM) if x < docked_cutoff[i]])
     total_granules = len(granule_PM)
@@ -885,5 +977,179 @@ def analyze_docked_granules(img_isg, mem_mask, isg_data, show_visualization=Fals
         'total_granules': total_granules,
         'docked_granules': n_docked,
         'docked_ratio': docked_ratio
+    }
+
+
+def calculate_distributional_similarity(rdf1, rdf2, alpha=0.05):
+    """
+    Calculate Pearson correlation between two RDF distributions to measure distributional similarity.
+    
+    This function compares organelle distributions between two cell images from different 
+    modalities (e.g., SIM vs SXT) using Pearson correlation coefficient.
+    
+    Parameters
+    ----------
+    rdf1 : np.ndarray
+        RDF values from modality 1 (e.g., SIM)
+    rdf2 : np.ndarray
+        RDF values from modality 2 (e.g., SXT)
+    alpha : float, optional
+        Significance level for p-value. Default: 0.05
+        
+    Returns
+    -------
+    dict
+        Dictionary containing:
+        - 'pearson_r' (float): Pearson correlation coefficient (-1 to 1)
+        - 'p_value' (float): Statistical significance
+        - 'significant' (bool): Whether correlation is significant (p < alpha)
+        
+    Example
+    -------
+    >>> import numpy as np
+    >>> from ipa.analysis import calculate_distributional_similarity
+    >>> sim_rdf = np.array([0.8, 1.0, 1.2, 1.1, 0.9, 1.0, 1.3, 1.5])
+    >>> sxt_rdf = np.array([0.9, 1.1, 1.1, 1.0, 1.0, 1.1, 1.2, 1.4])
+    >>> result = calculate_distributional_similarity(sim_rdf, sxt_rdf)
+    >>> print(f"Pearson r: {result['pearson_r']:.2f}")
+    >>> print(f"P-value: {result['p_value']:.4f}")
+    >>> print(f"Significant: {result['significant']}")
+    """
+    from scipy import stats
+    
+    if len(rdf1) != len(rdf2):
+        raise ValueError("RDF arrays must have same length")
+    
+    if len(rdf1) < 3:
+        raise ValueError("Need at least 3 data points for correlation")
+    
+    # Calculate Pearson correlation
+    r, p = stats.pearsonr(rdf1, rdf2)
+    
+    return {
+        'pearson_r': r,
+        'p_value': p,
+        'significant': p < alpha
+    }
+
+
+def analyze_anchored_organelle_angles(filament_coords_dict, pm_mask, 
+                                       distance_threshold_nm=120, 
+                                       voxel_size_nm=(1, 1, 1)):
+    """
+    Analyze angles of anchored tubular organelles (e.g., F-actin) relative to PM.
+    
+    Anchored organelles are defined by their distance to the PM. For such organelles,
+    the angle is calculated between pairs of nearest tubular organelles anchored to the PM.
+    
+    Parameters
+    ----------
+    filament_coords_dict : dict
+        Dictionary of filament coordinates {filament_id: [[x,y,z], ...]}
+    pm_mask : np.ndarray
+        Plasma membrane binary mask
+    distance_threshold_nm : float, optional
+        Distance threshold (nm) to define anchored organelles. Default: 120
+    voxel_size_nm : tuple, optional
+        Voxel dimensions (nm). Default: (1, 1, 1)
+        
+    Returns
+    -------
+    dict
+        Dictionary containing:
+        - 'anchored_count' (int): Number of anchored filaments
+        - 'angles' (list): List of angles between anchored filament pairs (degrees)
+        - 'mean_angle' (float): Mean angle
+        - 'std_angle' (float): Standard deviation of angles
+        
+    Example
+    -------
+    >>> import numpy as np
+    >>> from ipa.analysis import analyze_anchored_organelle_angles
+    >>> # Create sample filament data
+    >>> filaments = {
+    ...     'filament_1': [[10, 20, 30], [11, 21, 31], [12, 22, 32]],
+    ...     'filament_2': [[15, 25, 35], [16, 26, 36], [17, 27, 37]]
+    ... }
+    >>> pm_mask = create_pm_mask()  # Your PM mask
+    >>> results = analyze_anchored_organelle_angles(
+    ...     filaments, pm_mask, 
+    ...     distance_threshold_nm=120,
+    ...     voxel_size_nm=(31.3, 31.3, 90.9)  # SIM voxel size
+    ... )
+    >>> print(f"Anchored filaments: {results['anchored_count']}")
+    >>> print(f"Mean angle: {results['mean_angle']:.2f} degrees")
+    """
+    from scipy.spatial import cKDTree
+    
+    # Get PM coordinates
+    pm_coords = np.array(np.where(pm_mask > 0)).T
+    if len(pm_coords) == 0:
+        raise ValueError("PM mask is empty")
+    
+    # Convert voxel size to numpy array
+    voxel_size = np.array(voxel_size_nm)
+    
+    # Build KD-tree for PM
+    pm_tree = cKDTree(pm_coords)
+    
+    # Find anchored filaments
+    anchored_filaments = []
+    anchored_vectors = []
+    
+    for filament_id, coords in filament_coords_dict.items():
+        coords_array = np.array(coords)
+        
+        # Convert to physical coordinates if needed
+        if np.max(voxel_size) > 10:  # Likely in voxels, convert to nm
+            coords_nm = coords_array * voxel_size
+        else:
+            coords_nm = coords_array
+        
+        # Check if any point is within threshold of PM
+        distances, _ = pm_tree.query(coords_nm)
+        min_dist = np.min(distances)
+        
+        if min_dist <= distance_threshold_nm:
+            # This filament is anchored
+            anchored_filaments.append(filament_id)
+            
+            # Calculate filament direction vector (from first to last point)
+            if len(coords_nm) >= 2:
+                direction = coords_nm[-1] - coords_nm[0]
+                norm = np.linalg.norm(direction)
+                if norm > 0:
+                    direction = direction / norm
+                    anchored_vectors.append(direction)
+    
+    # Calculate angles between anchored filament pairs
+    angles = []
+    if len(anchored_vectors) >= 2:
+        for i in range(len(anchored_vectors)):
+            for j in range(i + 1, len(anchored_vectors)):
+                vec1 = anchored_vectors[i]
+                vec2 = anchored_vectors[j]
+                
+                # Calculate angle using dot product
+                cos_angle = np.dot(vec1, vec2)
+                cos_angle = np.clip(cos_angle, -1.0, 1.0)  # Clip for numerical stability
+                angle_rad = np.arccos(cos_angle)
+                angle_deg = np.degrees(angle_rad)
+                
+                # Convert to 0-90 degree range (acute angle)
+                if angle_deg > 90:
+                    angle_deg = 180 - angle_deg
+                
+                angles.append(angle_deg)
+    
+    # Calculate statistics
+    mean_angle = np.mean(angles) if len(angles) > 0 else 0.0
+    std_angle = np.std(angles) if len(angles) > 0 else 0.0
+    
+    return {
+        'anchored_count': len(anchored_filaments),
+        'angles': angles,
+        'mean_angle': mean_angle,
+        'std_angle': std_angle
     }
 

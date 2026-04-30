@@ -1,4 +1,3 @@
-
 import os
 import sys
 import json
@@ -14,15 +13,101 @@ from skimage import measure, morphology
 from skimage import segmentation
 import json
 
+# Standard package imports replacing sys.path.append
+from .common.parser import arg
+from .common import preprocess, distances_generator, outplot
 
-# Add path to import necessary modules
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir)
-
-
-from common.parser import arg
-from common.preprocess import *
-from common import preprocess, distances_generator, outplot
+def calculate_tubular_length(skeleton_mask, voxel_size=(1.0, 1.0, 1.0), return_individual=False):
+    """
+    Calculate the total length of tubular organelles by summing the distances 
+    between adjacent skeleton voxels.
+    
+    Parameters
+    ----------
+    skeleton_mask : np.ndarray
+        3D binary mask representing the skeleton of the tubular structure.
+    voxel_size : tuple
+        Physical size of each voxel (z, y, x) in nm or um.
+    return_individual : bool
+        If True, also returns a list of lengths for each individual connected component.
+        NOTE: This is computationally expensive for large masks as it performs BFS on coordinates.
+        
+    Returns
+    -------
+    float or tuple
+        Total length if return_individual is False.
+        (Total length, List of individual lengths) if return_individual is True.
+    """
+    from scipy.spatial import KDTree
+    
+    # Get coordinates of all skeleton voxels
+    coords = np.array(np.where(skeleton_mask > 0)).T
+    
+    if len(coords) < 2:
+        return 0.0 if not return_individual else (0.0, [])
+        
+    # Convert voxel coordinates to physical coordinates
+    phys_coords = coords * np.array(voxel_size)
+    
+    # Use KDTree to find nearest neighbors and estimate path length
+    tree = KDTree(phys_coords)
+    
+    # Find the nearest neighbor for each point (k=2 because k=1 is the point itself)
+    distances, _ = tree.query(phys_coords, k=2)
+    
+    # The second column contains the distance to the nearest actual neighbor
+    nn_distances = distances[:, 1]
+    
+    # Sum all unique connections. Since each connection is counted twice (A->B and B->A),
+    # we divide by 2.
+    total_length = np.sum(nn_distances) / 2.0
+    
+    if not return_individual:
+        return total_length
+    
+    # --- Individual Length Calculation (Computationally Intensive) ---
+    # To avoid labeling the entire huge array, we perform BFS on the coordinate set
+    individual_lengths = []
+    visited = np.zeros(len(coords), dtype=bool)
+    
+    # Build a local graph using KDTree for connectivity check
+    # We consider points connected if they are within a small physical distance threshold
+    max_step_dist = np.max(voxel_size) * 1.5 
+    
+    for i in range(len(coords)):
+        if visited[i]:
+            continue
+            
+        # Start a new component
+        queue = [i]
+        visited[i] = True
+        comp_indices = [i]
+        
+        head = 0
+        while head < len(queue):
+            curr_idx = queue[head]
+            head += 1
+            
+            # Find neighbors within threshold
+            nearby_indices = tree.query_ball_point(phys_coords[curr_idx], r=max_step_dist)
+            
+            for n_idx in nearby_indices:
+                if not visited[n_idx]:
+                    visited[n_idx] = True
+                    queue.append(n_idx)
+                    comp_indices.append(n_idx)
+        
+        # Calculate length for this component
+        if len(comp_indices) > 1:
+            comp_phys = phys_coords[comp_indices]
+            comp_tree = KDTree(comp_phys)
+            comp_dists, _ = comp_tree.query(comp_phys, k=2)
+            comp_len = np.sum(comp_dists[:, 1]) / 2.0
+            individual_lengths.append(comp_len)
+        else:
+            individual_lengths.append(0.0)
+            
+    return total_length, individual_lengths
 # print("Successfully imported original modules")
 
 

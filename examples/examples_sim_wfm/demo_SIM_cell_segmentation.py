@@ -74,7 +74,7 @@ def parse_args():
     
     # Domain-specific parameters
     p.add_argument("--image_dir", type=str, default=None,
-                   help="Custom image directory (default: {main_path}/data/sxt_images)")
+                   help="Custom image directory (default: {main_path}/data/sxt)")
     
     return p.parse_args()
 
@@ -119,7 +119,7 @@ def save_json(outdir: str, name: str, obj: dict) -> str:
 def build_paths(main_path: str, data_id: str, image_dir: str = None) -> dict:
     """Build file paths for segmentation"""
     if image_dir is None:
-        image_dir = os.path.join(main_path, "data", "sxt_images")
+        image_dir = os.path.join(main_path, "data", "sxt")
     
     paths = {
         "image_path": os.path.join(image_dir, f"Stevens_pancreatic_INS_1E_{data_id}_pre_rec.mrc"),
@@ -165,7 +165,7 @@ def main():
     config = {
         'pool_processes': args.pool_processes,
         'output_dir': outdir,
-        'image_dir': args.image_dir if args.image_dir else os.path.join(args.main_path, "data", "sxt_images")
+        'image_dir': args.image_dir if args.image_dir else os.path.join(args.main_path, "data", "sxt")
     }
     
     # Step 4: Save configuration

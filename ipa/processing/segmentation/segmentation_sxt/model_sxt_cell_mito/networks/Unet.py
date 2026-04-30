@@ -7,7 +7,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 import torch
-from networks.Block import Convblock, Upconv, UpconvWithCat
+from .Block import Convblock, Upconv, UpconvWithCat
 
 
 class Unet(nn.Module):

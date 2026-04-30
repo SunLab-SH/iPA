@@ -1,0 +1,211 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIM/WFM Segmentation &mdash; ipa  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=fb348362" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Cryo-ET Segmentation" href="et_segmentation.html" />
+    <link rel="prev" title="SXT ISG Mask R-CNN Segmentation" href="sxt_isg_mask_rcnn_placeholder.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ipa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/data_loader.html">Data Loader Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../processing.html">Processing Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../denoising.html">Denoising Module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="segmentation.html">Segmentation Module</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#architecture">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#key-components">Key Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#model-architecture-and-methods">Model Architecture and Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#model-selection-guide">Model Selection Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#quick-start">Quick Start</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="segmentation.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sxt_segmentation.html">SXT Segmentation</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">SIM/WFM Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="et_segmentation.html">Cryo-ET Segmentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../partitioning.html">Partitioning Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis/analysis.html">Analysis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_loader/log.html">Log Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples and Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ipa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../processing.html">Processing Module</a></li>
+          <li class="breadcrumb-item"><a href="segmentation.html">Segmentation Module</a></li>
+      <li class="breadcrumb-item active">SIM/WFM Segmentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/rest_files/processing/segmentation/sim_wfm_segmentation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sim-wfm-segmentation">
+<h1>SIM/WFM Segmentation<a class="headerlink" href="#sim-wfm-segmentation" title="Link to this heading"></a></h1>
+<p>Structured Illumination Microscopy (SIM) and Widefield Microscopy (WFM) segmentation module provides comprehensive tools for super-resolution and conventional fluorescence microscopy data analysis.</p>
+<section id="core-functions">
+<h2>Core Functions<a class="headerlink" href="#core-functions" title="Link to this heading"></a></h2>
+</section>
+<section id="core-segmentation-api">
+<h2>Core Segmentation API<a class="headerlink" href="#core-segmentation-api" title="Link to this heading"></a></h2>
+<p>SIM/WFM segmentation now uses the unified Segmenter API for consistent interface.</p>
+<p><strong>Recommended Usage</strong> (Unified API):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIMERSegmenter</span><span class="p">,</span> <span class="n">SIMMitoSegmenter</span><span class="p">,</span> <span class="n">WFMSegmenter</span>
+
+<span class="c1"># ER Network Segmentation</span>
+<span class="n">er_seg</span> <span class="o">=</span> <span class="n">SIMERSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">er_seg</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">er_seg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+<span class="c1"># Mitochondria Segmentation</span>
+<span class="n">mito_seg</span> <span class="o">=</span> <span class="n">SIMMitoSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">mito_seg</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">mito_seg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+<span class="c1"># General WFM Segmentation</span>
+<span class="n">wfm_seg</span> <span class="o">=</span> <span class="n">WFMSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">wfm_seg</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">wfm_seg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For detailed API documentation, see <a class="reference internal" href="segmentation.html"><span class="doc">Segmentation Module</span></a>.</p>
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h2>
+<p><strong>ER Network Segmentation</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIMERSegmenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ipa.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniversalDataLoader</span>
+
+<span class="c1"># Load SIM ER data</span>
+<span class="n">er_data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;SIM_ER.tif&quot;</span><span class="p">)</span>
+
+<span class="c1"># Segment ER network</span>
+<span class="n">segmenter</span> <span class="o">=</span> <span class="n">SIMERSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">segmenter</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">segmenter</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">er_data</span><span class="p">)</span>
+<span class="n">er_mask</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;er_mask&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>ISG Sphere Detection</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIMISGSegmenter</span>
+
+<span class="c1"># Load ISG immunofluorescence data</span>
+<span class="n">isg_data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;SIM_ISG.tif&quot;</span><span class="p">)</span>
+
+<span class="c1"># Detect spherical granules</span>
+<span class="n">segmenter</span> <span class="o">=</span> <span class="n">SIMISGSegmenter</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">segmenter</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">segmenter</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">isg_data</span><span class="p">)</span>
+<span class="n">isg_mask</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;isg_mask&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">num_spheres</span><span class="si">}</span><span class="s2"> ISG spheres&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Nucleus and Cell Segmentation</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ipa.processing.segmentation</span><span class="w"> </span><span class="kn">import</span> <span class="n">segment_cell_shape</span><span class="p">,</span> <span class="n">segment_nucleus</span>
+
+<span class="c1"># Cell shape segmentation using actin</span>
+<span class="n">cell_mask</span> <span class="o">=</span> <span class="n">segment_cell_shape</span><span class="p">(</span>
+    <span class="n">actin_data</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Automatic threshold</span>
+    <span class="n">min_size</span><span class="o">=</span><span class="mi">1000</span>
+<span class="p">)</span>
+
+<span class="c1"># Nuclear segmentation</span>
+<span class="n">nucleus_data</span> <span class="o">=</span> <span class="n">UniversalDataLoader</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;SIM_raw_N.tif&quot;</span><span class="p">)</span>
+<span class="n">labeled_nuclei</span> <span class="o">=</span> <span class="n">segment_nucleus</span><span class="p">(</span><span class="n">nucleus_data</span><span class="p">)</span>
+<span class="n">num_nuclei</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">labeled_nuclei</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">num_nuclei</span><span class="si">}</span><span class="s2"> nuclei&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sxt_isg_mask_rcnn_placeholder.html" class="btn btn-neutral float-left" title="SXT ISG Mask R-CNN Segmentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="et_segmentation.html" class="btn btn-neutral float-right" title="Cryo-ET Segmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, liad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

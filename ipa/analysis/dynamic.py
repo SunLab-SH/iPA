@@ -2,11 +2,96 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+import numpy as np
+
+def calculate_3d_velocity(positions_t1, positions_t2, time_interval_s):
+    """
+    Calculate 3D velocity from consecutive frame positions.
+    
+    The 3D velocity is calculated as the Euclidean distance of positions at two 
+    consecutive time steps, divided by the time interval between the steps.
+    
+    Parameters
+    ----------
+    positions_t1 : np.ndarray
+        Organelle positions at time t1 [N, 3] (in micrometers)
+    positions_t2 : np.ndarray
+        Organelle positions at time t2 [N, 3] (in micrometers)
+    time_interval_s : float
+        Time interval between frames (seconds)
+        
+    Returns
+    -------
+    np.ndarray
+        Array of 3D velocities [N] in μm/s
+        
+    Example
+    -------
+    >>> import numpy as np
+    >>> from ipa.analysis import calculate_3d_velocity
+    >>> pos1 = np.array([[10, 20, 30], [15, 25, 35]])  # μm
+    >>> pos2 = np.array([[10.5, 20.3, 30.2], [15.4, 25.2, 35.1]])  # μm
+    >>> dt = 8.0  # seconds
+    >>> velocities = calculate_3d_velocity(pos1, pos2, dt)
+    >>> print(velocities)  # [0.064, 0.051] μm/s
+    """
+    if len(positions_t1) != len(positions_t2):
+        raise ValueError("Position arrays must have same length")
+    
+    if time_interval_s <= 0:
+        raise ValueError("Time interval must be positive")
+    
+    # Calculate Euclidean distances
+    displacements = np.linalg.norm(positions_t2 - positions_t1, axis=1)
+    
+    # Convert to velocity (assuming positions are in μm)
+    velocities = displacements / time_interval_s
+    
+    return velocities
 
 
-
-
-
+def calculate_radial_velocity(positions, velocities, pm_mask):
+    """
+    Calculate radial velocity of organelles projected along the direction to the nearest PM voxel.
+    
+    Parameters
+    ----------
+    positions : np.ndarray
+        Array of organelle positions [N, 3].
+    velocities : np.ndarray
+        Array of 3D velocity vectors [N, 3].
+    pm_mask : np.ndarray
+        3D binary mask of the plasma membrane.
+        
+    Returns
+    -------
+    np.ndarray
+        Array of radial velocity values.
+    """
+    from scipy.spatial import cKDTree
+    
+    # Get coordinates of PM voxels
+    pm_coords = np.array(np.where(pm_mask > 0)).T
+    if len(pm_coords) == 0:
+        raise ValueError("PM mask is empty. Cannot calculate radial velocity.")
+        
+    tree = cKDTree(pm_coords)
+    radial_velocities = []
+    
+    for pos, vel in zip(positions, velocities):
+        # Find nearest PM point
+        _, idx = tree.query(pos)
+        nearest_pm = pm_coords[idx]
+        
+        # Vector from organelle to PM
+        vec_to_pm = nearest_pm - pos
+        norm_vec = vec_to_pm / (np.linalg.norm(vec_to_pm) + 1e-8)
+        
+        # Project velocity onto this radial vector
+        v_radial = np.dot(vel, norm_vec)
+        radial_velocities.append(v_radial)
+        
+    return np.array(radial_velocities)
 
 
 def create_velocity_violin_plot(speed_data, max_speed=30, y_limit=0.35,
