@@ -64,22 +64,24 @@ pip install -e .
 
 #### Option B: Docker Installation (Recommended for Users)
 
-We provide a Docker image that includes all dependencies and supports both GPU and CPU.
+[![Docker Pulls](https://img.shields.io/docker/pulls/a13707621/ipa.svg)](https://hub.docker.com/r/a13707621/ipa)
+
+We provide an official Docker image that includes all dependencies and supports both GPU and CPU.
 
 **Prerequisites:**
 *   [Docker](https://docs.docker.com/get-docker/)
 *   [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) (for GPU support)
 
-**Build and Run:**
+**Quick Start:**
 ```bash
-# Build the Docker image
-docker build -t ipa-toolkit .
+# Pull the latest image
+docker pull a13707621/ipa:latest
 
-# Run the container with GPU support and mount your data folder
-docker run --gpus all -it -v $(pwd)/data:/app/data ipa-toolkit
+# Run with GPU support and mount your local data folder
+docker run --gpus all -it -v $(pwd)/data:/app/data a13707621/ipa:latest
 
 # If you don't have a GPU, simply remove the --gpus all flag:
-# docker run -it -v $(pwd)/data:/app/data ipa-toolkit
+# docker run -it -v $(pwd)/data:/app/data a13707621/ipa:latest
 ```
 
 Inside the container, you can run any example script:
@@ -150,11 +152,10 @@ All example scripts are located in the `examples/` directory, organized by imagi
 
 #### Install from local source
 
-**Requirements:** Python 3.8-3.11 (Python 3.9 recommended)
+**Requirements:** Python 3.9 or 3.10
 
 ```bash
-# Create conda environment with Python 3.9 (recommended)
-# Supported versions: 3.8, 3.9, 3.10, 3.11
+# Create conda environment (Python 3.9 recommended)
 conda create -n ipa_env python=3.9
 conda activate ipa_env
 

@@ -685,8 +685,8 @@ class ETFilamentSegmenter(BaseSegmenter):
         
         # Extract skeleton if requested
         if skeletonize:
-            from skimage.morphology import skeletonize_3d
-            skeleton = skeletonize_3d(mask > 0)
+            from skimage.morphology import skeletonize
+            skeleton = skeletonize(mask > 0)
             result['skeleton'] = skeleton.astype(np.uint8)
         
         return result

@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libsm6 \
     libxext6 \
     libxrender-dev \
+    pkg-config \
+    libhdf5-dev \
     git-lfs \
     && rm -rf /var/lib/apt/lists/*
 
@@ -23,6 +25,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the iPA source code
 COPY ipa/ ./ipa/
+COPY examples/ ./examples/
 COPY setup.py .
 COPY README.md .
 COPY MANIFEST.in .

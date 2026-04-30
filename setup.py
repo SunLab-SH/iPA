@@ -8,7 +8,7 @@ setup(
     long_description_content_type="text/markdown",
     author="liad",
     packages=find_packages(),
-    python_requires=">=3.9,<3.10",
+    python_requires=">=3.9,<3.11",
     install_requires=[
         # Core scientific computing
         "numpy>=1.21.0,<2.0.0",

@@ -1,7 +1,6 @@
-from skimage.morphology import skeletonize_3d, skeletonize
+from skimage.morphology import skeletonize
 import numpy as np
 
-from skimage.morphology import skeletonize_3d
 from skimage import filters, morphology
 from scipy import ndimage
 import json
@@ -192,7 +191,7 @@ def skeletonization_et_segmentation(image_matrix,
     binary_image = morphology.binary_dilation(binary_image, morphology.ball(dilation_radius))
 
     # Extract 3D skeleton
-    skeleton = skeletonize_3d(binary_image)
+    skeleton = skeletonize(binary_image)
 
     # Minimal cleaning, only remove tiny skeleton fragments
     skeleton_cleaned = morphology.remove_small_objects(skeleton, min_size=min_skeleton_size)
