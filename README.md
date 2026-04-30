@@ -48,33 +48,31 @@ For detailed documentation, tutorials, and examples, please visit:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/iPA.git
+git clone https://github.com/SunLab-SH/iPA.git
 cd iPA
 
-# Install dependencies
-pip install -r requirements.txt
+# Initialize Git LFS (required for pre-trained models)
+git lfs install
+git lfs pull
 
-# Install iPA in development mode
+# Install dependencies and iPA in development mode
+pip install -r requirements.txt
 pip install -e .
 ```
 
-### 2. Download Data and Models
+### 2. Download Example Data
 
-iPA requires data files and pre-trained models that are not included in the Git repository due to their size. Use the provided setup script to download them:
+Due to their large size, example data files are hosted on **Zenodo**. 
 
-```bash
-# Check what files are missing
-python setup_data_and_models.py --check-only
+1.  Download `data.zip` from: [Zenodo Record 19903896](https://zenodo.org/records/19903896)
+2.  Extract the archive into the `data/` directory:
+    ```bash
+    unzip data.zip -d data/
+    ```
 
-# Download all required files
-python setup_data_and_models.py
+**Note**: Some data files are gzip/zlib compressed. The `UniversalDataLoader` will automatically decompress them at runtime.
 
-# Or download only specific types
-python setup_data_and_models.py --data-only    # Only data files
-python setup_data_and_models.py --models-only  # Only model files
-```
-
-**Note**: You need to configure the download URLs in `setup_data_and_models.py` with your actual file hosting service (e.g., Google Drive, Dropbox, institutional server).
+For more details, see [DATA_SETUP_GUIDE.md](DATA_SETUP_GUIDE.md).
 
 ### 3. Run Examples
 
@@ -93,73 +91,21 @@ All example scripts are located in the `examples/` directory, organized by imagi
 
 ---
 
-#### Dependencies
+#### Core Dependencies
 
-* numpy
-* scipy
-* pandas
-* matplotlib
-* scikit-image
-* tifffile
-* Pillow
-* opencv-python
-* mrcfile
-* plotly
-* seaborn
-* torch
-* torchvision
-* tensorflow
-* tqdm
-* h5py
-* scikit-learn
-* readlif
-* czifile
-* nd2reader
-* aicsimageio
-* imageio
-* wandb
+*   numpy, scipy, pandas, matplotlib
+*   scikit-image, tifffile, Pillow, mrcfile, imageio
+*   torch, torchvision
+*   tqdm, h5py
+
+*Optional dependencies (for training or advanced visualization) can be installed via:* `pip install -e ".[all]"`
 
 ---
 
-#### Example data
-* Example data are available from: [Zenodo Dataset](https://zenodo.org/records/19903896)   
+#### Example Data & Models
 
-* After downloading, unzip the dataset into the `data/` directory at the project root. The structure should be as follows:
-
-* 1. Download the data archive from Zenodo:
-   - **Complete dataset**: `data.zip` contains all example data needed for demos
-
-* 2. Create a folder named `data` in the project root directory:
-  
-  ```bash
-  mkdir -p data
-  ```
-
-* 3. Extract the zip file into the `data` folder:
-    
-    ```bash
-    unzip data.zip -d data/
-    ```
-
-* After extraction, the directory structure should be:
-
-```text
-iPA/
-├── data/             # <- All unzipped subfolders and data should be here
-│   ├── cryoET/       # Cryo-ET analysis data
-│   ├── sxt/          # SXT images + labels
-│   ├── sim/          # SIM images + masks
-│   ├── wfm/          # WFM tracking data
-│   └── other/        # Additional fluorescence references
-├── ipa/
-├── examples/
-├── README.md
-└── ...
-```
-
-**Note on Compressed Files**: Some large files (e.g., `.mrc`, `.tif`) are stored in gzip/zlib compressed formats to save space. The iPA `UniversalDataLoader` automatically detects and transparently decompresses these files during runtime. You do NOT need to manually decompress them.
-
-**Pre-trained Models**: Model files (`.pth`) are managed via Git LFS. Please ensure you have run `git lfs pull` after cloning the repository.
+*   **Data**: Available at [Zenodo Record 19903896](https://zenodo.org/records/19903896). Unzip into the `data/` folder.
+*   **Models**: Pre-trained weights (`.pth`) are managed via **Git LFS**. Ensure you run `git lfs pull` after cloning.
 
 
 
@@ -209,31 +155,14 @@ pip install -e .
 
 #### Verify Installation
 
-Test that iPA is correctly installed and compatible with your Python version:
+Test that iPA is correctly installed by running a simple demo:
 
 ```bash
-# Run compatibility test
-python test_python_compatibility.py
-
-# This will check:
-# - Python version compatibility (3.8-3.11)
-# - All required dependencies
-# - Core module imports
-# - Key API components
+# Run a basic Cryo-ET filament prediction demo
+python examples/examples_et/demo_cryoET_filament_predict.py
 ```
 
-For developers: Test across multiple Python versions:
-
-```bash
-# Windows (PowerShell)
-.\test_all_python_versions.ps1
-
-# Linux/macOS
-bash test_all_python_versions.sh
-
-# This will create temporary conda environments for Python 3.8, 3.9, 3.10, 3.11
-# and run tests in each environment.
-```
+If the script runs without import errors and produces output, your installation is successful.
 
 
 
