@@ -21,6 +21,7 @@
 [![Python](https://img.shields.io/badge/Python-3.9-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](docs/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/a13707621/ipa.svg)](https://hub.docker.com/r/a13707621/ipa)
 
 </div>
 
@@ -46,25 +47,7 @@ For detailed documentation, tutorials, and examples, please visit:
 
 ### 1. Installation
 
-#### Option A: Local Installation (Recommended for Developers)
-
-```bash
-# Clone the repository
-git clone https://github.com/SunLab-SH/iPA.git
-cd iPA
-
-# Initialize Git LFS (required for pre-trained models)
-git lfs install
-git lfs pull
-
-# Install dependencies and iPA in development mode
-pip install -r requirements.txt
-pip install -e .
-```
-
-#### Option B: Docker Installation (Recommended for Users)
-
-[![Docker Pulls](https://img.shields.io/docker/pulls/a13707621/ipa.svg)](https://hub.docker.com/r/a13707621/ipa)
+#### Option A: Docker Installation (Recommended for Quick Start)
 
 We provide an official Docker image that includes all dependencies and supports both GPU and CPU.
 
@@ -87,6 +70,22 @@ docker run --gpus all -it -v $(pwd)/data:/app/data a13707621/ipa:latest
 Inside the container, you can run any example script:
 ```bash
 python examples/examples_et/demo_cryoET_filament_predict.py
+```
+
+#### Option B: Local Installation (Recommended for Developers)
+
+```bash
+# Clone the repository
+git clone https://github.com/SunLab-SH/iPA.git
+cd iPA
+
+# Initialize Git LFS (required for pre-trained models)
+git lfs install
+git lfs pull
+
+# Install dependencies and iPA in development mode
+pip install -r requirements.txt
+pip install -e .
 ```
 
 ### 2. Download Example Data
