@@ -19,9 +19,10 @@ __pycache__/
 *.pyo
 .pytest_cache/
 
-# IDE
+# IDE and AI Assistant Configurations
 .vscode/
 .idea/
+.lingma/
 *.swp
 *.swo
 
