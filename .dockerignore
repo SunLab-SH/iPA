@@ -1,0 +1,28 @@
+# Data and History (Mount these at runtime)
+data/
+data_history/
+history/
+documentations/
+
+# Git and IDE
+.git/
+.gitignore
+.lingma/
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
+# Logs and temporary outputs
+*.log
+results/
+*_output/

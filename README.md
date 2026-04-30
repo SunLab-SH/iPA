@@ -18,7 +18,7 @@
 
 
 **A comprehensive toolkit for multi-modal cellular imaging analysis**
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.9-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](docs/)
 
@@ -46,6 +46,8 @@ For detailed documentation, tutorials, and examples, please visit:
 
 ### 1. Installation
 
+#### Option A: Local Installation (Recommended for Developers)
+
 ```bash
 # Clone the repository
 git clone https://github.com/SunLab-SH/iPA.git
@@ -58,6 +60,31 @@ git lfs pull
 # Install dependencies and iPA in development mode
 pip install -r requirements.txt
 pip install -e .
+```
+
+#### Option B: Docker Installation (Recommended for Users)
+
+We provide a Docker image that includes all dependencies and supports both GPU and CPU.
+
+**Prerequisites:**
+*   [Docker](https://docs.docker.com/get-docker/)
+*   [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) (for GPU support)
+
+**Build and Run:**
+```bash
+# Build the Docker image
+docker build -t ipa-toolkit .
+
+# Run the container with GPU support and mount your data folder
+docker run --gpus all -it -v $(pwd)/data:/app/data ipa-toolkit
+
+# If you don't have a GPU, simply remove the --gpus all flag:
+# docker run -it -v $(pwd)/data:/app/data ipa-toolkit
+```
+
+Inside the container, you can run any example script:
+```bash
+python examples/examples_et/demo_cryoET_filament_predict.py
 ```
 
 ### 2. Download Example Data
