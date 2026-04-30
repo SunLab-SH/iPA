@@ -21,7 +21,7 @@
 [![Python](https://img.shields.io/badge/Python-3.9-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](docs/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/a13707621/ipa.svg)](https://hub.docker.com/r/a13707621/ipa)
+[![Docker Hub](https://img.shields.io/badge/Docker-Hub-blue?logo=docker)](https://hub.docker.com/r/a13707621/ipa)
 
 </div>
 
